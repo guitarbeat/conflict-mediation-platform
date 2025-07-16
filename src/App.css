@@ -429,9 +429,9 @@
 .slide-in-bottom { animation: slideInFromBottom 0.8s ease-out; }
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-[var(--border)] outline-[var(--ring)]/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[var(--background)] text-[var(--foreground)];
   }
 }
