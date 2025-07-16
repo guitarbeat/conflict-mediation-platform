@@ -117,12 +117,10 @@ function App() {
           <div className="space-y-6">
             <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
             
-            <SectionSeparator title="Conflict Mediation Setup" icon="🏠" />
+            <SectionSeparator title="Party Information" icon="👥" />
             <p className="text-center text-muted-foreground mb-6">
               Let's start by gathering some basic information about the conflict and the parties involved.
             </p>
-
-            <SectionSeparator title="Party Information" icon="👥" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="partyAName">Party A Name</Label>
@@ -522,6 +520,8 @@ function App() {
                   />
                 </div>
               </div>
+
+              <SectionSeparator title="Understanding Each Other" icon="🤝" />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">

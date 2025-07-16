@@ -3,25 +3,22 @@ import React from 'react';
 const SectionSeparator = ({ title, icon, className = "" }) => {
   return (
     <div className={`relative my-8 ${className}`}>
-      {/* Animated background line */}
+      {/* Natural background line */}
       <div className="absolute inset-0 flex items-center">
-        <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-primary/40 to-transparent relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary to-transparent animate-pulse"></div>
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-primary/20 shimmer"></div>
-        </div>
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-60"></div>
       </div>
       
-      {/* Central content with enhanced styling */}
+      {/* Central content with natural styling */}
       <div className="relative flex justify-center">
-        <div className="glass-card px-6 py-3 rounded-full shadow-enhanced hover:shadow-lg transition-all duration-300 group">
+        <div className="bg-background border border-border px-6 py-3 rounded-natural-lg shadow-natural hover:shadow-natural-md transition-all duration-300 group">
           <div className="flex items-center gap-3">
             {icon && (
-              <div className="p-2 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full group-hover:from-primary/30 group-hover:to-primary/20 transition-all duration-300 pulse-glow">
+              <div className="p-2 bg-muted rounded-natural group-hover:bg-primary/10 transition-all duration-300">
                 <span className="text-xl">{icon}</span>
               </div>
             )}
             {title && (
-              <h2 className="text-lg font-semibold text-foreground tracking-wide group-hover:text-primary transition-colors duration-300">
+              <h2 className="text-lg font-semibold text-foreground tracking-wide group-hover:text-natural-primary transition-colors duration-300">
                 {title}
               </h2>
             )}
@@ -29,15 +26,12 @@ const SectionSeparator = ({ title, icon, className = "" }) => {
         </div>
       </div>
       
-      {/* Enhanced decorative elements */}
-      <div className="absolute left-1/2 transform -translate-x-1/2 -bottom-3 flex gap-2">
-        <div className="w-1.5 h-1.5 bg-primary/60 rounded-full animate-pulse"></div>
-        <div className="w-2 h-2 bg-primary/80 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-        <div className="w-1.5 h-1.5 bg-primary/60 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+      {/* Subtle decorative elements */}
+      <div className="absolute left-1/2 transform -translate-x-1/2 -bottom-2 flex gap-1">
+        <div className="w-1 h-1 bg-primary/40 rounded-full"></div>
+        <div className="w-1.5 h-1.5 bg-primary/60 rounded-full"></div>
+        <div className="w-1 h-1 bg-primary/40 rounded-full"></div>
       </div>
-      
-      {/* Subtle glow effect */}
-      <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-8 bg-primary/5 rounded-full blur-xl"></div>
     </div>
   );
 };

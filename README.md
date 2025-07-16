@@ -1,4 +1,4 @@
-# Co-op Conflict Resolution Platform
+# Conflict Resolution Platform
 
 An interactive web application designed to help co-op members work through interpersonal conflicts using a structured, evidence-based mediation process.
 

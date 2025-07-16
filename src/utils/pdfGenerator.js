@@ -136,7 +136,7 @@ export const generateEnhancedPDF = (formData) => {
   pdf.setTextColor(255, 255, 255);
   pdf.setFontSize(24);
   pdf.setFont('helvetica', 'bold');
-  pdf.text('Co-op Conflict Resolution', pageWidth / 2, 25, { align: 'center' });
+  pdf.text('Conflict Resolution', pageWidth / 2, 25, { align: 'center' });
   
   pdf.setFontSize(16);
   pdf.setFont('helvetica', 'normal');
@@ -220,7 +220,7 @@ export const generateEnhancedPDF = (formData) => {
     pdf.setPage(i);
     pdf.setFontSize(8);
     pdf.setTextColor(150, 150, 150);
-    pdf.text(`Co-op Conflict Resolution Platform - Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+    pdf.text(`Conflict Resolution Platform - Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
   }
 
   // Save the PDF

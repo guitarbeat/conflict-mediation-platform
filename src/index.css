@@ -1,46 +1,48 @@
 @import "tailwindcss";
 
 :root {
-  --radius: 0.625rem;
-  --background: #ECF87F;
-  --foreground: #3D550C;
-  --card: #ffffff;
-  --card-foreground: #3D550C;
-  --popover: #ffffff;
-  --popover-foreground: #3D550C;
-  --primary: #59981A;
-  --primary-foreground: #ffffff;
-  --secondary: #81B622;
-  --secondary-foreground: #3D550C;
-  --muted: #ECF87F;
-  --muted-foreground: #3D550C;
-  --accent: #81B622;
-  --accent-foreground: #3D550C;
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: #81B622;
-  --input: #ffffff;
-  --ring: #59981A;
+  --radius: 0.75rem;
+  /* Natural Color Palette - matches App.css */
+  --background: #fdfcfa;           /* warm cream white */
+  --foreground: #2d3a20;           /* deep forest green */
+  --card: #ffffff;                 /* pure white for contrast */
+  --card-foreground: #2d3a20;      /* deep forest green */
+  --popover: #ffffff;              /* pure white */
+  --popover-foreground: #2d3a20;   /* deep forest green */
+  --primary: #6b8e47;              /* natural forest green */
+  --primary-foreground: #ffffff;    /* white text on primary */
+  --secondary: #9a8f7e;            /* warm taupe */
+  --secondary-foreground: #2d3a20; /* deep forest green */
+  --muted: #f5f3f0;                /* warm cream */
+  --muted-foreground: #7d7265;     /* medium taupe */
+  --accent: #2d9d7e;               /* natural teal */
+  --accent-foreground: #ffffff;     /* white text on accent */
+  --destructive: #dc2626;          /* natural red */
+  --border: #e8e4de;               /* warm border */
+  --input: #ffffff;                /* white input background */
+  --ring: #6b8e47;                 /* forest green focus ring */
 }
 
 .dark {
-  --background: #0f1419;
-  --foreground: #e6f1ff;
-  --card: #1a1f2e;
-  --card-foreground: #e6f1ff;
-  --popover: #1a1f2e;
-  --popover-foreground: #e6f1ff;
-  --primary: #81B622;
-  --primary-foreground: #0f1419;
-  --secondary: #2a3441;
-  --secondary-foreground: #e6f1ff;
-  --muted: #2a3441;
-  --muted-foreground: #9ca3af;
-  --accent: #59981A;
-  --accent-foreground: #e6f1ff;
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: #3D550C;
-  --input: #2a3441;
-  --ring: #81B622;
+  /* Dark mode with natural earth tones - matches App.css */
+  --background: #1a1f16;           /* deep forest night */
+  --foreground: #f0f2ed;           /* warm off-white */
+  --card: #242a1f;                 /* dark forest card */
+  --card-foreground: #f0f2ed;      /* warm off-white */
+  --popover: #242a1f;              /* dark forest */
+  --popover-foreground: #f0f2ed;   /* warm off-white */
+  --primary: #8fb56b;              /* lighter sage green */
+  --primary-foreground: #1a1f16;   /* deep forest night */
+  --secondary: #4a433b;            /* dark taupe */
+  --secondary-foreground: #f0f2ed; /* warm off-white */
+  --muted: #2d3a20;                /* muted forest */
+  --muted-foreground: #b8b0a3;     /* light taupe */
+  --accent: #4aba9f;               /* natural teal */
+  --accent-foreground: #1a1f16;    /* deep forest night */
+  --destructive: #ef4444;          /* natural red */
+  --border: #364825;               /* forest border */
+  --input: #2d3a20;                /* muted forest input */
+  --ring: #8fb56b;                 /* lighter sage focus ring */
 }
 
 @layer base {

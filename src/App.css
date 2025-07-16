@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./styles/natural-utilities.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -42,77 +43,129 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: #ECF87F;
-  --foreground: #3D550C;
-  --card: #ffffff;
-  --card-foreground: #3D550C;
-  --popover: #ffffff;
-  --popover-foreground: #3D550C;
-  --primary: #59981A;
-  --primary-foreground: #ffffff;
-  --secondary: #81B622;
-  --secondary-foreground: #3D550C;
-  --muted: #ECF87F;
-  --muted-foreground: #3D550C;
-  --accent: #81B622;
-  --accent-foreground: #3D550C;
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: #81B622;
-  --input: #ffffff;
-  --ring: #59981A;
-  --chart-1: #59981A;
-  --chart-2: #81B622;
-  --chart-3: #3D550C;
-  --chart-4: #ECF87F;
-  --chart-5: oklch(0.769 0.188 70.08);
+  /* Natural Design System - Spacing Scale */
+  --space-xs: 0.25rem;    /* 4px */
+  --space-sm: 0.5rem;     /* 8px */
+  --space-md: 1rem;       /* 16px */
+  --space-lg: 1.5rem;     /* 24px */
+  --space-xl: 2rem;       /* 32px */
+  --space-2xl: 3rem;      /* 48px */
+  --space-3xl: 4rem;      /* 64px */
+  
+  /* Natural Border Radius Scale */
+  --radius-xs: 0.25rem;   /* 4px - subtle curves */
+  --radius-sm: 0.5rem;    /* 8px - gentle curves */
+  --radius: 0.75rem;      /* 12px - natural curves */
+  --radius-md: 1rem;      /* 16px - soft curves */
+  --radius-lg: 1.5rem;    /* 24px - organic curves */
+  --radius-xl: 2rem;      /* 32px - flowing curves */
+  --radius-full: 9999px;  /* full circles */
+  
+  /* Enhanced Natural Color Palette - Darker tones for better contrast */
+  --background: #f8f6f2;           /* darker warm cream */
+  --foreground: #2d3a20;           /* deep forest green */
+  --card: #fdfcfa;                 /* slightly off-white for contrast */
+  --card-foreground: #2d3a20;      /* deep forest green */
+  --popover: #fdfcfa;              /* slightly off-white */
+  --popover-foreground: #2d3a20;   /* deep forest green */
+  --primary: #5a7a3c;              /* deeper forest green */
+  --primary-foreground: #ffffff;    /* white text on primary */
+  --secondary: #9a8f7e;            /* darker warm stone */
+  --secondary-foreground: #2d3a20; /* deep forest green */
+  --muted: #f0ede7;                /* darker warm beige */
+  --muted-foreground: #635a4f;     /* darker taupe for better contrast */
+  --accent: #2d8a73;               /* deeper teal */
+  --accent-foreground: #ffffff;     /* white text on accent */
+  --destructive: #b91c1c;          /* darker natural red */
+  --destructive-foreground: #ffffff; /* white text on destructive */
+  --border: #d1c9bc;               /* darker stone border */
+  --input: #fdfcfa;                /* slightly off-white input background */
+  --ring: #5a7a3c;                 /* deeper forest green focus ring */
+  
+  /* Additional semantic colors */
+  --success: #6b8e47;              /* forest green */
+  --success-foreground: #ffffff;    /* white text */
+  --warning: #e39849;              /* golden amber */
+  --warning-foreground: #ffffff;    /* white text */
+  --info: #3ba88f;                 /* teal */
+  --info-foreground: #ffffff;      /* white text */
+  
+  /* Natural Chart Colors */
+  --chart-1: #6b8e47;              /* forest green */
+  --chart-2: #2d9d7e;              /* teal */
+  --chart-3: #9a8f7e;              /* taupe */
+  --chart-4: #b8d19f;              /* light sage */
+  --chart-5: #7dd3c0;              /* light teal */
+  
+  /* Sidebar Colors */
   --sidebar: #ffffff;
-  --sidebar-foreground: #3D550C;
-  --sidebar-primary: #59981A;
+  --sidebar-foreground: #2d3a20;
+  --sidebar-primary: #6b8e47;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #81B622;
-  --sidebar-accent-foreground: #3D550C;
-  --sidebar-border: #81B622;
-  --sidebar-ring: #59981A;
+  --sidebar-accent: #2d9d7e;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #e8e4de;
+  --sidebar-ring: #6b8e47;
+  
+  /* Natural Shadows with warmer tones */
+  --shadow-sm: 0 1px 2px 0 rgba(45, 58, 32, 0.08);
+  --shadow: 0 1px 3px 0 rgba(45, 58, 32, 0.12), 0 1px 2px -1px rgba(45, 58, 32, 0.08);
+  --shadow-md: 0 4px 6px -1px rgba(45, 58, 32, 0.12), 0 2px 4px -2px rgba(45, 58, 32, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(45, 58, 32, 0.12), 0 4px 6px -4px rgba(45, 58, 32, 0.08);
+  --shadow-xl: 0 20px 25px -5px rgba(45, 58, 32, 0.15), 0 8px 10px -6px rgba(45, 58, 32, 0.08);
 }
 
 .dark {
-  --background: #0f1419;
-  --foreground: #e6f1ff;
-  --card: #1a1f2e;
-  --card-foreground: #e6f1ff;
-  --popover: #1a1f2e;
-  --popover-foreground: #e6f1ff;
-  --primary: #81B622;
-  --primary-foreground: #0f1419;
-  --secondary: #2a3441;
-  --secondary-foreground: #e6f1ff;
-  --muted: #2a3441;
-  --muted-foreground: #9ca3af;
-  --accent: #59981A;
-  --accent-foreground: #e6f1ff;
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: #3D550C;
-  --input: #2a3441;
-  --ring: #81B622;
-  --chart-1: #81B622;
-  --chart-2: #59981A;
-  --chart-3: #ECF87F;
-  --chart-4: #3D550C;
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: #1a1f2e;
-  --sidebar-foreground: #e6f1ff;
-  --sidebar-primary: #81B622;
-  --sidebar-primary-foreground: #0f1419;
-  --sidebar-accent: #59981A;
-  --sidebar-accent-foreground: #e6f1ff;
-  --sidebar-border: #3D550C;
-  --sidebar-ring: #81B622;
+  /* Enhanced Dark mode with natural earth tones */
+  --background: #1f2817;           /* deepest forest night */
+  --foreground: #f0f4ea;           /* pale sage */
+  --card: #2d3a20;                 /* forest night card */
+  --card-foreground: #f0f4ea;      /* pale sage */
+  --popover: #2d3a20;              /* forest night */
+  --popover-foreground: #f0f4ea;   /* pale sage */
+  --primary: #a8c285;              /* sage green */
+  --primary-foreground: #2d3a20;   /* forest night */
+  --secondary: #635a4f;            /* darker taupe */
+  --secondary-foreground: #f8f6f2; /* light cream */
+  --muted: #364825;                /* deepest forest */
+  --muted-foreground: #d1c9bc;     /* medium stone */
+  --accent: #5fc4ab;               /* mint green */
+  --accent-foreground: #1f2817;    /* deepest night */
+  --destructive: #ef4444;          /* natural red */
+  --destructive-foreground: #ffffff; /* white text */
+  --border: #4a6332;               /* darker forest border */
+  --input: #364825;                /* deepest forest input */
+  --ring: #a8c285;                 /* sage green focus ring */
+  
+  /* Additional semantic colors for dark mode */
+  --success: #a8c285;              /* sage green */
+  --success-foreground: #2d3a20;   /* forest night */
+  --warning: #edb572;              /* warm gold */
+  --warning-foreground: #2d3a20;   /* forest night */
+  --info: #5fc4ab;                 /* mint green */
+  --info-foreground: #1f2817;     /* deepest night */
+  
+  /* Enhanced dark mode chart colors */
+  --chart-1: #a8c285;              /* sage green */
+  --chart-2: #5fc4ab;              /* mint green */
+  --chart-3: #d1c9bc;              /* medium stone */
+  --chart-4: #94d9c8;              /* medium mint */
+  --chart-5: #edb572;              /* warm gold */
+  
+  /* Enhanced dark sidebar colors */
+  --sidebar: #2d3a20;
+  --sidebar-foreground: #f0f4ea;
+  --sidebar-primary: #a8c285;
+  --sidebar-primary-foreground: #2d3a20;
+  --sidebar-accent: #5fc4ab;
+  --sidebar-accent-foreground: #1f2817;
+  --sidebar-border: #4a6332;
+  --sidebar-ring: #a8c285;
 }
 
 /* Natural gradient borders and separators */
 .gradient-border {
-  background: linear-gradient(45deg, #3D550C, #59981A, #81B622);
+  background: linear-gradient(45deg, #6b8e47, #2d9d7e, #8fb56b);
 }
 
 .section-divider {
@@ -127,9 +180,9 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, #59981A, transparent);
+  background: linear-gradient(90deg, transparent, #6b8e47, transparent);
   transform: translateY(-50%);
-  opacity: 0.6;
+  opacity: 0.4;
 }
 
 /* Enhanced card animations */
@@ -150,26 +203,28 @@
 }
 
 .natural-hover:hover {
-  box-shadow: 0 2px 8px rgba(89, 152, 26, 0.15);
+  box-shadow: 0 2px 8px rgba(107, 142, 71, 0.15);
   transform: translateY(-1px);
 }
 
-/* Simple progress bar */
+/* Simple progress bar with natural colors */
 .progress-enhanced {
-  background: linear-gradient(90deg, #3D550C, #59981A, #81B622);
+  background: linear-gradient(90deg, #6b8e47, #2d9d7e, #8fb56b);
 }
 
-/* Simplified glass card effects */
+/* Simplified glass card effects with natural tones */
 .glass-card {
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(107, 142, 71, 0.2);
+  box-shadow: 0 2px 8px rgba(45, 58, 32, 0.08);
+  backdrop-filter: blur(8px);
 }
 
 .dark .glass-card {
-  background: rgba(26, 31, 46, 0.8);
-  border: 1px solid rgba(129, 182, 34, 0.3);
+  background: rgba(36, 42, 31, 0.85);
+  border: 1px solid rgba(143, 181, 107, 0.3);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
 }
 
 /* Enhanced button styles - simplified for natural look */
@@ -179,7 +234,7 @@
 
 .btn-enhanced:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(89, 152, 26, 0.15);
+  box-shadow: 0 2px 8px rgba(107, 142, 71, 0.15);
 }
 
 /* Typewriter effect - removed blinking for natural look */
@@ -195,21 +250,19 @@
 
 .typewriter {
   overflow: hidden;
-  border-right: 2px solid #59981A;
+  border-right: 2px solid #6b8e47;
   white-space: nowrap;
   animation: typewriter 3s steps(40, end);
 }
 
-/* Removed particle background effect for natural aesthetic */
-
-/* Enhanced form inputs - subtle focus effect */
+/* Enhanced form inputs - subtle focus effect with natural colors */
 .input-enhanced {
   position: relative;
   transition: all 0.2s ease;
 }
 
 .input-enhanced:focus-within {
-  box-shadow: 0 0 0 2px rgba(129, 182, 34, 0.2);
+  box-shadow: 0 0 0 2px rgba(107, 142, 71, 0.2);
 }
 
 /* Tooltip styles */
@@ -241,48 +294,46 @@
   opacity: 1;
 }
 
-/* Enhanced scrollbar */
+/* Enhanced scrollbar with natural colors */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(129, 182, 34, 0.1);
+  background: rgba(107, 142, 71, 0.1);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #59981A, #81B622);
+  background: linear-gradient(180deg, #6b8e47, #2d9d7e);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #3D550C, #59981A);
+  background: linear-gradient(180deg, #2d3a20, #6b8e47);
 }
 
-/* Removed ripple effect for natural aesthetic */
-
-/* Text gradient effects */
+/* Text gradient effects with natural colors */
 .text-gradient {
-  background: linear-gradient(135deg, #3D550C, #59981A, #81B622);
+  background: linear-gradient(135deg, #6b8e47, #2d9d7e, #8fb56b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-/* Enhanced shadows */
+/* Enhanced shadows with natural tones */
 .shadow-enhanced {
   box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.12),
-    0 1px 2px rgba(0, 0, 0, 0.24),
-    0 0 0 1px rgba(129, 182, 34, 0.1);
+    0 1px 3px rgba(45, 58, 32, 0.12),
+    0 1px 2px rgba(45, 58, 32, 0.08),
+    0 0 0 1px rgba(107, 142, 71, 0.1);
 }
 
 .dark .shadow-enhanced {
   box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.5),
-    0 1px 2px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(129, 182, 34, 0.2);
+    0 1px 3px rgba(0, 0, 0, 0.4),
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(143, 181, 107, 0.2);
 }
 
 /* Removed breathing animation for natural aesthetic */
