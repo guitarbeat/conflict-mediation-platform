@@ -19,7 +19,7 @@ const GuidanceAlert = ({ step, partyAName = "Party A", partyBName = "Party B" })
         return {
           icon: User,
           title: "Individual Reflection",
-          message: `${partyAName}, please complete this section individually. ${partyBName} should not look at these responses yet.`,
+          message: `${partyAName ? `${partyAName}, please` : 'Please'} complete this section individually. ${partyBName || 'The other party'} should not look at these responses yet.`,
           type: "partyA",
           bgColor: "bg-orange-50 dark:bg-orange-950/30",
           borderColor: "border-orange-200 dark:border-orange-800",
@@ -30,7 +30,7 @@ const GuidanceAlert = ({ step, partyAName = "Party A", partyBName = "Party B" })
         return {
           icon: User,
           title: "Individual Reflection",
-          message: `${partyBName}, please complete this section individually. ${partyAName} should not look at these responses yet.`,
+          message: `${partyBName ? `${partyBName}, please` : 'Please'} complete this section individually. ${partyAName || 'The other party'} should not look at these responses yet.`,
           type: "partyB",
           bgColor: "bg-purple-50 dark:bg-purple-950/30",
           borderColor: "border-purple-200 dark:border-purple-800",
