@@ -11,6 +11,7 @@ import EmojiGridMapper from './components/EmojiGridMapper';
 import SectionSeparator from './components/SectionSeparator';
 import DarkModeToggle from './components/DarkModeToggle';
 import GuidanceAlert from './components/GuidanceAlert';
+import ParticleBackground from './components/ParticleBackground';
 import { generateEnhancedPDF } from './utils/pdfGenerator';
 import logo from './assets/logo.png';
 import './App.css';
@@ -26,16 +27,16 @@ function App() {
     conflictDescription: '',
     // Individual Reflection A
     partyAThoughts: '',
-    partyASelectedEmotionWords: [], // Array of selected emotion words
-    partyAEmotionChartPosition: null, // {x, y, valence, arousal, emoji, label}
+    partyASelectedEmotionWords: [],
+    partyAEmotionChartPosition: null,
     partyAAggressiveApproach: '',
     partyAPassiveApproach: '',
     partyAAssertiveApproach: '',
     partyAWhyBecause: '',
     // Individual Reflection B
     partyBThoughts: '',
-    partyBSelectedEmotionWords: [], // Array of selected emotion words
-    partyBEmotionChartPosition: null, // {x, y, valence, arousal, emoji, label}
+    partyBSelectedEmotionWords: [],
+    partyBEmotionChartPosition: null,
     partyBAggressiveApproach: '',
     partyBPassiveApproach: '',
     partyBAssertiveApproach: '',
@@ -640,7 +641,8 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <Label htmlFor="followUpDate">Follow-up Date</Label>
+                  <Label htmlFor="followUpDate" className="text-lg font-semibold">Follow-up Date</Label>
+                  <p className="text-sm text-muted-foreground">When should you check in on progress?</p>
                   <Input
                     id="followUpDate"
                     type="date"
@@ -650,59 +652,74 @@ function App() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label htmlFor="additionalSupport">Additional Support Needed</Label>
-                  <Input
+                  <Label htmlFor="additionalSupport" className="text-lg font-semibold">Additional Support Needed</Label>
+                  <p className="text-sm text-muted-foreground">What additional resources or support might be helpful?</p>
+                  <Textarea
                     id="additionalSupport"
-                    placeholder="What additional support might be helpful?"
+                    placeholder="Describe any additional support needed..."
                     value={formData.additionalSupport}
                     onChange={(e) => updateFormData('additionalSupport', e.target.value)}
+                    rows={3}
                   />
                 </div>
               </div>
 
-              <div className="flex gap-4 pt-6">
-                <Button onClick={exportToJSON} variant="outline" className="flex items-center gap-2">
-                  <Download className="h-4 w-4" />
-                  Export JSON
-                </Button>
-                <Button onClick={exportToPDF} className="flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  Export PDF
-                </Button>
+              <div className="mt-8 pt-6 border-t border-border">
+                <SectionSeparator title="Export Your Session" icon="📄" />
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button
+                    onClick={exportToJSON}
+                    variant="outline"
+                    className="flex items-center gap-2"
+                  >
+                    <Download className="h-4 w-4" />
+                    Export as JSON
+                  </Button>
+                  <Button
+                    onClick={exportToPDF}
+                    className="flex items-center gap-2"
+                  >
+                    <FileText className="h-4 w-4" />
+                    Export as PDF
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
         );
 
       default:
-        return <div>Step not found</div>;
+        return <div>Invalid step</div>;
     }
   };
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <img src={logo} alt="Co-op Logo" className="h-12 w-12" />
-            <div>
-              <h1 className="text-3xl font-bold text-primary">Co-op Conflict Resolution Platform</h1>
-              <p className="text-muted-foreground">A guided process for working through interpersonal conflicts</p>
+      <ParticleBackground />
+      <DarkModeToggle />
+      
+      <div className="bg-gradient-to-r from-primary to-secondary text-primary-foreground py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <img src={logo} alt="Logo" className="h-12 w-12" />
+            <div className="text-center">
+              <h1 className="text-3xl font-bold">Co-op Conflict Resolution Platform</h1>
+              <p className="text-primary-foreground/80 mt-2">
+                A structured approach to resolving interpersonal conflicts
+              </p>
             </div>
           </div>
-          <DarkModeToggle />
         </div>
+      </div>
 
-        {/* Progress Bar */}
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex justify-between items-center mb-4">
             <span className="text-sm font-medium">Step {currentStep} of {totalSteps}: {STEPS[currentStep - 1]}</span>
             <span className="text-sm text-muted-foreground">{progressPercentage}% Complete</span>
           </div>
           <Progress value={progressPercentage} className="h-2" />
           
-          {/* Step indicators */}
           <div className="flex justify-between mt-4">
             {STEPS.map((step, index) => (
               <div
@@ -721,14 +738,12 @@ function App() {
           </div>
         </div>
 
-        {/* Main Content */}
         <Card className="mb-8">
           <CardContent className="p-8">
             {renderStep()}
           </CardContent>
         </Card>
 
-        {/* Navigation */}
         <div className="flex justify-between">
           <Button
             onClick={prevStep}
@@ -759,4 +774,3 @@ function App() {
 }
 
 export default App;
-

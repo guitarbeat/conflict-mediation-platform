@@ -61,7 +61,7 @@ const EmojiGridMapper = ({
     e.preventDefault();
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = React.useCallback((e) => {
     if (!isDragging || !containerRef.current) return;
     
     const rect = containerRef.current.getBoundingClientRect();
@@ -87,7 +87,7 @@ const EmojiGridMapper = ({
     
     const emotionData = calculateEmotionData(x, y);
     onChartPositionChange(emotionData);
-  };
+  }, [isDragging, onChartPositionChange]);
 
   const handleMouseUp = () => {
     setIsDragging(false);
@@ -98,9 +98,10 @@ const EmojiGridMapper = ({
     e.preventDefault();
   };
 
-  const handleTouchMove = (e) => {
+  const handleTouchMove = React.useCallback((e) => {
     if (!isDragging || !containerRef.current) return;
     
+    e.preventDefault(); // Prevent scrolling while dragging
     const touch = e.touches[0];
     const rect = containerRef.current.getBoundingClientRect();
     const centerX = 250;
@@ -125,7 +126,7 @@ const EmojiGridMapper = ({
     
     const emotionData = calculateEmotionData(x, y);
     onChartPositionChange(emotionData);
-  };
+  }, [isDragging, onChartPositionChange]);
 
   const handleTouchEnd = () => {
     setIsDragging(false);
@@ -142,7 +143,7 @@ const EmojiGridMapper = ({
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('touchmove', handleTouchMove);
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
       document.addEventListener('touchend', handleTouchEnd);
       
       return () => {
@@ -152,7 +153,7 @@ const EmojiGridMapper = ({
         document.removeEventListener('touchend', handleTouchEnd);
       };
     }
-  }, [isDragging]);
+  }, [isDragging, handleMouseMove, handleTouchMove]);
 
   // Update position when chartPosition prop changes
   useEffect(() => {

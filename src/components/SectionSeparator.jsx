@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SectionSeparator = ({ title, icon: Icon, className = "" }) => {
+const SectionSeparator = ({ title, icon, className = "" }) => {
   return (
     <div className={`relative my-8 ${className}`}>
       {/* Animated background line */}
@@ -15,9 +15,9 @@ const SectionSeparator = ({ title, icon: Icon, className = "" }) => {
       <div className="relative flex justify-center">
         <div className="glass-card px-6 py-3 rounded-full shadow-enhanced hover:shadow-lg transition-all duration-300 group">
           <div className="flex items-center gap-3">
-            {Icon && (
+            {icon && (
               <div className="p-2 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full group-hover:from-primary/30 group-hover:to-primary/20 transition-all duration-300 pulse-glow">
-                <Icon className="h-5 w-5 text-primary group-hover:scale-110 transition-transform duration-300" />
+                <span className="text-xl">{icon}</span>
               </div>
             )}
             {title && (
