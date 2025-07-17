@@ -95,7 +95,7 @@ const GuidanceAlert = ({ step, partyAName = "Party A", partyBName = "Party B" })
   const IconComponent = guidance.icon;
 
   return (
-    <div className={`relative card-natural-elevated no-hover-effects ${guidance.borderColor} ${guidance.bgColor} p-6 mb-6 animate-natural-fade-in-disabled`}>
+    <div className={`relative card-natural-elevated no-hover-effects ${guidance.borderColor} ${guidance.bgColor} p-4 sm:p-6 mb-4 sm:mb-6 animate-natural-fade-in-disabled`}>
       {/* Subtle decorative background pattern */}
       <div className="absolute inset-0 opacity-3 pointer-events-none">
         <div className="absolute inset-0" style={{
@@ -105,22 +105,22 @@ const GuidanceAlert = ({ step, partyAName = "Party A", partyBName = "Party B" })
       </div>
       
       {/* Content */}
-      <div className="relative flex items-start gap-4">
-        <div className={`flex-shrink-0 p-3 rounded-natural-md bg-background border ${guidance.borderColor} shadow-natural-sm`}>
-          <IconComponent className={`h-6 w-6 ${guidance.iconColor}`} />
+      <div className="relative flex items-start gap-3 sm:gap-4">
+        <div className={`flex-shrink-0 p-2 sm:p-3 rounded-natural-md bg-background border ${guidance.borderColor} shadow-natural-sm`}>
+          <IconComponent className={`h-5 w-5 sm:h-6 sm:w-6 ${guidance.iconColor}`} />
         </div>
         
         <div className="flex-1 min-w-0">
-          <div className={`text-lg font-semibold ${guidance.textColor} mb-2`}>
+          <div className={`text-base sm:text-lg font-semibold ${guidance.textColor} mb-1 sm:mb-2`}>
             {guidance.title}
           </div>
-          <div className={`text-base ${guidance.textColor} leading-relaxed opacity-90`}>
+          <div className={`text-sm sm:text-base ${guidance.textColor} leading-relaxed opacity-90`}>
             {guidance.message}
           </div>
           
           {/* Privacy notice for individual sections */}
           {(guidance.type === "partyA" || guidance.type === "partyB") && (
-            <div className={`mt-3 text-sm ${guidance.textColor} opacity-70 italic flex items-center gap-2`}>
+            <div className={`mt-2 sm:mt-3 text-xs sm:text-sm ${guidance.textColor} opacity-70 italic flex items-start gap-2`}>
               <span>🔒</span>
               <span>This is a private reflection space. The other party should not view these responses until the shared discussion phase.</span>
             </div>
@@ -128,7 +128,7 @@ const GuidanceAlert = ({ step, partyAName = "Party A", partyBName = "Party B" })
         </div>
         
         {/* Step indicator */}
-        <div className={`badge-natural-${guidance.accentColor} flex-shrink-0`}>
+        <div className={`badge-natural-${guidance.accentColor} flex-shrink-0 text-xs sm:text-sm`}>
           Step {step}
         </div>
       </div>

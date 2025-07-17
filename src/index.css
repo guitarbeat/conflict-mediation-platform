@@ -99,4 +99,33 @@
     font-weight: 700;
     line-height: 1.2;
   }
+  
+  /* Mobile-specific improvements */
+  @media (max-width: 640px) {
+    /* Ensure form elements are properly sized for touch */
+    input, textarea, select {
+      font-size: 16px !important; /* Prevents zoom on iOS */
+      min-height: 44px; /* Minimum touch target size */
+    }
+    
+    /* Improve text readability on small screens */
+    .text-sm {
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+    
+    /* Better spacing for mobile forms */
+    .space-y-3 > * + * {
+      margin-top: 0.75rem;
+    }
+    
+    .space-y-4 > * + * {
+      margin-top: 1rem;
+    }
+    
+    /* Ensure proper padding for mobile cards */
+    .p-4 {
+      padding: 1rem;
+    }
+  }
 }

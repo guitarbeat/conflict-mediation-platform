@@ -209,14 +209,14 @@ function App() {
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
             
             <SectionSeparator title="Party Information" icon="👥" />
-            <p className="text-center text-muted-foreground mb-6">
+            <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
               Let's start by gathering some basic information about the conflict and the parties involved.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <div className="space-y-2">
                 <Label htmlFor="partyAName">Party A Name</Label>
                 <Input
@@ -238,7 +238,7 @@ function App() {
             </div>
 
             <SectionSeparator title="Conflict Details" icon="📋" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
               <div className="space-y-2">
                 <Label htmlFor="dateOfIncident">Date of Incident</Label>
                 <Input
@@ -283,11 +283,11 @@ function App() {
 
       case 2:
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
             
             <SectionSeparator title="Thoughts & Beliefs" icon="🤔" />
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <Label htmlFor="partyAThoughts">I think...</Label>
               <Textarea
                 id="partyAThoughts"
@@ -299,7 +299,7 @@ function App() {
             </div>
 
             <SectionSeparator title="Emotions & Feelings" icon="💚" />
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <Label>I feel... (Use both methods to express your emotions)</Label>
               <EmojiGridMapper
                 onEmotionWordsChange={(words) => updateFormData('partyASelectedEmotionWords', words)}
@@ -310,10 +310,10 @@ function App() {
             </div>
 
             <SectionSeparator title="Communication Approaches" icon="💬" />
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <Label>I want... (Communication Approaches)</Label>
               
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <Label htmlFor="partyAAggressiveApproach" className="text-red-600">Aggressive Approach (Not Recommended)</Label>
                 <Textarea
                   id="partyAAggressiveApproach"
@@ -324,7 +324,7 @@ function App() {
                 />
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <Label htmlFor="partyAPassiveApproach" className="text-blue-600">Passive Approach</Label>
                 <Textarea
                   id="partyAPassiveApproach"
@@ -335,7 +335,7 @@ function App() {
                 />
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <Label htmlFor="partyAAssertiveApproach" className="text-green-600">Assertive Approach (Recommended)</Label>
                 <Textarea
                   id="partyAAssertiveApproach"
@@ -346,7 +346,7 @@ function App() {
                 />
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <Label htmlFor="partyAWhyBecause">Why/Because...</Label>
                 <Textarea
                   id="partyAWhyBecause"
@@ -362,11 +362,11 @@ function App() {
 
       case 3:
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
             
             <SectionSeparator title="Thoughts & Beliefs" icon="🤔" />
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <Label htmlFor="partyBThoughts">I think...</Label>
               <Textarea
                 id="partyBThoughts"
@@ -378,7 +378,7 @@ function App() {
             </div>
 
             <SectionSeparator title="Emotions & Feelings" icon="💚" />
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <Label>I feel... (Use both methods to express your emotions)</Label>
               <EmojiGridMapper
                 onEmotionWordsChange={(words) => updateFormData('partyBSelectedEmotionWords', words)}
@@ -389,10 +389,10 @@ function App() {
             </div>
 
             <SectionSeparator title="Communication Approaches" icon="💬" />
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <Label>I want... (Communication Approaches)</Label>
               
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <Label htmlFor="partyBAggressiveApproach" className="text-red-600">Aggressive Approach (Not Recommended)</Label>
                 <Textarea
                   id="partyBAggressiveApproach"
@@ -403,7 +403,7 @@ function App() {
                 />
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <Label htmlFor="partyBPassiveApproach" className="text-blue-600">Passive Approach</Label>
                 <Textarea
                   id="partyBPassiveApproach"
@@ -414,7 +414,7 @@ function App() {
                 />
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <Label htmlFor="partyBAssertiveApproach" className="text-green-600">Assertive Approach (Recommended)</Label>
                 <Textarea
                   id="partyBAssertiveApproach"
@@ -425,7 +425,7 @@ function App() {
                 />
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <Label htmlFor="partyBWhyBecause">Why/Because...</Label>
                 <Textarea
                   id="partyBWhyBecause"
@@ -441,16 +441,16 @@ function App() {
 
       case 4:
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
             
             <SectionSeparator title="ABCDE Model Discussion" icon="🗣️" />
-            <p className="text-center text-muted-foreground mb-6">
+            <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
               Work through this cognitive behavioral model together to understand the conflict better.
             </p>
 
-            <div className="space-y-6">
-              <div className="space-y-4">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="space-y-3 sm:space-y-4">
                 <Label htmlFor="activatingEvent" className="text-base font-semibold">A - Activating Event</Label>
                 <p className="text-sm text-muted-foreground">What actually happened? Stick to observable facts.</p>
                 <Textarea
@@ -462,8 +462,8 @@ function App() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyABeliefs" className="text-base font-semibold">B - {formData.partyAName || 'Party A'} Beliefs</Label>
                   <p className="text-sm text-muted-foreground">What thoughts or beliefs do you have about this event?</p>
                   <Textarea
@@ -475,7 +475,7 @@ function App() {
                   />
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyBBeliefs" className="text-base font-semibold">B - {formData.partyBName || 'Party B'} Beliefs</Label>
                   <p className="text-sm text-muted-foreground">What thoughts or beliefs do you have about this event?</p>
                   <Textarea
@@ -488,8 +488,8 @@ function App() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyAConsequences" className="text-base font-semibold">C - {formData.partyAName || 'Party A'} Consequences</Label>
                   <p className="text-sm text-muted-foreground">How did your beliefs make you feel and behave?</p>
                   <Textarea
@@ -501,7 +501,7 @@ function App() {
                   />
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyBConsequences" className="text-base font-semibold">C - {formData.partyBName || 'Party B'} Consequences</Label>
                   <p className="text-sm text-muted-foreground">How did your beliefs make you feel and behave?</p>
                   <Textarea
@@ -514,8 +514,8 @@ function App() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyADisputations" className="text-base font-semibold">D - {formData.partyAName || 'Party A'} Disputations</Label>
                   <p className="text-sm text-muted-foreground">Challenge your beliefs. Are they helpful? Accurate? Realistic?</p>
                   <Textarea
@@ -527,7 +527,7 @@ function App() {
                   />
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyBDisputations" className="text-base font-semibold">D - {formData.partyBName || 'Party B'} Disputations</Label>
                   <p className="text-sm text-muted-foreground">Challenge your beliefs. Are they helpful? Accurate? Realistic?</p>
                   <Textarea
@@ -540,7 +540,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <Label htmlFor="effectsReflections" className="text-base font-semibold">E - Effects & Reflections</Label>
                 <p className="text-sm text-muted-foreground">What new insights have emerged? How do you both feel now?</p>
                 <Textarea
@@ -557,17 +557,17 @@ function App() {
 
       case 5:
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
             
             <SectionSeparator title="Solution Development" icon="💡" />
-            <p className="text-center text-muted-foreground mb-6">
+            <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
               Now let's explore possibilities and develop solutions together.
             </p>
 
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyAMiracle" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Miracle Question</Label>
                   <p className="text-sm text-muted-foreground">If you woke up tomorrow and this conflict was completely resolved, what would be different?</p>
                   <Textarea
@@ -579,7 +579,7 @@ function App() {
                   />
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyBMiracle" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Miracle Question</Label>
                   <p className="text-sm text-muted-foreground">If you woke up tomorrow and this conflict was completely resolved, what would be different?</p>
                   <Textarea
@@ -592,8 +592,8 @@ function App() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyATop3Solutions" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Top 3 Solutions</Label>
                   <Textarea
                     id="partyATop3Solutions"
@@ -604,7 +604,7 @@ function App() {
                   />
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyBTop3Solutions" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Top 3 Solutions</Label>
                   <Textarea
                     id="partyBTop3Solutions"
@@ -618,8 +618,8 @@ function App() {
 
               <SectionSeparator title="Understanding Each Other" icon="🤝" />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyAPerspective" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Other's Perspective</Label>
                   <p className="text-sm text-muted-foreground">Try to understand the other person's point of view.</p>
                   <Textarea
@@ -631,7 +631,7 @@ function App() {
                   />
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyBPerspective" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Other's Perspective</Label>
                   <p className="text-sm text-muted-foreground">Try to understand the other person's point of view.</p>
                   <Textarea
@@ -644,7 +644,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <Label htmlFor="compromiseSolutions" className="text-base font-semibold">Compromise Solutions</Label>
                 <p className="text-sm text-muted-foreground">What solutions can you both agree on? What compromises are you willing to make?</p>
                 <Textarea
@@ -661,17 +661,17 @@ function App() {
 
       case 6:
         return (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
             
             <SectionSeparator title="Agreement & Action Steps" icon="✅" />
-            <p className="text-center text-muted-foreground mb-6">
+            <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
               Finalize your agreement and create actionable next steps.
             </p>
 
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyAUnmetNeeds" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Unmet Needs</Label>
                   <p className="text-sm text-muted-foreground">What needs of yours weren't being met in this situation?</p>
                   <Textarea
@@ -683,7 +683,7 @@ function App() {
                   />
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyBUnmetNeeds" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Unmet Needs</Label>
                   <p className="text-sm text-muted-foreground">What needs of yours weren't being met in this situation?</p>
                   <Textarea
@@ -696,8 +696,8 @@ function App() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyANeedsInPractice" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Needs in Practice</Label>
                   <p className="text-sm text-muted-foreground">How can these needs be met going forward?</p>
                   <Textarea
@@ -709,7 +709,7 @@ function App() {
                   />
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="partyBNeedsInPractice" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Needs in Practice</Label>
                   <p className="text-sm text-muted-foreground">How can these needs be met going forward?</p>
                   <Textarea
@@ -722,7 +722,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <Label htmlFor="actionSteps" className="text-base font-semibold">Specific Action Steps</Label>
                 <p className="text-sm text-muted-foreground">What specific actions will each person take? Include deadlines and accountability measures.</p>
                 <Textarea
@@ -734,8 +734,8 @@ function App() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="followUpDate" className="text-base font-semibold">Follow-up Date</Label>
                   <p className="text-sm text-muted-foreground">When should you check in on progress?</p>
                   <Input
@@ -746,7 +746,7 @@ function App() {
                   />
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   <Label htmlFor="additionalSupport" className="text-base font-semibold">Additional Support Needed</Label>
                   <p className="text-sm text-muted-foreground">What additional resources or support might be helpful?</p>
                   <Textarea
@@ -759,9 +759,9 @@ function App() {
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-border">
+              <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-border">
                 <SectionSeparator title="Export Your Session" icon="📄" />
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                   <Button
                     onClick={exportToJSON}
                     variant="outline"
@@ -793,13 +793,13 @@ function App() {
       <ParticleBackground />
       <DarkModeToggle />
       
-      <div className="bg-gradient-to-r from-primary to-secondary text-primary-foreground py-8">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <img src={logo} alt="Logo" className="h-12 w-12" />
+      <div className="bg-gradient-to-r from-primary to-secondary text-primary-foreground py-4 sm:py-8">
+        <div className="container mx-auto px-2 sm:px-4">
+          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-2 sm:mb-4">
+            <img src={logo} alt="Logo" className="h-8 w-8 sm:h-12 sm:w-12" />
             <div className="text-center">
-              <h1 className="text-3xl font-bold">Co-op Conflict Resolution Platform</h1>
-              <p className="text-primary-foreground/80 mt-2">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Co-op Conflict Resolution Platform</h1>
+              <p className="text-primary-foreground/80 mt-1 sm:mt-2 text-sm sm:text-base">
                 A structured approach to resolving interpersonal conflicts
               </p>
             </div>
@@ -807,19 +807,19 @@ function App() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-medium">Step {currentStep} of {totalSteps}: {STEPS[currentStep - 1]}</span>
-            <span className="text-sm text-muted-foreground">{progressPercentage}% Complete</span>
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-4xl">
+        <div className="mb-4 sm:mb-8">
+          <div className="flex justify-between items-center mb-2 sm:mb-4">
+            <span className="text-xs sm:text-sm font-medium">Step {currentStep} of {totalSteps}: {STEPS[currentStep - 1]}</span>
+            <span className="text-xs sm:text-sm text-muted-foreground">{progressPercentage}% Complete</span>
           </div>
           <Progress value={progressPercentage} className="h-2" />
           
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-between mt-2 sm:mt-4">
             {STEPS.map((step, index) => (
               <div
                 key={index}
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
                   index + 1 < currentStep
                     ? 'bg-primary text-primary-foreground'
                     : index + 1 === currentStep
@@ -834,7 +834,7 @@ function App() {
         </div>
 
         <Card 
-          className="mb-8 transition-all duration-300 ease-out"
+          className="mb-4 sm:mb-8 transition-all duration-300 ease-out"
           style={{
             transform: `translateX(${dragOffset}px) rotate(${dragOffset * 0.1}deg) ${
               isAnimating 
@@ -850,7 +850,7 @@ function App() {
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
         >
-          <CardContent className="p-8">
+          <CardContent className="p-4 sm:p-6 lg:p-8">
             {renderStep()}
           </CardContent>
         </Card>
