@@ -2,7 +2,7 @@ import React from 'react';
 
 const SectionSeparator = ({ title, icon, className = "" }) => {
   return (
-    <div className={`relative my-8 ${className}`}>
+    <div className={`relative my-4 sm:my-8 ${className}`}>
       {/* Natural background line */}
       <div className="absolute inset-0 flex items-center">
         <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-60"></div>
@@ -10,15 +10,15 @@ const SectionSeparator = ({ title, icon, className = "" }) => {
       
       {/* Central content with natural styling */}
       <div className="relative flex justify-center">
-        <div className="bg-background border border-border px-6 py-3 rounded-natural-lg shadow-natural hover:shadow-natural-md transition-all duration-300 group">
-          <div className="flex items-center gap-3">
+        <div className="bg-background border border-border px-4 sm:px-6 py-2 sm:py-3 rounded-natural-lg shadow-natural hover:shadow-natural-md transition-all duration-300 group">
+          <div className="flex items-center gap-2 sm:gap-3">
             {icon && (
-              <div className="p-2 bg-muted rounded-natural group-hover:bg-primary/10 transition-all duration-300">
-                <span className="text-xl">{icon}</span>
+              <div className="p-1.5 sm:p-2 bg-muted rounded-natural group-hover:bg-primary/10 transition-all duration-300">
+                <span className="text-lg sm:text-xl">{icon}</span>
               </div>
             )}
             {title && (
-              <h2 className="text-base font-medium text-foreground tracking-wide group-hover:text-natural-primary transition-colors duration-300">
+              <h2 className="text-sm sm:text-base font-medium text-foreground tracking-wide group-hover:text-natural-primary transition-colors duration-300">
                 {title}
               </h2>
             )}
