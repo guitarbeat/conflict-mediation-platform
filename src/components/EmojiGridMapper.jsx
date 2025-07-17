@@ -9,20 +9,23 @@ const EmojiGridMapper = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [containerSize, setContainerSize] = useState(500);
-  const [position, setPosition] = useState(chartPosition || { x: containerSize / 2, y: containerSize / 2 });
+  const [position, setPosition] = useState({ x: 250, y: 250 });
   const containerRef = useRef(null);
+  const dragOffset = useRef({ x: 0, y: 0 });
 
   // Update container size based on screen size
   useEffect(() => {
     const updateSize = () => {
       const width = window.innerWidth;
-      if (width < 640) { // sm breakpoint
-        setContainerSize(300);
-      } else if (width < 1024) { // lg breakpoint
-        setContainerSize(400);
+      let newSize;
+      if (width < 640) {
+        newSize = 300;
+      } else if (width < 1024) {
+        newSize = 400;
       } else {
-        setContainerSize(500);
+        newSize = 500;
       }
+      setContainerSize(newSize);
     };
 
     updateSize();
@@ -93,71 +96,21 @@ const EmojiGridMapper = ({
   const handleMouseMove = React.useCallback((e) => {
     if (!isDragging || !containerRef.current) return;
     
-    const rect = containerRef.current.getBoundingClientRect();
-    const centerX = containerSize / 2;
-    const centerY = containerSize / 2;
-    const radius = (containerSize / 2) * 0.8;
-    
-    let x = e.clientX - rect.left;
-    let y = e.clientY - rect.top;
-    
-    // Constrain to circle
-    const dx = x - centerX;
-    const dy = y - centerY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    
-    if (distance > radius) {
-      const angle = Math.atan2(dy, dx);
-      x = centerX + Math.cos(angle) * radius;
-      y = centerY + Math.sin(angle) * radius;
-    }
-    
-    setPosition({ x, y });
-    
-    const emotionData = calculateEmotionData(x, y, containerSize);
-    onChartPositionChange(emotionData);
+    requestAnimationFrame(() => {
+      const rect = containerRef.current.getBoundingClientRect();
+      
+      // Follow mouse directly
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      setPosition({ x, y });
+      
+      const emotionData = calculateEmotionData(x, y, containerSize);
+      onChartPositionChange(emotionData);
+    });
   }, [isDragging, onChartPositionChange, containerSize]);
 
   const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const handleTouchStart = (e) => {
-    setIsDragging(true);
-    e.preventDefault();
-  };
-
-  const handleTouchMove = React.useCallback((e) => {
-    if (!isDragging || !containerRef.current) return;
-    
-    e.preventDefault(); // Prevent scrolling while dragging
-    const touch = e.touches[0];
-    const rect = containerRef.current.getBoundingClientRect();
-    const centerX = containerSize / 2;
-    const centerY = containerSize / 2;
-    const radius = (containerSize / 2) * 0.8;
-    
-    let x = touch.clientX - rect.left;
-    let y = touch.clientY - rect.top;
-    
-    // Constrain to circle
-    const dx = x - centerX;
-    const dy = y - centerY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    
-    if (distance > radius) {
-      const angle = Math.atan2(dy, dx);
-      x = centerX + Math.cos(angle) * radius;
-      y = centerY + Math.sin(angle) * radius;
-    }
-    
-    setPosition({ x, y });
-    
-    const emotionData = calculateEmotionData(x, y, containerSize);
-    onChartPositionChange(emotionData);
-  }, [isDragging, onChartPositionChange, containerSize]);
-
-  const handleTouchEnd = () => {
     setIsDragging(false);
   };
 
@@ -172,24 +125,31 @@ const EmojiGridMapper = ({
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      document.addEventListener('touchend', handleTouchEnd);
       
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleTouchEnd);
       };
     }
-  }, [isDragging, handleMouseMove, handleTouchMove]);
+  }, [isDragging, handleMouseMove]);
+
+  // Initialize position to center when component mounts or container size changes
+  useEffect(() => {
+    if (chartPosition) {
+      setPosition({ x: chartPosition.x, y: chartPosition.y });
+    } else {
+      // Center the emoji when no chartPosition is provided
+      const center = containerSize / 2;
+      setPosition({ x: center, y: center });
+    }
+  }, [containerSize, chartPosition]);
 
   // Update position when chartPosition prop changes
   useEffect(() => {
     if (chartPosition && (chartPosition.x !== position.x || chartPosition.y !== position.y)) {
       setPosition({ x: chartPosition.x, y: chartPosition.y });
     }
-  }, [chartPosition]);
+  }, [chartPosition, position.x, position.y]);
 
   const currentEmotionData = calculateEmotionData(position.x, position.y);
 
@@ -224,7 +184,7 @@ const EmojiGridMapper = ({
           
           {/* Draggable emoji */}
           <div
-            className={`absolute w-12 h-12 flex items-center justify-center text-2xl bg-background border-2 border-primary rounded-full shadow-lg transform -translate-x-1/2 -translate-y-1/2 transition-all duration-200 ${
+            className={`absolute w-12 h-12 flex items-center justify-center text-2xl bg-background border-2 border-primary rounded-full shadow-lg transform -translate-x-1/2 -translate-y-1/2 ${
               isDragging ? 'cursor-grabbing' : 'cursor-grab'
             }`}
             style={{
@@ -233,7 +193,6 @@ const EmojiGridMapper = ({
               transform: `translate(-50%, -50%) scale(${currentEmotionData.scaleFactor * (isDragging ? 1.1 : 1)})`,
             }}
             onMouseDown={handleMouseDown}
-            onTouchStart={handleTouchStart}
           >
             {currentEmotionData.emoji}
           </div>
