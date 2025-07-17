@@ -39,7 +39,7 @@ const ParticleBackground = () => {
         this.life = Math.random() * 0.6 + 0.4;
         this.fade = 0;
         this.size = Math.random() * 2 + 1;
-        this.color = `rgba(129, 182, 34, ${this.life})`;
+        this.color = `rgba(107, 142, 71, ${this.life})`;
       }
 
       update() {

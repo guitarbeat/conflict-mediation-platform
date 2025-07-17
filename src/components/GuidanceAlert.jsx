@@ -133,13 +133,7 @@ const GuidanceAlert = ({ step, partyAName = "Party A", partyBName = "Party B" })
         </div>
       </div>
       
-      {/* Bottom accent line with natural colors */}
-      <div className={`absolute bottom-0 left-0 right-0 h-1 rounded-b-natural-lg ${
-        guidance.accentColor === "accent" ? "bg-gradient-natural-accent" :
-        guidance.accentColor === "secondary" ? "bg-gradient-natural-secondary" :
-        guidance.accentColor === "primary" ? "bg-gradient-natural-primary" :
-        "bg-gradient-to-r from-border to-muted-foreground"
-      } opacity-60`}></div>
+
     </div>
   );
 };

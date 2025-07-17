@@ -8,8 +8,27 @@ const EmojiGridMapper = ({
   chartPosition = null 
 }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [position, setPosition] = useState(chartPosition || { x: 250, y: 250 });
+  const [containerSize, setContainerSize] = useState(500);
+  const [position, setPosition] = useState(chartPosition || { x: containerSize / 2, y: containerSize / 2 });
   const containerRef = useRef(null);
+
+  // Update container size based on screen size
+  useEffect(() => {
+    const updateSize = () => {
+      const width = window.innerWidth;
+      if (width < 640) { // sm breakpoint
+        setContainerSize(300);
+      } else if (width < 1024) { // lg breakpoint
+        setContainerSize(400);
+      } else {
+        setContainerSize(500);
+      }
+    };
+
+    updateSize();
+    window.addEventListener('resize', updateSize);
+    return () => window.removeEventListener('resize', updateSize);
+  }, []);
 
   const emotionWords = [
     'happy', 'sad', 'angry', 'frustrated', 'excited', 'calm', 'anxious', 'content',
@@ -19,10 +38,19 @@ const EmojiGridMapper = ({
   ];
 
   // Calculate valence and arousal based on position
-  const calculateEmotionData = (x, y) => {
-    const centerX = 250;
-    const centerY = 250;
-    const radius = 200;
+  const calculateEmotionData = (x, y, containerSize = 500) => {
+    const centerX = containerSize / 2;
+    const centerY = containerSize / 2;
+    const radius = (containerSize / 2) * 0.8;
+    
+    // Calculate distance from center for scaling
+    const dx = x - centerX;
+    const dy = y - centerY;
+    const distanceFromCenter = Math.sqrt(dx * dx + dy * dy);
+    const normalizedDistance = Math.min(distanceFromCenter / radius, 1); // 0 to 1
+    
+    // Scale factor: 1.0 at center, up to 2.0 at edge
+    const scaleFactor = 1 + normalizedDistance;
     
     // Normalize to -1 to 1 range
     const valence = (x - centerX) / radius; // Pleasant (right) to Unpleasant (left)
@@ -52,7 +80,8 @@ const EmojiGridMapper = ({
       valence: Math.round(valence * 100) / 100,
       arousal: Math.round(arousal * 100) / 100,
       emoji,
-      label
+      label,
+      scaleFactor: Math.round(scaleFactor * 100) / 100
     };
   };
 
@@ -65,9 +94,9 @@ const EmojiGridMapper = ({
     if (!isDragging || !containerRef.current) return;
     
     const rect = containerRef.current.getBoundingClientRect();
-    const centerX = 250;
-    const centerY = 250;
-    const radius = 200;
+    const centerX = containerSize / 2;
+    const centerY = containerSize / 2;
+    const radius = (containerSize / 2) * 0.8;
     
     let x = e.clientX - rect.left;
     let y = e.clientY - rect.top;
@@ -85,9 +114,9 @@ const EmojiGridMapper = ({
     
     setPosition({ x, y });
     
-    const emotionData = calculateEmotionData(x, y);
+    const emotionData = calculateEmotionData(x, y, containerSize);
     onChartPositionChange(emotionData);
-  }, [isDragging, onChartPositionChange]);
+  }, [isDragging, onChartPositionChange, containerSize]);
 
   const handleMouseUp = () => {
     setIsDragging(false);
@@ -104,9 +133,9 @@ const EmojiGridMapper = ({
     e.preventDefault(); // Prevent scrolling while dragging
     const touch = e.touches[0];
     const rect = containerRef.current.getBoundingClientRect();
-    const centerX = 250;
-    const centerY = 250;
-    const radius = 200;
+    const centerX = containerSize / 2;
+    const centerY = containerSize / 2;
+    const radius = (containerSize / 2) * 0.8;
     
     let x = touch.clientX - rect.left;
     let y = touch.clientY - rect.top;
@@ -124,9 +153,9 @@ const EmojiGridMapper = ({
     
     setPosition({ x, y });
     
-    const emotionData = calculateEmotionData(x, y);
+    const emotionData = calculateEmotionData(x, y, containerSize);
     onChartPositionChange(emotionData);
-  }, [isDragging, onChartPositionChange]);
+  }, [isDragging, onChartPositionChange, containerSize]);
 
   const handleTouchEnd = () => {
     setIsDragging(false);
@@ -165,15 +194,16 @@ const EmojiGridMapper = ({
   const currentEmotionData = calculateEmotionData(position.x, position.y);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Valence-Arousal Chart */}
       <div className="relative">
-        <h3 className="text-lg font-semibold mb-4 text-center">Drag the emoji to express your emotional state</h3>
-        <div 
-          ref={containerRef}
-          className="relative w-[500px] h-[500px] mx-auto bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full border-4 border-primary/30"
-          style={{ userSelect: 'none' }}
-        >
+        <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-center px-2">Drag the emoji to express your emotional state</h3>
+        <div className="overflow-x-auto pb-4">
+          <div 
+            ref={containerRef}
+            className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] mx-auto bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full border-2 sm:border-4 border-primary/30 flex-shrink-0"
+            style={{ userSelect: 'none' }}
+          >
           {/* Axis labels */}
           <div className="absolute top-2 left-1/2 transform -translate-x-1/2 text-sm font-medium text-muted-foreground">
             High Energy
@@ -195,11 +225,12 @@ const EmojiGridMapper = ({
           {/* Draggable emoji */}
           <div
             className={`absolute w-12 h-12 flex items-center justify-center text-2xl bg-background border-2 border-primary rounded-full shadow-lg transform -translate-x-1/2 -translate-y-1/2 transition-all duration-200 ${
-              isDragging ? 'scale-110 cursor-grabbing' : 'cursor-grab hover:scale-105'
+              isDragging ? 'cursor-grabbing' : 'cursor-grab'
             }`}
             style={{
               left: `${position.x}px`,
               top: `${position.y}px`,
+              transform: `translate(-50%, -50%) scale(${currentEmotionData.scaleFactor * (isDragging ? 1.1 : 1)})`,
             }}
             onMouseDown={handleMouseDown}
             onTouchStart={handleTouchStart}
@@ -207,6 +238,7 @@ const EmojiGridMapper = ({
             {currentEmotionData.emoji}
           </div>
         </div>
+      </div>
         
         {/* Current position display */}
         <div className="mt-4 text-center">
