@@ -2,25 +2,36 @@
 
 :root {
   --radius: 0.75rem;
-  /* Natural Color Palette - matches App.css */
-  --background: #fdfcfa;           /* warm cream white */
-  --foreground: #2d3a20;           /* deep forest green */
-  --card: #ffffff;                 /* pure white for contrast */
-  --card-foreground: #2d3a20;      /* deep forest green */
+  
+  /* Typography Scale - Consistent font sizes */
+  --font-size-xs: 0.75rem;        /* 12px - small helper text */
+  --font-size-sm: 0.875rem;       /* 14px - descriptions, captions */
+  --font-size-base: 1rem;         /* 16px - body text, labels, inputs */
+  --font-size-lg: 1.125rem;       /* 18px - section headings */
+  --font-size-xl: 1.25rem;        /* 20px - page headings */
+  --font-size-2xl: 1.5rem;        /* 24px - main titles */
+  --font-size-3xl: 1.875rem;      /* 30px - hero titles */
+  
+  /* Natural Color Palette - improved contrast */
+  --background: #ffffff;           /* pure white background */
+  --foreground: #1a1f16;           /* very dark forest green */
+  --card: #ffffff;                 /* pure white for maximum contrast */
+  --card-foreground: #1a1f16;      /* very dark forest green */
   --popover: #ffffff;              /* pure white */
-  --popover-foreground: #2d3a20;   /* deep forest green */
-  --primary: #6b8e47;              /* natural forest green */
+  --popover-foreground: #1a1f16;   /* very dark forest green */
+  --primary: #4a6332;              /* darker forest green */
   --primary-foreground: #ffffff;    /* white text on primary */
-  --secondary: #9a8f7e;            /* warm taupe */
-  --secondary-foreground: #2d3a20; /* deep forest green */
-  --muted: #f5f3f0;                /* warm cream */
-  --muted-foreground: #7d7265;     /* medium taupe */
-  --accent: #2d9d7e;               /* natural teal */
+  --secondary: #78716c;            /* much darker warm stone */
+  --secondary-foreground: #ffffff; /* white text on secondary */
+  --muted: #f8f9f7;                /* very light sage background */
+  --muted-foreground: #374151;     /* darker gray for better contrast */
+  --accent: #0f766e;               /* much deeper teal */
   --accent-foreground: #ffffff;     /* white text on accent */
-  --destructive: #dc2626;          /* natural red */
-  --border: #e8e4de;               /* warm border */
-  --input: #ffffff;                /* white input background */
-  --ring: #6b8e47;                 /* forest green focus ring */
+  --destructive: #dc2626;          /* darker natural red */
+  --border: #c7c3bd;               /* stronger border for better definition */
+  --input: #ffffff;                /* pure white input background */
+  --input-border: #9ca3af;        /* medium gray border for inputs */
+  --ring: #4a6332;                 /* darker forest green focus ring */
 }
 
 .dark {
@@ -40,8 +51,8 @@
   --accent: #4aba9f;               /* natural teal */
   --accent-foreground: #1a1f16;    /* deep forest night */
   --destructive: #ef4444;          /* natural red */
-  --border: #364825;               /* forest border */
-  --input: #2d3a20;                /* muted forest input */
+  --border: #4a5a35;               /* lighter forest border for better visibility */
+  --input: #242a1f;                /* darker input background for better contrast */
   --ring: #8fb56b;                 /* lighter sage focus ring */
 }
 
@@ -51,5 +62,41 @@
   }
   body {
     @apply bg-[var(--background)] text-[var(--foreground)];
+  }
+}
+
+@layer utilities {
+  /* Consistent Typography Utilities */
+  .text-consistent-xs { font-size: var(--font-size-xs); }
+  .text-consistent-sm { font-size: var(--font-size-sm); }
+  .text-consistent-base { font-size: var(--font-size-base); }
+  .text-consistent-lg { font-size: var(--font-size-lg); }
+  .text-consistent-xl { font-size: var(--font-size-xl); }
+  .text-consistent-2xl { font-size: var(--font-size-2xl); }
+  .text-consistent-3xl { font-size: var(--font-size-3xl); }
+  
+  /* Form element consistency */
+  .form-label {
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  
+  .form-description {
+    font-size: var(--font-size-sm);
+    color: var(--muted-foreground);
+    line-height: 1.4;
+  }
+  
+  .section-heading {
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  
+  .page-title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    line-height: 1.2;
   }
 }

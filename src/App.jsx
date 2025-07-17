@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Label } from './components/ui/label';
@@ -18,6 +18,14 @@ import './App.css';
 
 function App() {
   const [currentStep, setCurrentStep] = useState(1);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [slideDirection, setSlideDirection] = useState('');
+  const [dragOffset, setDragOffset] = useState(0);
+
+  const containerRef = useRef(null);
+  
   const [formData, setFormData] = useState({
     partyAName: '',
     partyBName: '',
@@ -77,15 +85,102 @@ function App() {
 
   const nextStep = () => {
     if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
+      setIsAnimating(true);
+      setSlideDirection('left');
+      setTimeout(() => {
+        setCurrentStep(currentStep + 1);
+        setIsAnimating(false);
+        setSlideDirection('');
+      }, 300);
     }
   };
 
   const prevStep = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setIsAnimating(true);
+      setSlideDirection('right');
+      setTimeout(() => {
+        setCurrentStep(currentStep - 1);
+        setIsAnimating(false);
+        setSlideDirection('');
+      }, 300);
     }
   };
+
+  // Enhanced swipe functionality with animations
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+    setDragOffset(0);
+  };
+
+  const onTouchMove = (e) => {
+    if (!touchStart) return;
+    
+    const currentTouch = e.targetTouches[0].clientX;
+    setTouchEnd(currentTouch);
+    
+    // Calculate drag offset and rotation for Tinder-style effect
+    const offset = currentTouch - touchStart;
+    const maxOffset = 200; // Increased for more dramatic effect
+    const clampedOffset = Math.max(-maxOffset, Math.min(maxOffset, offset));
+    
+    // Calculate rotation based on drag distance (max 15 degrees)
+    const rotation = (clampedOffset / maxOffset) * 15;
+    
+    setDragOffset(clampedOffset);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) {
+      setDragOffset(0);
+      return;
+    }
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && currentStep < totalSteps) {
+      setIsAnimating(true);
+      setSlideDirection('left');
+      setTimeout(() => {
+        nextStep();
+        setIsAnimating(false);
+        setSlideDirection('');
+        setDragOffset(0);
+      }, 300);
+    } else if (isRightSwipe && currentStep > 1) {
+      setIsAnimating(true);
+      setSlideDirection('right');
+      setTimeout(() => {
+        prevStep();
+        setIsAnimating(false);
+        setSlideDirection('');
+        setDragOffset(0);
+      }, 300);
+    } else {
+      // Snap back if swipe wasn't far enough
+      setDragOffset(0);
+    }
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === 'ArrowLeft' && currentStep > 1) {
+        prevStep();
+      }
+      if (e.key === 'ArrowRight' && currentStep < totalSteps) {
+        nextStep();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [currentStep, totalSteps]);
 
   const exportToJSON = () => {
     const dataStr = JSON.stringify(formData, null, 2);
@@ -356,7 +451,7 @@ function App() {
 
             <div className="space-y-6">
               <div className="space-y-4">
-                <Label htmlFor="activatingEvent" className="text-lg font-semibold">A - Activating Event</Label>
+                <Label htmlFor="activatingEvent" className="text-base font-semibold">A - Activating Event</Label>
                 <p className="text-sm text-muted-foreground">What actually happened? Stick to observable facts.</p>
                 <Textarea
                   id="activatingEvent"
@@ -369,7 +464,7 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <Label htmlFor="partyABeliefs" className="text-lg font-semibold">B - {formData.partyAName || 'Party A'} Beliefs</Label>
+                  <Label htmlFor="partyABeliefs" className="text-base font-semibold">B - {formData.partyAName || 'Party A'} Beliefs</Label>
                   <p className="text-sm text-muted-foreground">What thoughts or beliefs do you have about this event?</p>
                   <Textarea
                     id="partyABeliefs"
@@ -381,7 +476,7 @@ function App() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label htmlFor="partyBBeliefs" className="text-lg font-semibold">B - {formData.partyBName || 'Party B'} Beliefs</Label>
+                  <Label htmlFor="partyBBeliefs" className="text-base font-semibold">B - {formData.partyBName || 'Party B'} Beliefs</Label>
                   <p className="text-sm text-muted-foreground">What thoughts or beliefs do you have about this event?</p>
                   <Textarea
                     id="partyBBeliefs"
@@ -395,7 +490,7 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <Label htmlFor="partyAConsequences" className="text-lg font-semibold">C - {formData.partyAName || 'Party A'} Consequences</Label>
+                  <Label htmlFor="partyAConsequences" className="text-base font-semibold">C - {formData.partyAName || 'Party A'} Consequences</Label>
                   <p className="text-sm text-muted-foreground">How did your beliefs make you feel and behave?</p>
                   <Textarea
                     id="partyAConsequences"
@@ -407,7 +502,7 @@ function App() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label htmlFor="partyBConsequences" className="text-lg font-semibold">C - {formData.partyBName || 'Party B'} Consequences</Label>
+                  <Label htmlFor="partyBConsequences" className="text-base font-semibold">C - {formData.partyBName || 'Party B'} Consequences</Label>
                   <p className="text-sm text-muted-foreground">How did your beliefs make you feel and behave?</p>
                   <Textarea
                     id="partyBConsequences"
@@ -421,7 +516,7 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <Label htmlFor="partyADisputations" className="text-lg font-semibold">D - {formData.partyAName || 'Party A'} Disputations</Label>
+                  <Label htmlFor="partyADisputations" className="text-base font-semibold">D - {formData.partyAName || 'Party A'} Disputations</Label>
                   <p className="text-sm text-muted-foreground">Challenge your beliefs. Are they helpful? Accurate? Realistic?</p>
                   <Textarea
                     id="partyADisputations"
@@ -433,7 +528,7 @@ function App() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label htmlFor="partyBDisputations" className="text-lg font-semibold">D - {formData.partyBName || 'Party B'} Disputations</Label>
+                  <Label htmlFor="partyBDisputations" className="text-base font-semibold">D - {formData.partyBName || 'Party B'} Disputations</Label>
                   <p className="text-sm text-muted-foreground">Challenge your beliefs. Are they helpful? Accurate? Realistic?</p>
                   <Textarea
                     id="partyBDisputations"
@@ -446,7 +541,7 @@ function App() {
               </div>
 
               <div className="space-y-4">
-                <Label htmlFor="effectsReflections" className="text-lg font-semibold">E - Effects & Reflections</Label>
+                <Label htmlFor="effectsReflections" className="text-base font-semibold">E - Effects & Reflections</Label>
                 <p className="text-sm text-muted-foreground">What new insights have emerged? How do you both feel now?</p>
                 <Textarea
                   id="effectsReflections"
@@ -473,7 +568,7 @@ function App() {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <Label htmlFor="partyAMiracle" className="text-lg font-semibold">{formData.partyAName || 'Party A'} - Miracle Question</Label>
+                  <Label htmlFor="partyAMiracle" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Miracle Question</Label>
                   <p className="text-sm text-muted-foreground">If you woke up tomorrow and this conflict was completely resolved, what would be different?</p>
                   <Textarea
                     id="partyAMiracle"
@@ -485,7 +580,7 @@ function App() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label htmlFor="partyBMiracle" className="text-lg font-semibold">{formData.partyBName || 'Party B'} - Miracle Question</Label>
+                  <Label htmlFor="partyBMiracle" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Miracle Question</Label>
                   <p className="text-sm text-muted-foreground">If you woke up tomorrow and this conflict was completely resolved, what would be different?</p>
                   <Textarea
                     id="partyBMiracle"
@@ -499,7 +594,7 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <Label htmlFor="partyATop3Solutions" className="text-lg font-semibold">{formData.partyAName || 'Party A'} - Top 3 Solutions</Label>
+                  <Label htmlFor="partyATop3Solutions" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Top 3 Solutions</Label>
                   <Textarea
                     id="partyATop3Solutions"
                     placeholder="List your top 3 preferred solutions..."
@@ -510,7 +605,7 @@ function App() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label htmlFor="partyBTop3Solutions" className="text-lg font-semibold">{formData.partyBName || 'Party B'} - Top 3 Solutions</Label>
+                  <Label htmlFor="partyBTop3Solutions" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Top 3 Solutions</Label>
                   <Textarea
                     id="partyBTop3Solutions"
                     placeholder="List your top 3 preferred solutions..."
@@ -525,7 +620,7 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <Label htmlFor="partyAPerspective" className="text-lg font-semibold">{formData.partyAName || 'Party A'} - Other's Perspective</Label>
+                  <Label htmlFor="partyAPerspective" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Other's Perspective</Label>
                   <p className="text-sm text-muted-foreground">Try to understand the other person's point of view.</p>
                   <Textarea
                     id="partyAPerspective"
@@ -537,7 +632,7 @@ function App() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label htmlFor="partyBPerspective" className="text-lg font-semibold">{formData.partyBName || 'Party B'} - Other's Perspective</Label>
+                  <Label htmlFor="partyBPerspective" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Other's Perspective</Label>
                   <p className="text-sm text-muted-foreground">Try to understand the other person's point of view.</p>
                   <Textarea
                     id="partyBPerspective"
@@ -550,7 +645,7 @@ function App() {
               </div>
 
               <div className="space-y-4">
-                <Label htmlFor="compromiseSolutions" className="text-lg font-semibold">Compromise Solutions</Label>
+                <Label htmlFor="compromiseSolutions" className="text-base font-semibold">Compromise Solutions</Label>
                 <p className="text-sm text-muted-foreground">What solutions can you both agree on? What compromises are you willing to make?</p>
                 <Textarea
                   id="compromiseSolutions"
@@ -577,7 +672,7 @@ function App() {
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <Label htmlFor="partyAUnmetNeeds" className="text-lg font-semibold">{formData.partyAName || 'Party A'} - Unmet Needs</Label>
+                  <Label htmlFor="partyAUnmetNeeds" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Unmet Needs</Label>
                   <p className="text-sm text-muted-foreground">What needs of yours weren't being met in this situation?</p>
                   <Textarea
                     id="partyAUnmetNeeds"
@@ -589,7 +684,7 @@ function App() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label htmlFor="partyBUnmetNeeds" className="text-lg font-semibold">{formData.partyBName || 'Party B'} - Unmet Needs</Label>
+                  <Label htmlFor="partyBUnmetNeeds" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Unmet Needs</Label>
                   <p className="text-sm text-muted-foreground">What needs of yours weren't being met in this situation?</p>
                   <Textarea
                     id="partyBUnmetNeeds"
@@ -603,7 +698,7 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <Label htmlFor="partyANeedsInPractice" className="text-lg font-semibold">{formData.partyAName || 'Party A'} - Needs in Practice</Label>
+                  <Label htmlFor="partyANeedsInPractice" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Needs in Practice</Label>
                   <p className="text-sm text-muted-foreground">How can these needs be met going forward?</p>
                   <Textarea
                     id="partyANeedsInPractice"
@@ -615,7 +710,7 @@ function App() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label htmlFor="partyBNeedsInPractice" className="text-lg font-semibold">{formData.partyBName || 'Party B'} - Needs in Practice</Label>
+                  <Label htmlFor="partyBNeedsInPractice" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Needs in Practice</Label>
                   <p className="text-sm text-muted-foreground">How can these needs be met going forward?</p>
                   <Textarea
                     id="partyBNeedsInPractice"
@@ -628,7 +723,7 @@ function App() {
               </div>
 
               <div className="space-y-4">
-                <Label htmlFor="actionSteps" className="text-lg font-semibold">Specific Action Steps</Label>
+                <Label htmlFor="actionSteps" className="text-base font-semibold">Specific Action Steps</Label>
                 <p className="text-sm text-muted-foreground">What specific actions will each person take? Include deadlines and accountability measures.</p>
                 <Textarea
                   id="actionSteps"
@@ -641,7 +736,7 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-4">
-                  <Label htmlFor="followUpDate" className="text-lg font-semibold">Follow-up Date</Label>
+                  <Label htmlFor="followUpDate" className="text-base font-semibold">Follow-up Date</Label>
                   <p className="text-sm text-muted-foreground">When should you check in on progress?</p>
                   <Input
                     id="followUpDate"
@@ -652,7 +747,7 @@ function App() {
                 </div>
 
                 <div className="space-y-4">
-                  <Label htmlFor="additionalSupport" className="text-lg font-semibold">Additional Support Needed</Label>
+                  <Label htmlFor="additionalSupport" className="text-base font-semibold">Additional Support Needed</Label>
                   <p className="text-sm text-muted-foreground">What additional resources or support might be helpful?</p>
                   <Textarea
                     id="additionalSupport"
@@ -738,35 +833,51 @@ function App() {
           </div>
         </div>
 
-        <Card className="mb-8">
+        <Card 
+          className="mb-8 transition-all duration-300 ease-out"
+          style={{
+            transform: `translateX(${dragOffset}px) rotate(${dragOffset * 0.1}deg) ${
+              isAnimating 
+                ? slideDirection === 'left' 
+                  ? 'translateX(-100%) rotate(-10deg)' 
+                  : 'translateX(100%) rotate(10deg)'
+                : 'translateX(0) rotate(0deg)'
+            }`,
+            opacity: isAnimating ? 0 : 1,
+            transformOrigin: 'center bottom',
+          }}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
           <CardContent className="p-8">
             {renderStep()}
           </CardContent>
         </Card>
 
-        <div className="flex justify-between">
-          <Button
-            onClick={prevStep}
-            disabled={currentStep === 1}
-            variant="outline"
-            className="flex items-center gap-2"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Previous
-          </Button>
-          
-          <div className="text-center text-sm text-muted-foreground">
-            Step {currentStep} of {totalSteps}
-          </div>
-          
-          <Button
-            onClick={nextStep}
-            disabled={currentStep === totalSteps}
-            className="flex items-center gap-2"
-          >
-            Next
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+        {/* Fixed Navigation Buttons - Hidden on mobile */}
+        <Button
+          onClick={prevStep}
+          disabled={currentStep === 1}
+          variant="outline"
+          className="hidden md:flex fixed left-4 top-1/2 transform -translate-y-1/2 z-50 items-center gap-2 px-4 py-3 shadow-lg"
+        >
+          <ChevronLeft className="h-5 w-5" />
+          <span className="hidden lg:inline">Previous</span>
+        </Button>
+        
+        <Button
+          onClick={nextStep}
+          disabled={currentStep === totalSteps}
+          className="hidden md:flex fixed right-4 top-1/2 transform -translate-y-1/2 z-50 items-center gap-2 px-4 py-3 shadow-lg"
+        >
+          <span className="hidden lg:inline">Next</span>
+          <ChevronRight className="h-5 w-5" />
+        </Button>
+
+        {/* Step indicator at bottom */}
+        <div className="text-center text-sm text-muted-foreground mt-8">
+          Step {currentStep} of {totalSteps}
         </div>
       </div>
     </div>

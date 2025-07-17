@@ -18,7 +18,7 @@ const SectionSeparator = ({ title, icon, className = "" }) => {
               </div>
             )}
             {title && (
-              <h2 className="text-lg font-semibold text-foreground tracking-wide group-hover:text-natural-primary transition-colors duration-300">
+              <h2 className="text-base font-medium text-foreground tracking-wide group-hover:text-natural-primary transition-colors duration-300">
                 {title}
               </h2>
             )}

@@ -9,28 +9,47 @@ const EmojiGridMapper = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [containerSize, setContainerSize] = useState(500);
+  // Initialize position exactly at center - will be updated by useEffect
   const [position, setPosition] = useState({ x: 250, y: 250 });
   const containerRef = useRef(null);
   const dragOffset = useRef({ x: 0, y: 0 });
 
-  // Update container size based on screen size
+  // Update container size based on actual rendered size
   useEffect(() => {
     const updateSize = () => {
-      const width = window.innerWidth;
-      let newSize;
-      if (width < 640) {
-        newSize = 300;
-      } else if (width < 1024) {
-        newSize = 400;
-      } else {
-        newSize = 500;
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const actualSize = Math.min(rect.width, rect.height);
+
+        setContainerSize(actualSize);
       }
-      setContainerSize(newSize);
     };
 
-    updateSize();
+    // Initial size update after component mounts
+    const initialTimeout = setTimeout(() => {
+      updateSize();
+      
+      // Set up ResizeObserver after initial update
+      if (containerRef.current && window.ResizeObserver) {
+        const resizeObserver = new ResizeObserver(() => {
+          updateSize();
+        });
+        resizeObserver.observe(containerRef.current);
+        
+        // Store observer for cleanup
+        containerRef.current._resizeObserver = resizeObserver;
+      }
+    }, 100);
+    
     window.addEventListener('resize', updateSize);
-    return () => window.removeEventListener('resize', updateSize);
+    
+    return () => {
+      clearTimeout(initialTimeout);
+      window.removeEventListener('resize', updateSize);
+      if (containerRef.current?._resizeObserver) {
+        containerRef.current._resizeObserver.disconnect();
+      }
+    };
   }, []);
 
   const emotionWords = [
@@ -44,7 +63,8 @@ const EmojiGridMapper = ({
   const calculateEmotionData = (x, y, containerSize = 500) => {
     const centerX = containerSize / 2;
     const centerY = containerSize / 2;
-    const radius = (containerSize / 2) * 0.8;
+    // Use the same radius calculation as the drag constraint for consistency
+    const radius = (containerSize / 2) - 24;
     
     // Calculate distance from center for scaling
     const dx = x - centerX;
@@ -99,9 +119,25 @@ const EmojiGridMapper = ({
     requestAnimationFrame(() => {
       const rect = containerRef.current.getBoundingClientRect();
       
-      // Follow mouse directly
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      // Get mouse position relative to container
+      let x = e.clientX - rect.left;
+      let y = e.clientY - rect.top;
+      
+      // Constrain to circular boundary
+      const centerX = containerSize / 2;
+      const centerY = containerSize / 2;
+      const maxRadius = (containerSize / 2) - 24; // Subtract emoji radius (24px) to keep it fully inside
+      
+      const dx = x - centerX;
+      const dy = y - centerY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      if (distance > maxRadius) {
+        // Scale back to the circle edge
+        const scale = maxRadius / distance;
+        x = centerX + dx * scale;
+        y = centerY + dy * scale;
+      }
       
       setPosition({ x, y });
       
@@ -133,25 +169,26 @@ const EmojiGridMapper = ({
     }
   }, [isDragging, handleMouseMove]);
 
-  // Initialize position to center when component mounts or container size changes
+  // Single useEffect to handle all position initialization and updates
   useEffect(() => {
+    // If we have a chartPosition from props, use that
     if (chartPosition) {
       setPosition({ x: chartPosition.x, y: chartPosition.y });
     } else {
-      // Center the emoji when no chartPosition is provided
-      const center = containerSize / 2;
-      setPosition({ x: center, y: center });
+      // Otherwise, center exactly in the container based on current container size
+      const exactCenter = containerSize / 2;
+
+      setPosition({ x: exactCenter, y: exactCenter });
+      
+      // Also notify parent of the centered position
+      if (onChartPositionChange) {
+        const emotionData = calculateEmotionData(exactCenter, exactCenter, containerSize);
+        onChartPositionChange(emotionData);
+      }
     }
   }, [containerSize, chartPosition]);
 
-  // Update position when chartPosition prop changes
-  useEffect(() => {
-    if (chartPosition && (chartPosition.x !== position.x || chartPosition.y !== position.y)) {
-      setPosition({ x: chartPosition.x, y: chartPosition.y });
-    }
-  }, [chartPosition, position.x, position.y]);
-
-  const currentEmotionData = calculateEmotionData(position.x, position.y);
+  const currentEmotionData = calculateEmotionData(position.x, position.y, containerSize);
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -161,8 +198,12 @@ const EmojiGridMapper = ({
         <div className="overflow-x-auto pb-4">
           <div 
             ref={containerRef}
-            className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] mx-auto bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full border-2 sm:border-4 border-primary/30 flex-shrink-0"
-            style={{ userSelect: 'none' }}
+            className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] mx-auto rounded-full flex-shrink-0 backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl"
+            style={{ 
+              userSelect: 'none',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
+              boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 0 rgba(255,255,255,0.2)'
+            }}
           >
           {/* Axis labels */}
           <div className="absolute top-2 left-1/2 transform -translate-x-1/2 text-sm font-medium text-muted-foreground">
@@ -184,13 +225,15 @@ const EmojiGridMapper = ({
           
           {/* Draggable emoji */}
           <div
-            className={`absolute w-12 h-12 flex items-center justify-center text-2xl bg-background border-2 border-primary rounded-full shadow-lg transform -translate-x-1/2 -translate-y-1/2 ${
+            className={`absolute w-12 h-12 flex items-center justify-center text-2xl rounded-full backdrop-blur-md border border-white/30 ${
               isDragging ? 'cursor-grabbing' : 'cursor-grab'
             }`}
             style={{
-              left: `${position.x}px`,
-              top: `${position.y}px`,
+              left: `${(position.x / containerSize) * 100}%`,
+              top: `${(position.y / containerSize) * 100}%`,
               transform: `translate(-50%, -50%) scale(${currentEmotionData.scaleFactor * (isDragging ? 1.1 : 1)})`,
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))',
+              boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 0 rgba(255,255,255,0.3)',
             }}
             onMouseDown={handleMouseDown}
           >
@@ -201,7 +244,13 @@ const EmojiGridMapper = ({
         
         {/* Current position display */}
         <div className="mt-4 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-muted rounded-lg">
+          <div 
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg backdrop-blur-md border border-white/20"
+            style={{
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05))',
+              boxShadow: '0 4px 16px 0 rgba(31, 38, 135, 0.2), inset 0 1px 0 rgba(255,255,255,0.2)'
+            }}
+          >
             <span className="text-2xl">{currentEmotionData.emoji}</span>
             <div className="text-sm">
               <div className="font-medium">{currentEmotionData.label}</div>
