@@ -95,9 +95,9 @@ const GuidanceAlert = ({ step, partyAName = "Party A", partyBName = "Party B" })
   const IconComponent = guidance.icon;
 
   return (
-    <div className={`card-natural-elevated no-hover-effects ${guidance.borderColor} ${guidance.bgColor} p-6 mb-6 animate-natural-fade-in-disabled`}>
+    <div className={`relative card-natural-elevated no-hover-effects ${guidance.borderColor} ${guidance.bgColor} p-6 mb-6 animate-natural-fade-in-disabled`}>
       {/* Subtle decorative background pattern */}
-      <div className="absolute inset-0 opacity-3">
+      <div className="absolute inset-0 opacity-3 pointer-events-none">
         <div className="absolute inset-0" style={{
           backgroundImage: `radial-gradient(circle at 25% 25%, var(--${guidance.accentColor}) 1px, transparent 1px)`,
           backgroundSize: '40px 40px'
