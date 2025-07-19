@@ -108,20 +108,25 @@ const EmojiGridMapper = ({
     };
   };
 
-  const handleMouseDown = (e) => {
+  const handleStart = (e) => {
     setIsDragging(true);
     e.preventDefault();
   };
 
-  const handleMouseMove = React.useCallback((e) => {
+  const getClientPosition = (e) => {
+    return e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY };
+  };
+
+  const handleMove = React.useCallback((e) => {
     if (!isDragging || !containerRef.current) return;
     
     requestAnimationFrame(() => {
       const rect = containerRef.current.getBoundingClientRect();
+      const clientPos = getClientPosition(e);
       
-      // Get mouse position relative to container
-      let x = e.clientX - rect.left;
-      let y = e.clientY - rect.top;
+      // Get position relative to container
+      let x = clientPos.x - rect.left;
+      let y = clientPos.y - rect.top;
       
       // Constrain to circular boundary
       const centerX = containerSize / 2;
@@ -146,7 +151,7 @@ const EmojiGridMapper = ({
     });
   }, [isDragging, onChartPositionChange, containerSize]);
 
-  const handleMouseUp = () => {
+  const handleEnd = () => {
     setIsDragging(false);
   };
 
@@ -159,15 +164,20 @@ const EmojiGridMapper = ({
 
   useEffect(() => {
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      // Add both mouse and touch event listeners
+      document.addEventListener('mousemove', handleMove);
+      document.addEventListener('mouseup', handleEnd);
+      document.addEventListener('touchmove', handleMove, { passive: false });
+      document.addEventListener('touchend', handleEnd);
       
       return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
+        document.removeEventListener('mousemove', handleMove);
+        document.removeEventListener('mouseup', handleEnd);
+        document.removeEventListener('touchmove', handleMove);
+        document.removeEventListener('touchend', handleEnd);
       };
     }
-  }, [isDragging, handleMouseMove]);
+  }, [isDragging, handleMove]);
 
   // Single useEffect to handle all position initialization and updates
   useEffect(() => {
@@ -190,8 +200,10 @@ const EmojiGridMapper = ({
 
   const currentEmotionData = calculateEmotionData(position.x, position.y, containerSize);
 
+  // Use normal pointer cursor instead of emoji cursor
+
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-4 sm:space-y-6" data-interactive-component="emoji-mapper">
       {/* Valence-Arousal Chart */}
       <div className="relative">
         <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-center px-2">Drag the emoji to express your emotional state</h3>
@@ -202,7 +214,8 @@ const EmojiGridMapper = ({
             style={{ 
               userSelect: 'none',
               background: 'linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
-              boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 0 rgba(255,255,255,0.2)'
+              boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 0 rgba(255,255,255,0.2)',
+              cursor: 'pointer',
             }}
           >
           {/* Axis labels */}
@@ -225,17 +238,17 @@ const EmojiGridMapper = ({
           
           {/* Draggable emoji */}
           <div
-            className={`absolute w-12 h-12 flex items-center justify-center text-2xl rounded-full backdrop-blur-md border border-white/30 ${
-              isDragging ? 'cursor-grabbing' : 'cursor-grab'
-            }`}
+            className="absolute w-12 h-12 flex items-center justify-center text-2xl rounded-full backdrop-blur-md border border-white/30"
             style={{
               left: `${(position.x / containerSize) * 100}%`,
               top: `${(position.y / containerSize) * 100}%`,
               transform: `translate(-50%, -50%) scale(${currentEmotionData.scaleFactor * (isDragging ? 1.1 : 1)})`,
               background: 'linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))',
               boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 0 rgba(255,255,255,0.3)',
+              cursor: isDragging ? 'grabbing' : 'grab',
             }}
-            onMouseDown={handleMouseDown}
+            onMouseDown={handleStart}
+            onTouchStart={handleStart}
           >
             {currentEmotionData.emoji}
           </div>

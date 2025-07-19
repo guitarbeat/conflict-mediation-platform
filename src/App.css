@@ -338,15 +338,25 @@
 
 /* Removed breathing animation for natural aesthetic */
 
-/* Slide in animations */
-@keyframes slideInFromLeft {
+/* Card Stack Animations */
+@keyframes flyOutLeft {
   0% {
-    transform: translateX(-100%);
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-100vw) rotate(-15deg);
     opacity: 0;
   }
+}
 
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(-100vw) rotate(0deg);
+    opacity: 1;
+  }
   100% {
-    transform: translateX(0);
+    transform: translateX(0) rotate(0deg);
     opacity: 1;
   }
 }
@@ -385,6 +395,54 @@
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+/* Card Stack Specific Styles */
+.card-stack-container {
+  position: relative;
+  perspective: 1000px;
+}
+
+.card-stack-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* Fixed content inside draggable cards */
+.fixed-content {
+  position: relative;
+  pointer-events: auto;
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
+
+/* Draggable card container */
+.draggable-card-container {
+  touch-action: pan-y; /* Allow vertical scrolling but handle horizontal ourselves */
+  cursor: default;
+}
+
+.draggable-card-container:active {
+  cursor: default;
+}
+
+/* Slide in animation for previous cards */
+.slide-in-animation {
+  animation: slideInFromLeft 0.4s ease-out forwards;
+}
+
+/* Enhanced card transitions for stack effect */
+.card-transition {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.3s ease,
+              z-index 0s;
 }
 
 .slide-in-left {

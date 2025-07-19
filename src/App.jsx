@@ -1,12 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
 import { Label } from './components/ui/label';
 import { Textarea } from './components/ui/textarea';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
-import { Badge } from './components/ui/badge';
+import { Card, CardContent } from './components/ui/card';
 import { Progress } from './components/ui/progress';
-import { Users, Heart, MessageCircle, Target, Handshake, FileText, ChevronLeft, ChevronRight, Download } from 'lucide-react';
+import { Download, FileText } from 'lucide-react';
 import EmojiGridMapper from './components/EmojiGridMapper';
 import SectionSeparator from './components/SectionSeparator';
 import DarkModeToggle from './components/DarkModeToggle';
@@ -16,16 +15,32 @@ import { generateEnhancedPDF } from './utils/pdfGenerator';
 import logo from './assets/logo.png';
 import './App.css';
 
+// Constants
+const TOTAL_STEPS = 6;
+const MIN_SWIPE_DISTANCE = 50;
+const MAX_DRAG_OFFSET = 200;
+const ANIMATION_DURATION = 400;
+
+const STEPS = [
+  'Setup',
+  'Individual Reflection - Party A',
+  'Individual Reflection - Party B',
+  'Shared Discussion (ABCDE)',
+  'Solution Development',
+  'Agreement & Action Steps'
+];
+
 function App() {
+  // State
   const [currentStep, setCurrentStep] = useState(1);
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [slideDirection, setSlideDirection] = useState('');
   const [dragOffset, setDragOffset] = useState(0);
+  const [animatingCard, setAnimatingCard] = useState(null);
+  const [animationType, setAnimationType] = useState('');
+  const [containerHeight, setContainerHeight] = useState('auto');
+  const cardRef = useRef(null);
 
-  const containerRef = useRef(null);
-  
   const [formData, setFormData] = useState({
     partyAName: '',
     partyBName: '',
@@ -76,115 +91,239 @@ function App() {
     additionalSupport: ''
   });
 
-  const totalSteps = 6;
-  const progressPercentage = Math.round((currentStep / totalSteps) * 100);
+  // Computed values
+  const progressPercentage = Math.round((currentStep / TOTAL_STEPS) * 100);
+  const isAnimating = animatingCard !== null;
 
+  // Helper functions
   const updateFormData = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const nextStep = () => {
-    if (currentStep < totalSteps) {
-      setIsAnimating(true);
-      setSlideDirection('left');
+  const navigateToStep = (direction) => {
+    if (isAnimating) return;
+
+    if (direction === 'next' && currentStep < TOTAL_STEPS) {
+      setAnimatingCard(currentStep);
+      setAnimationType('flyOut');
       setTimeout(() => {
-        setCurrentStep(currentStep + 1);
-        setIsAnimating(false);
-        setSlideDirection('');
-      }, 300);
+        setCurrentStep(prev => prev + 1);
+        setAnimatingCard(null);
+        setAnimationType('');
+        setDragOffset(0);
+      }, ANIMATION_DURATION);
+    } else if (direction === 'prev' && currentStep > 1) {
+      setAnimatingCard(currentStep - 1);
+      setAnimationType('slideIn');
+      setTimeout(() => {
+        setCurrentStep(prev => prev - 1);
+        setAnimatingCard(null);
+        setAnimationType('');
+        setDragOffset(0);
+      }, ANIMATION_DURATION);
     }
   };
 
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setIsAnimating(true);
-      setSlideDirection('right');
-      setTimeout(() => {
-        setCurrentStep(currentStep - 1);
-        setIsAnimating(false);
-        setSlideDirection('');
-      }, 300);
-    }
+  // Unified input handling (touch + mouse)
+  const [isDragging, setIsDragging] = useState(false);
+
+  const getClientX = (e) => {
+    return e.touches ? e.touches[0].clientX : e.clientX;
   };
 
-  // Enhanced swipe functionality with animations
-  const minSwipeDistance = 50;
+  const handleInputStart = (e) => {
+    if (isAnimating) return;
 
-  const onTouchStart = (e) => {
+    // Check if the drag started on an interactive element
+    const target = e.target;
+
+    // Check for form elements and emoji elements
+    const isFormElement = target.closest('input, textarea, button, select');
+    const isBadgeElement = target.closest('.badge, [class*="badge"]');
+    const isEmojiElement = target.closest('[data-interactive-component="emoji-mapper"]');
+
+    // Don't start card dragging for form elements, badges, or emoji components
+    if (isFormElement || isBadgeElement || isEmojiElement) {
+      return; // Don't preventDefault here to allow emoji dragging
+    }
+
+    e.preventDefault();
+    setIsDragging(true);
     setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
+    setTouchStart(getClientX(e));
     setDragOffset(0);
   };
 
-  const onTouchMove = (e) => {
-    if (!touchStart) return;
-    
-    const currentTouch = e.targetTouches[0].clientX;
-    setTouchEnd(currentTouch);
-    
-    // Calculate drag offset and rotation for Tinder-style effect
-    const offset = currentTouch - touchStart;
-    const maxOffset = 200; // Increased for more dramatic effect
-    const clampedOffset = Math.max(-maxOffset, Math.min(maxOffset, offset));
-    
-    // Calculate rotation based on drag distance (max 15 degrees)
-    const rotation = (clampedOffset / maxOffset) * 15;
-    
+  const handleInputMove = (e) => {
+    if (!touchStart || isAnimating || !isDragging) return;
+    e.preventDefault();
+    const currentX = getClientX(e);
+    setTouchEnd(currentX);
+
+    // Allow dragging in both directions, but limit right drag
+    const offset = currentX - touchStart;
+    const clampedOffset = Math.max(-MAX_DRAG_OFFSET, Math.min(50, offset));
     setDragOffset(clampedOffset);
   };
 
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) {
+  const handleInputEnd = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    setIsDragging(false);
+
+    if (!touchStart || !touchEnd || isAnimating) {
       setDragOffset(0);
       return;
     }
-    
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
 
-    if (isLeftSwipe && currentStep < totalSteps) {
-      setIsAnimating(true);
-      setSlideDirection('left');
-      setTimeout(() => {
-        nextStep();
-        setIsAnimating(false);
-        setSlideDirection('');
-        setDragOffset(0);
-      }, 300);
-    } else if (isRightSwipe && currentStep > 1) {
-      setIsAnimating(true);
-      setSlideDirection('right');
-      setTimeout(() => {
-        prevStep();
-        setIsAnimating(false);
-        setSlideDirection('');
-        setDragOffset(0);
-      }, 300);
+    const swipeDistance = touchStart - touchEnd;
+    const isLeftSwipe = swipeDistance > MIN_SWIPE_DISTANCE;
+    const isRightSwipe = swipeDistance < -MIN_SWIPE_DISTANCE;
+
+    if (isLeftSwipe) {
+      navigateToStep('next');
+    } else if (isRightSwipe) {
+      navigateToStep('prev');
     } else {
-      // Snap back if swipe wasn't far enough
       setDragOffset(0);
     }
   };
 
-  // Keyboard navigation
+  // Add mouse leave handler to stop dragging if mouse leaves the card
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      setDragOffset(0);
+    }
+  };
+
+  // Keyboard navigation for desktop
   useEffect(() => {
     const handleKeyPress = (e) => {
+      if (isAnimating) return;
+
       if (e.key === 'ArrowLeft' && currentStep > 1) {
-        prevStep();
+        navigateToStep('prev');
       }
-      if (e.key === 'ArrowRight' && currentStep < totalSteps) {
-        nextStep();
+      if (e.key === 'ArrowRight' && currentStep < TOTAL_STEPS) {
+        navigateToStep('next');
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentStep, totalSteps]);
+  }, [currentStep, isAnimating]);
 
+
+
+  // Reusable form components
+  const FormField = ({ id, label, placeholder, value, onChange, type = 'input', rows = 3, className = '' }) => (
+    <div className="space-y-2">
+      <Label htmlFor={id} className={className}>{label}</Label>
+      {type === 'textarea' ? (
+        <Textarea
+          id={id}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          rows={rows}
+        />
+      ) : (
+        <Input
+          id={id}
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      )}
+    </div>
+  );
+
+  const CommunicationApproaches = ({ party, prefix }) => (
+    <div className="space-y-4 sm:space-y-6">
+      <Label>I want... (Communication Approaches)</Label>
+      <FormField
+        id={`${prefix}AggressiveApproach`}
+        label="Aggressive Approach (Not Recommended)"
+        placeholder="What would you want to say if you were being aggressive?"
+        value={formData[`${prefix}AggressiveApproach`]}
+        onChange={(value) => updateFormData(`${prefix}AggressiveApproach`, value)}
+        type="textarea"
+        className="text-red-600"
+      />
+      <FormField
+        id={`${prefix}PassiveApproach`}
+        label="Passive Approach"
+        placeholder="What would you want if you were being passive?"
+        value={formData[`${prefix}PassiveApproach`]}
+        onChange={(value) => updateFormData(`${prefix}PassiveApproach`, value)}
+        type="textarea"
+        className="text-blue-600"
+      />
+      <FormField
+        id={`${prefix}AssertiveApproach`}
+        label="Assertive Approach (Recommended)"
+        placeholder="What would you want to say if you were being assertive and respectful?"
+        value={formData[`${prefix}AssertiveApproach`]}
+        onChange={(value) => updateFormData(`${prefix}AssertiveApproach`, value)}
+        type="textarea"
+        className="text-green-600"
+      />
+      <FormField
+        id={`${prefix}WhyBecause`}
+        label="Why/Because..."
+        placeholder="Explain your reasoning..."
+        value={formData[`${prefix}WhyBecause`]}
+        onChange={(value) => updateFormData(`${prefix}WhyBecause`, value)}
+        type="textarea"
+      />
+    </div>
+  );
+
+  const IndividualReflection = ({ party, prefix }) => (
+    <div className="space-y-4 sm:space-y-6">
+      <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
+
+      <SectionSeparator title="Thoughts & Beliefs" />
+      <FormField
+        id={`${prefix}Thoughts`}
+        label="I think..."
+        placeholder="Explain what you think or believe to be true about the conflict..."
+        value={formData[`${prefix}Thoughts`]}
+        onChange={(value) => updateFormData(`${prefix}Thoughts`, value)}
+        type="textarea"
+        rows={4}
+      />
+
+      <SectionSeparator title="Emotions & Feelings" />
+      <div className="space-y-3 sm:space-y-4">
+        <Label>I feel... (Use both methods to express your emotions)</Label>
+        <EmojiGridMapper
+          onEmotionWordsChange={(words) => updateFormData(`${prefix}SelectedEmotionWords`, words)}
+          onChartPositionChange={(position) => updateFormData(`${prefix}EmotionChartPosition`, position)}
+          selectedEmotionWords={formData[`${prefix}SelectedEmotionWords`]}
+          chartPosition={formData[`${prefix}EmotionChartPosition`]}
+        />
+      </div>
+
+      <SectionSeparator title="Communication Approaches" />
+      <CommunicationApproaches party={party} prefix={prefix} />
+    </div>
+  );
+
+  const TwoColumnFields = ({ fields }) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      {fields.map(field => (
+        <FormField key={field.id} {...field} />
+      ))}
+    </div>
+  );
+
+  // Export functions
   const exportToJSON = () => {
     const dataStr = JSON.stringify(formData, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     const exportFileDefaultName = `conflict-mediation-${new Date().toISOString().split('T')[0]}.json`;
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
@@ -196,255 +335,159 @@ function App() {
     generateEnhancedPDF(formData);
   };
 
-  const STEPS = [
-    'Setup',
-    'Individual Reflection - Party A',
-    'Individual Reflection - Party B', 
-    'Shared Discussion (ABCDE)',
-    'Solution Development',
-    'Agreement & Action Steps'
-  ];
+  // Card rendering
+  const renderCardStack = () => {
+    return Array.from({ length: TOTAL_STEPS }, (_, index) => {
+      const stepNumber = index + 1;
+      const isThisCardAnimating = animatingCard === stepNumber;
+      const isActive = stepNumber === currentStep;
+      const isNext = stepNumber === currentStep + 1;
+      const isPrevious = stepNumber === currentStep - 1;
 
-  const renderStep = () => {
-    switch (currentStep) {
+      // Only render visible cards
+      const isInVisibleRange = stepNumber >= currentStep - 1 && stepNumber <= currentStep + 1;
+      if (!isThisCardAnimating && !isInVisibleRange) return null;
+
+      // Determine card style
+      let cardStyle = { transformOrigin: 'center bottom' };
+
+      if (isThisCardAnimating && animationType === 'flyOut') {
+        cardStyle = { ...cardStyle, transform: 'translateX(-100vw) rotate(-15deg)', opacity: 0, zIndex: 30 };
+      } else if (isThisCardAnimating && animationType === 'slideIn') {
+        // Previous card sliding in from left to cover current card
+        cardStyle = {
+          ...cardStyle,
+          transform: 'translateX(0) rotate(0deg)',
+          opacity: 1,
+          zIndex: 35
+        };
+      } else if (isActive) {
+        cardStyle = { ...cardStyle, transform: `translateX(${dragOffset}px) rotate(${dragOffset * 0.1}deg)`, opacity: 1, zIndex: 30 };
+      } else if (isNext) {
+        // Hide next card completely until dragging starts
+        const shouldShowNext = dragOffset < -20; // Show when dragging left more than 20px
+        cardStyle = {
+          ...cardStyle,
+          transform: 'translateX(0) rotate(0deg)',
+          opacity: shouldShowNext ? 1 : 0,
+          zIndex: 20
+        };
+      } else if (isPrevious) {
+        // Previous card starts hidden to the left, ready to slide in
+        if (isThisCardAnimating && animationType === 'slideIn') {
+          // This case is handled above, but just in case
+          cardStyle = { ...cardStyle, transform: 'translateX(0) rotate(0deg)', opacity: 1, zIndex: 35 };
+        } else {
+          cardStyle = { ...cardStyle, transform: 'translateX(-100vw) rotate(0deg)', opacity: 1, zIndex: 10 };
+        }
+      } else {
+        return null;
+      }
+
+      return (
+        <div
+          key={stepNumber}
+          className={`absolute inset-0 draggable-card-container ${isActive ? 'cursor-pointer' : ''
+            } ${isThisCardAnimating && animationType === 'slideIn' ? 'slide-in-animation' : 'transition-all duration-[400ms] ease-out'
+            }`}
+          style={cardStyle}
+          onTouchStart={isActive ? handleInputStart : undefined}
+          onTouchMove={isActive ? handleInputMove : undefined}
+          onTouchEnd={isActive ? handleInputEnd : undefined}
+          onMouseDown={isActive ? handleInputStart : undefined}
+          onMouseMove={isActive ? handleInputMove : undefined}
+          onMouseUp={isActive ? handleInputEnd : undefined}
+          onMouseLeave={isActive ? handleMouseLeave : undefined}
+        >
+          <Card className="w-full h-auto">
+            <CardContent className="p-4 sm:p-6 lg:p-8 max-h-[80vh] overflow-y-auto">
+              <div className="fixed-content">
+                {renderStepContent(stepNumber)}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    });
+  };
+
+  const renderStepContent = (step) => {
+    switch (step) {
       case 1:
         return (
           <div className="space-y-4 sm:space-y-6">
             <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
-            
-            <SectionSeparator title="Party Information" icon="👥" />
+
+            <SectionSeparator title="Party Information" />
             <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
               Let's start by gathering some basic information about the conflict and the parties involved.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="partyAName">Party A Name</Label>
-                <Input
-                  id="partyAName"
-                  placeholder="Enter first person's name"
-                  value={formData.partyAName}
-                  onChange={(e) => updateFormData('partyAName', e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="partyBName">Party B Name</Label>
-                <Input
-                  id="partyBName"
-                  placeholder="Enter second person's name"
-                  value={formData.partyBName}
-                  onChange={(e) => updateFormData('partyBName', e.target.value)}
-                />
-              </div>
-            </div>
-
-            <SectionSeparator title="Conflict Details" icon="📋" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="dateOfIncident">Date of Incident</Label>
-                <Input
-                  id="dateOfIncident"
-                  type="date"
-                  value={formData.dateOfIncident}
-                  onChange={(e) => updateFormData('dateOfIncident', e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="dateOfMediation">Date of Mediation</Label>
-                <Input
-                  id="dateOfMediation"
-                  type="date"
-                  value={formData.dateOfMediation}
-                  onChange={(e) => updateFormData('dateOfMediation', e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="locationOfConflict">Location of Conflict</Label>
-                <Input
-                  id="locationOfConflict"
-                  placeholder="Where did this happen?"
-                  value={formData.locationOfConflict}
-                  onChange={(e) => updateFormData('locationOfConflict', e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="conflictDescription">Agreed Upon Description of Conflict</Label>
-              <Textarea
-                id="conflictDescription"
-                placeholder="Both parties should agree on this description of what happened..."
-                value={formData.conflictDescription}
-                onChange={(e) => updateFormData('conflictDescription', e.target.value)}
-                rows={4}
+              <FormField
+                id="partyAName"
+                label="Party A Name"
+                placeholder="Enter first person's name"
+                value={formData.partyAName}
+                onChange={(value) => updateFormData('partyAName', value)}
+              />
+              <FormField
+                id="partyBName"
+                label="Party B Name"
+                placeholder="Enter second person's name"
+                value={formData.partyBName}
+                onChange={(value) => updateFormData('partyBName', value)}
               />
             </div>
+
+            <SectionSeparator title="Conflict Details" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+              <FormField
+                id="dateOfIncident"
+                label="Date of Incident"
+                type="date"
+                value={formData.dateOfIncident}
+                onChange={(value) => updateFormData('dateOfIncident', value)}
+              />
+              <FormField
+                id="dateOfMediation"
+                label="Date of Mediation"
+                type="date"
+                value={formData.dateOfMediation}
+                onChange={(value) => updateFormData('dateOfMediation', value)}
+              />
+              <FormField
+                id="locationOfConflict"
+                label="Location of Conflict"
+                placeholder="Where did this happen?"
+                value={formData.locationOfConflict}
+                onChange={(value) => updateFormData('locationOfConflict', value)}
+              />
+            </div>
+
+            <FormField
+              id="conflictDescription"
+              label="Agreed Upon Description of Conflict"
+              placeholder="Both parties should agree on this description of what happened..."
+              value={formData.conflictDescription}
+              onChange={(value) => updateFormData('conflictDescription', value)}
+              type="textarea"
+              rows={4}
+            />
           </div>
         );
 
       case 2:
-        return (
-          <div className="space-y-4 sm:space-y-6">
-            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
-            
-            <SectionSeparator title="Thoughts & Beliefs" icon="🤔" />
-            <div className="space-y-3 sm:space-y-4">
-              <Label htmlFor="partyAThoughts">I think...</Label>
-              <Textarea
-                id="partyAThoughts"
-                placeholder="Explain what you think or believe to be true about the conflict..."
-                value={formData.partyAThoughts}
-                onChange={(e) => updateFormData('partyAThoughts', e.target.value)}
-                rows={4}
-              />
-            </div>
-
-            <SectionSeparator title="Emotions & Feelings" icon="💚" />
-            <div className="space-y-3 sm:space-y-4">
-              <Label>I feel... (Use both methods to express your emotions)</Label>
-              <EmojiGridMapper
-                onEmotionWordsChange={(words) => updateFormData('partyASelectedEmotionWords', words)}
-                onChartPositionChange={(position) => updateFormData('partyAEmotionChartPosition', position)}
-                selectedEmotionWords={formData.partyASelectedEmotionWords}
-                chartPosition={formData.partyAEmotionChartPosition}
-              />
-            </div>
-
-            <SectionSeparator title="Communication Approaches" icon="💬" />
-            <div className="space-y-4 sm:space-y-6">
-              <Label>I want... (Communication Approaches)</Label>
-              
-              <div className="space-y-3 sm:space-y-4">
-                <Label htmlFor="partyAAggressiveApproach" className="text-red-600">Aggressive Approach (Not Recommended)</Label>
-                <Textarea
-                  id="partyAAggressiveApproach"
-                  placeholder="What would you want to say if you were being aggressive?"
-                  value={formData.partyAAggressiveApproach}
-                  onChange={(e) => updateFormData('partyAAggressiveApproach', e.target.value)}
-                  rows={3}
-                />
-              </div>
-
-              <div className="space-y-3 sm:space-y-4">
-                <Label htmlFor="partyAPassiveApproach" className="text-blue-600">Passive Approach</Label>
-                <Textarea
-                  id="partyAPassiveApproach"
-                  placeholder="What would you want if you were being passive?"
-                  value={formData.partyAPassiveApproach}
-                  onChange={(e) => updateFormData('partyAPassiveApproach', e.target.value)}
-                  rows={3}
-                />
-              </div>
-
-              <div className="space-y-3 sm:space-y-4">
-                <Label htmlFor="partyAAssertiveApproach" className="text-green-600">Assertive Approach (Recommended)</Label>
-                <Textarea
-                  id="partyAAssertiveApproach"
-                  placeholder="What would you want to say if you were being assertive and respectful?"
-                  value={formData.partyAAssertiveApproach}
-                  onChange={(e) => updateFormData('partyAAssertiveApproach', e.target.value)}
-                  rows={3}
-                />
-              </div>
-
-              <div className="space-y-3 sm:space-y-4">
-                <Label htmlFor="partyAWhyBecause">Why/Because...</Label>
-                <Textarea
-                  id="partyAWhyBecause"
-                  placeholder="Explain your reasoning..."
-                  value={formData.partyAWhyBecause}
-                  onChange={(e) => updateFormData('partyAWhyBecause', e.target.value)}
-                  rows={3}
-                />
-              </div>
-            </div>
-          </div>
-        );
+        return <IndividualReflection party="A" prefix="partyA" />;
 
       case 3:
-        return (
-          <div className="space-y-4 sm:space-y-6">
-            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
-            
-            <SectionSeparator title="Thoughts & Beliefs" icon="🤔" />
-            <div className="space-y-3 sm:space-y-4">
-              <Label htmlFor="partyBThoughts">I think...</Label>
-              <Textarea
-                id="partyBThoughts"
-                placeholder="Explain what you think or believe to be true about the conflict..."
-                value={formData.partyBThoughts}
-                onChange={(e) => updateFormData('partyBThoughts', e.target.value)}
-                rows={4}
-              />
-            </div>
-
-            <SectionSeparator title="Emotions & Feelings" icon="💚" />
-            <div className="space-y-3 sm:space-y-4">
-              <Label>I feel... (Use both methods to express your emotions)</Label>
-              <EmojiGridMapper
-                onEmotionWordsChange={(words) => updateFormData('partyBSelectedEmotionWords', words)}
-                onChartPositionChange={(position) => updateFormData('partyBEmotionChartPosition', position)}
-                selectedEmotionWords={formData.partyBSelectedEmotionWords}
-                chartPosition={formData.partyBEmotionChartPosition}
-              />
-            </div>
-
-            <SectionSeparator title="Communication Approaches" icon="💬" />
-            <div className="space-y-4 sm:space-y-6">
-              <Label>I want... (Communication Approaches)</Label>
-              
-              <div className="space-y-3 sm:space-y-4">
-                <Label htmlFor="partyBAggressiveApproach" className="text-red-600">Aggressive Approach (Not Recommended)</Label>
-                <Textarea
-                  id="partyBAggressiveApproach"
-                  placeholder="What would you want to say if you were being aggressive?"
-                  value={formData.partyBAggressiveApproach}
-                  onChange={(e) => updateFormData('partyBAggressiveApproach', e.target.value)}
-                  rows={3}
-                />
-              </div>
-
-              <div className="space-y-3 sm:space-y-4">
-                <Label htmlFor="partyBPassiveApproach" className="text-blue-600">Passive Approach</Label>
-                <Textarea
-                  id="partyBPassiveApproach"
-                  placeholder="What would you want if you were being passive?"
-                  value={formData.partyBPassiveApproach}
-                  onChange={(e) => updateFormData('partyBPassiveApproach', e.target.value)}
-                  rows={3}
-                />
-              </div>
-
-              <div className="space-y-3 sm:space-y-4">
-                <Label htmlFor="partyBAssertiveApproach" className="text-green-600">Assertive Approach (Recommended)</Label>
-                <Textarea
-                  id="partyBAssertiveApproach"
-                  placeholder="What would you want to say if you were being assertive and respectful?"
-                  value={formData.partyBAssertiveApproach}
-                  onChange={(e) => updateFormData('partyBAssertiveApproach', e.target.value)}
-                  rows={3}
-                />
-              </div>
-
-              <div className="space-y-3 sm:space-y-4">
-                <Label htmlFor="partyBWhyBecause">Why/Because...</Label>
-                <Textarea
-                  id="partyBWhyBecause"
-                  placeholder="Explain your reasoning..."
-                  value={formData.partyBWhyBecause}
-                  onChange={(e) => updateFormData('partyBWhyBecause', e.target.value)}
-                  rows={3}
-                />
-              </div>
-            </div>
-          </div>
-        );
+        return <IndividualReflection party="B" prefix="partyB" />;
 
       case 4:
         return (
           <div className="space-y-4 sm:space-y-6">
             <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
-            
-            <SectionSeparator title="ABCDE Model Discussion" icon="🗣️" />
+
+            <SectionSeparator title="ABCDE Model Discussion" />
             <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
               Work through this cognitive behavioral model together to understand the conflict better.
             </p>
@@ -559,8 +602,8 @@ function App() {
         return (
           <div className="space-y-4 sm:space-y-6">
             <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
-            
-            <SectionSeparator title="Solution Development" icon="💡" />
+
+            <SectionSeparator title="Solution Development" />
             <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
               Now let's explore possibilities and develop solutions together.
             </p>
@@ -616,7 +659,7 @@ function App() {
                 </div>
               </div>
 
-              <SectionSeparator title="Understanding Each Other" icon="🤝" />
+              <SectionSeparator title="Understanding Each Other" />
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-3 sm:space-y-4">
@@ -663,8 +706,8 @@ function App() {
         return (
           <div className="space-y-4 sm:space-y-6">
             <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
-            
-            <SectionSeparator title="Agreement & Action Steps" icon="✅" />
+
+            <SectionSeparator title="Agreement & Action Steps" />
             <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
               Finalize your agreement and create actionable next steps.
             </p>
@@ -760,7 +803,7 @@ function App() {
               </div>
 
               <div className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-border">
-                <SectionSeparator title="Export Your Session" icon="📄" />
+                <SectionSeparator title="Export Your Session" />
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                   <Button
                     onClick={exportToJSON}
@@ -792,7 +835,7 @@ function App() {
     <div className="min-h-screen bg-background">
       <ParticleBackground />
       <DarkModeToggle />
-      
+
       <div className="bg-gradient-to-r from-primary to-secondary text-primary-foreground py-4 sm:py-8">
         <div className="container mx-auto px-2 sm:px-4">
           <div className="flex items-center justify-center gap-2 sm:gap-4 mb-2 sm:mb-4">
@@ -810,22 +853,21 @@ function App() {
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-4xl">
         <div className="mb-4 sm:mb-8">
           <div className="flex justify-between items-center mb-2 sm:mb-4">
-            <span className="text-xs sm:text-sm font-medium">Step {currentStep} of {totalSteps}: {STEPS[currentStep - 1]}</span>
+            <span className="text-xs sm:text-sm font-medium">Step {currentStep} of {TOTAL_STEPS}: {STEPS[currentStep - 1]}</span>
             <span className="text-xs sm:text-sm text-muted-foreground">{progressPercentage}% Complete</span>
           </div>
           <Progress value={progressPercentage} className="h-2" />
-          
+
           <div className="flex justify-between mt-2 sm:mt-4">
             {STEPS.map((step, index) => (
               <div
                 key={index}
-                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
-                  index + 1 < currentStep
-                    ? 'bg-primary text-primary-foreground'
-                    : index + 1 === currentStep
+                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${index + 1 < currentStep
+                  ? 'bg-primary text-primary-foreground'
+                  : index + 1 === currentStep
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-muted text-muted-foreground'
-                }`}
+                  }`}
               >
                 {index + 1}
               </div>
@@ -833,51 +875,26 @@ function App() {
           </div>
         </div>
 
-        <Card 
-          className="mb-4 sm:mb-8 transition-all duration-300 ease-out"
-          style={{
-            transform: `translateX(${dragOffset}px) rotate(${dragOffset * 0.1}deg) ${
-              isAnimating 
-                ? slideDirection === 'left' 
-                  ? 'translateX(-100%) rotate(-10deg)' 
-                  : 'translateX(100%) rotate(10deg)'
-                : 'translateX(0) rotate(0deg)'
-            }`,
-            opacity: isAnimating ? 0 : 1,
-            transformOrigin: 'center bottom',
-          }}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-        >
-          <CardContent className="p-4 sm:p-6 lg:p-8">
-            {renderStep()}
-          </CardContent>
-        </Card>
+        {/* Card Stack Container */}
+        <div className="relative mb-4 sm:mb-8 min-h-[500px]" style={{ height: 'auto' }}>
+          {renderCardStack()}
+        </div>
 
-        {/* Fixed Navigation Buttons - Hidden on mobile */}
-        <Button
-          onClick={prevStep}
-          disabled={currentStep === 1}
-          variant="outline"
-          className="hidden md:flex fixed left-4 top-1/2 transform -translate-y-1/2 z-50 items-center gap-2 px-4 py-3 shadow-lg"
-        >
-          <ChevronLeft className="h-5 w-5" />
-          <span className="hidden lg:inline">Previous</span>
-        </Button>
-        
-        <Button
-          onClick={nextStep}
-          disabled={currentStep === totalSteps}
-          className="hidden md:flex fixed right-4 top-1/2 transform -translate-y-1/2 z-50 items-center gap-2 px-4 py-3 shadow-lg"
-        >
-          <span className="hidden lg:inline">Next</span>
-          <ChevronRight className="h-5 w-5" />
-        </Button>
+
+
+        {/* Navigation instructions */}
+        <div className="text-center text-xs text-muted-foreground mt-4 space-y-1">
+          <div className="hidden sm:block">
+            💡 Desktop: Use arrow keys ← → or drag cards to navigate
+          </div>
+          <div className="sm:hidden">
+            💡 Mobile: Swipe left/right to navigate
+          </div>
+        </div>
 
         {/* Step indicator at bottom */}
-        <div className="text-center text-sm text-muted-foreground mt-8">
-          Step {currentStep} of {totalSteps}
+        <div className="text-center text-sm text-muted-foreground mt-4">
+          Step {currentStep} of {TOTAL_STEPS}
         </div>
       </div>
     </div>
