@@ -1,19 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Button } from './components/ui/button';
-import { Input } from './components/ui/input';
-import { Label } from './components/ui/label';
-import { Textarea } from './components/ui/textarea';
-import { Card, CardContent } from './components/ui/card';
-import { Progress } from './components/ui/progress';
-import { Download, FileText } from 'lucide-react';
-import EmojiGridMapper from './components/EmojiGridMapper';
-import SectionSeparator from './components/SectionSeparator';
-import DarkModeToggle from './components/DarkModeToggle';
-import GuidanceAlert from './components/GuidanceAlert';
-import ParticleBackground from './components/ParticleBackground';
-import { generateEnhancedPDF } from './utils/pdfGenerator';
-import logo from './assets/logo.png';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { Label } from "./components/ui/label";
+import { Textarea } from "./components/ui/textarea";
+import { Card, CardContent } from "./components/ui/card";
+import { Progress } from "./components/ui/progress";
+import { Download, FileText } from "lucide-react";
+import EmojiGridMapper from "./components/EmojiGridMapper";
+import SectionSeparator from "./components/SectionSeparator";
+import DarkModeToggle from "./components/DarkModeToggle";
+import GuidanceAlert from "./components/GuidanceAlert";
+import ParticleBackground from "./components/ParticleBackground";
+import { generateEnhancedPDF } from "./utils/pdfGenerator";
+import logo from "./assets/logo.png";
+import "./App.css";
 
 // Constants
 const TOTAL_STEPS = 6;
@@ -22,12 +22,12 @@ const MAX_DRAG_OFFSET = 200;
 const ANIMATION_DURATION = 400;
 
 const STEPS = [
-  'Setup',
-  'Individual Reflection - Party A',
-  'Individual Reflection - Party B',
-  'Shared Discussion (ABCDE)',
-  'Solution Development',
-  'Agreement & Action Steps'
+  "Setup",
+  "Individual Reflection - Party A",
+  "Individual Reflection - Party B",
+  "Shared Discussion (ABCDE)",
+  "Solution Development",
+  "Agreement & Action Steps",
 ];
 
 function App() {
@@ -37,58 +37,56 @@ function App() {
   const [touchEnd, setTouchEnd] = useState(null);
   const [dragOffset, setDragOffset] = useState(0);
   const [animatingCard, setAnimatingCard] = useState(null);
-  const [animationType, setAnimationType] = useState('');
-  const [containerHeight, setContainerHeight] = useState('auto');
-  const cardRef = useRef(null);
+  const [animationType, setAnimationType] = useState("");
 
   const [formData, setFormData] = useState({
-    partyAName: '',
-    partyBName: '',
-    dateOfIncident: '',
-    dateOfMediation: '',
-    locationOfConflict: '',
-    conflictDescription: '',
+    partyAName: "",
+    partyBName: "",
+    dateOfIncident: "",
+    dateOfMediation: "",
+    locationOfConflict: "",
+    conflictDescription: "",
     // Individual Reflection A
-    partyAThoughts: '',
+    partyAThoughts: "",
     partyASelectedEmotionWords: [],
     partyAEmotionChartPosition: null,
-    partyAAggressiveApproach: '',
-    partyAPassiveApproach: '',
-    partyAAssertiveApproach: '',
-    partyAWhyBecause: '',
+    partyAAggressiveApproach: "",
+    partyAPassiveApproach: "",
+    partyAAssertiveApproach: "",
+    partyAWhyBecause: "",
     // Individual Reflection B
-    partyBThoughts: '',
+    partyBThoughts: "",
     partyBSelectedEmotionWords: [],
     partyBEmotionChartPosition: null,
-    partyBAggressiveApproach: '',
-    partyBPassiveApproach: '',
-    partyBAssertiveApproach: '',
-    partyBWhyBecause: '',
+    partyBAggressiveApproach: "",
+    partyBPassiveApproach: "",
+    partyBAssertiveApproach: "",
+    partyBWhyBecause: "",
     // ABCDE Model
-    activatingEvent: '',
-    partyABeliefs: '',
-    partyBBeliefs: '',
-    partyAConsequences: '',
-    partyBConsequences: '',
-    partyADisputations: '',
-    partyBDisputations: '',
-    effectsReflections: '',
+    activatingEvent: "",
+    partyABeliefs: "",
+    partyBBeliefs: "",
+    partyAConsequences: "",
+    partyBConsequences: "",
+    partyADisputations: "",
+    partyBDisputations: "",
+    effectsReflections: "",
     // Solution Development
-    partyAMiracle: '',
-    partyBMiracle: '',
-    partyATop3Solutions: '',
-    partyBTop3Solutions: '',
-    partyAPerspective: '',
-    partyBPerspective: '',
-    compromiseSolutions: '',
+    partyAMiracle: "",
+    partyBMiracle: "",
+    partyATop3Solutions: "",
+    partyBTop3Solutions: "",
+    partyAPerspective: "",
+    partyBPerspective: "",
+    compromiseSolutions: "",
     // Agreement & Action Steps
-    partyAUnmetNeeds: '',
-    partyBUnmetNeeds: '',
-    partyANeedsInPractice: '',
-    partyBNeedsInPractice: '',
-    actionSteps: '',
-    followUpDate: '',
-    additionalSupport: ''
+    partyAUnmetNeeds: "",
+    partyBUnmetNeeds: "",
+    partyANeedsInPractice: "",
+    partyBNeedsInPractice: "",
+    actionSteps: "",
+    followUpDate: "",
+    additionalSupport: "",
   });
 
   // Computed values
@@ -97,28 +95,28 @@ function App() {
 
   // Helper functions
   const updateFormData = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const navigateToStep = (direction) => {
     if (isAnimating) return;
 
-    if (direction === 'next' && currentStep < TOTAL_STEPS) {
+    if (direction === "next" && currentStep < TOTAL_STEPS) {
       setAnimatingCard(currentStep);
-      setAnimationType('flyOut');
+      setAnimationType("flyOut");
       setTimeout(() => {
-        setCurrentStep(prev => prev + 1);
+        setCurrentStep((prev) => prev + 1);
         setAnimatingCard(null);
-        setAnimationType('');
+        setAnimationType("");
         setDragOffset(0);
       }, ANIMATION_DURATION);
-    } else if (direction === 'prev' && currentStep > 1) {
+    } else if (direction === "prev" && currentStep > 1) {
       setAnimatingCard(currentStep - 1);
-      setAnimationType('slideIn');
+      setAnimationType("slideIn");
       setTimeout(() => {
-        setCurrentStep(prev => prev - 1);
+        setCurrentStep((prev) => prev - 1);
         setAnimatingCard(null);
-        setAnimationType('');
+        setAnimationType("");
         setDragOffset(0);
       }, ANIMATION_DURATION);
     }
@@ -136,15 +134,25 @@ function App() {
 
     // Check if the drag started on an interactive element
     const target = e.target;
-
-    // Check for form elements and emoji elements
-    const isFormElement = target.closest('input, textarea, button, select');
+    const isFormElement = target.closest(
+      "input, textarea, button, select, label, [role='button'], [role='tab']"
+    );
     const isBadgeElement = target.closest('.badge, [class*="badge"]');
-    const isEmojiElement = target.closest('[data-interactive-component="emoji-mapper"]');
+    const isEmojiElement = target.closest(
+      '[data-interactive-component="emoji-mapper"]'
+    );
+    const isClickableElement = target.closest(
+      "a, button, [onclick], [data-clickable]"
+    );
 
-    // Don't start card dragging for form elements, badges, or emoji components
-    if (isFormElement || isBadgeElement || isEmojiElement) {
-      return; // Don't preventDefault here to allow emoji dragging
+    // Don't start card dragging for form elements, badges, emoji components, or clickable elements
+    if (
+      isFormElement ||
+      isBadgeElement ||
+      isEmojiElement ||
+      isClickableElement
+    ) {
+      return; // Don't preventDefault here to allow normal form interaction
     }
 
     e.preventDefault();
@@ -181,9 +189,9 @@ function App() {
     const isRightSwipe = swipeDistance < -MIN_SWIPE_DISTANCE;
 
     if (isLeftSwipe) {
-      navigateToStep('next');
+      navigateToStep("next");
     } else if (isRightSwipe) {
-      navigateToStep('prev');
+      navigateToStep("prev");
     } else {
       setDragOffset(0);
     }
@@ -202,25 +210,34 @@ function App() {
     const handleKeyPress = (e) => {
       if (isAnimating) return;
 
-      if (e.key === 'ArrowLeft' && currentStep > 1) {
-        navigateToStep('prev');
+      if (e.key === "ArrowLeft" && currentStep > 1) {
+        navigateToStep("prev");
       }
-      if (e.key === 'ArrowRight' && currentStep < TOTAL_STEPS) {
-        navigateToStep('next');
+      if (e.key === "ArrowRight" && currentStep < TOTAL_STEPS) {
+        navigateToStep("next");
       }
     };
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [currentStep, isAnimating]);
 
-
-
   // Reusable form components
-  const FormField = ({ id, label, placeholder, value, onChange, type = 'input', rows = 3, className = '' }) => (
+  const FormField = ({
+    id,
+    label,
+    placeholder,
+    value,
+    onChange,
+    type = "input",
+    rows = 3,
+    className = "",
+  }) => (
     <div className="space-y-2">
-      <Label htmlFor={id} className={className}>{label}</Label>
-      {type === 'textarea' ? (
+      <Label htmlFor={id} className={className}>
+        {label}
+      </Label>
+      {type === "textarea" ? (
         <Textarea
           id={id}
           placeholder={placeholder}
@@ -240,7 +257,7 @@ function App() {
     </div>
   );
 
-  const CommunicationApproaches = ({ party, prefix }) => (
+  const CommunicationApproaches = ({ prefix }) => (
     <div className="space-y-4 sm:space-y-6">
       <Label>I want... (Communication Approaches)</Label>
       <FormField
@@ -248,7 +265,9 @@ function App() {
         label="Aggressive Approach (Not Recommended)"
         placeholder="What would you want to say if you were being aggressive?"
         value={formData[`${prefix}AggressiveApproach`]}
-        onChange={(value) => updateFormData(`${prefix}AggressiveApproach`, value)}
+        onChange={(value) =>
+          updateFormData(`${prefix}AggressiveApproach`, value)
+        }
         type="textarea"
         className="text-red-600"
       />
@@ -266,7 +285,9 @@ function App() {
         label="Assertive Approach (Recommended)"
         placeholder="What would you want to say if you were being assertive and respectful?"
         value={formData[`${prefix}AssertiveApproach`]}
-        onChange={(value) => updateFormData(`${prefix}AssertiveApproach`, value)}
+        onChange={(value) =>
+          updateFormData(`${prefix}AssertiveApproach`, value)
+        }
         type="textarea"
         className="text-green-600"
       />
@@ -283,7 +304,11 @@ function App() {
 
   const IndividualReflection = ({ party, prefix }) => (
     <div className="space-y-4 sm:space-y-6">
-      <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
+      <GuidanceAlert
+        step={currentStep}
+        partyAName={formData.partyAName}
+        partyBName={formData.partyBName}
+      />
 
       <SectionSeparator title="Thoughts & Beliefs" />
       <FormField
@@ -300,8 +325,12 @@ function App() {
       <div className="space-y-3 sm:space-y-4">
         <Label>I feel... (Use both methods to express your emotions)</Label>
         <EmojiGridMapper
-          onEmotionWordsChange={(words) => updateFormData(`${prefix}SelectedEmotionWords`, words)}
-          onChartPositionChange={(position) => updateFormData(`${prefix}EmotionChartPosition`, position)}
+          onEmotionWordsChange={(words) =>
+            updateFormData(`${prefix}SelectedEmotionWords`, words)
+          }
+          onChartPositionChange={(position) =>
+            updateFormData(`${prefix}EmotionChartPosition`, position)
+          }
           selectedEmotionWords={formData[`${prefix}SelectedEmotionWords`]}
           chartPosition={formData[`${prefix}EmotionChartPosition`]}
         />
@@ -314,7 +343,7 @@ function App() {
 
   const TwoColumnFields = ({ fields }) => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-      {fields.map(field => (
+      {fields.map((field) => (
         <FormField key={field.id} {...field} />
       ))}
     </div>
@@ -323,11 +352,14 @@ function App() {
   // Export functions
   const exportToJSON = () => {
     const dataStr = JSON.stringify(formData, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-    const exportFileDefaultName = `conflict-mediation-${new Date().toISOString().split('T')[0]}.json`;
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
+    const dataUri =
+      "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
+    const exportFileDefaultName = `conflict-mediation-${
+      new Date().toISOString().split("T")[0]
+    }.json`;
+    const linkElement = document.createElement("a");
+    linkElement.setAttribute("href", dataUri);
+    linkElement.setAttribute("download", exportFileDefaultName);
     linkElement.click();
   };
 
@@ -345,40 +377,63 @@ function App() {
       const isPrevious = stepNumber === currentStep - 1;
 
       // Only render visible cards
-      const isInVisibleRange = stepNumber >= currentStep - 1 && stepNumber <= currentStep + 1;
+      const isInVisibleRange =
+        stepNumber >= currentStep - 1 && stepNumber <= currentStep + 1;
       if (!isThisCardAnimating && !isInVisibleRange) return null;
 
       // Determine card style
-      let cardStyle = { transformOrigin: 'center bottom' };
+      let cardStyle = { transformOrigin: "center bottom" };
 
-      if (isThisCardAnimating && animationType === 'flyOut') {
-        cardStyle = { ...cardStyle, transform: 'translateX(-100vw) rotate(-15deg)', opacity: 0, zIndex: 30 };
-      } else if (isThisCardAnimating && animationType === 'slideIn') {
+      if (isThisCardAnimating && animationType === "flyOut") {
+        cardStyle = {
+          ...cardStyle,
+          transform: "translateX(-100vw) rotate(-15deg)",
+          opacity: 0,
+          zIndex: 30,
+        };
+      } else if (isThisCardAnimating && animationType === "slideIn") {
         // Previous card sliding in from left to cover current card
         cardStyle = {
           ...cardStyle,
-          transform: 'translateX(0) rotate(0deg)',
+          transform: "translateX(0) rotate(0deg)",
           opacity: 1,
-          zIndex: 35
+          zIndex: 35,
         };
       } else if (isActive) {
-        cardStyle = { ...cardStyle, transform: `translateX(${dragOffset}px) rotate(${dragOffset * 0.1}deg)`, opacity: 1, zIndex: 30 };
+        cardStyle = {
+          ...cardStyle,
+          transform: `translateX(${dragOffset}px) rotate(${
+            dragOffset * 0.1
+          }deg)`,
+          opacity: 1,
+          zIndex: 30,
+        };
       } else if (isNext) {
         // Hide next card completely until dragging starts
         const shouldShowNext = dragOffset < -20; // Show when dragging left more than 20px
         cardStyle = {
           ...cardStyle,
-          transform: 'translateX(0) rotate(0deg)',
+          transform: "translateX(0) rotate(0deg)",
           opacity: shouldShowNext ? 1 : 0,
-          zIndex: 20
+          zIndex: 20,
         };
       } else if (isPrevious) {
         // Previous card starts hidden to the left, ready to slide in
-        if (isThisCardAnimating && animationType === 'slideIn') {
+        if (isThisCardAnimating && animationType === "slideIn") {
           // This case is handled above, but just in case
-          cardStyle = { ...cardStyle, transform: 'translateX(0) rotate(0deg)', opacity: 1, zIndex: 35 };
+          cardStyle = {
+            ...cardStyle,
+            transform: "translateX(0) rotate(0deg)",
+            opacity: 1,
+            zIndex: 35,
+          };
         } else {
-          cardStyle = { ...cardStyle, transform: 'translateX(-100vw) rotate(0deg)', opacity: 1, zIndex: 10 };
+          cardStyle = {
+            ...cardStyle,
+            transform: "translateX(-100vw) rotate(0deg)",
+            opacity: 1,
+            zIndex: 10,
+          };
         }
       } else {
         return null;
@@ -387,9 +442,13 @@ function App() {
       return (
         <div
           key={stepNumber}
-          className={`absolute inset-0 draggable-card-container ${isActive ? 'cursor-pointer' : ''
-            } ${isThisCardAnimating && animationType === 'slideIn' ? 'slide-in-animation' : 'transition-all duration-[400ms] ease-out'
-            }`}
+          className={`absolute inset-0 draggable-card-container ${
+            isActive ? "cursor-pointer" : ""
+          } ${
+            isThisCardAnimating && animationType === "slideIn"
+              ? "slide-in-animation"
+              : "transition-all duration-[400ms] ease-out"
+          }`}
           style={cardStyle}
           onTouchStart={isActive ? handleInputStart : undefined}
           onTouchMove={isActive ? handleInputMove : undefined}
@@ -416,11 +475,16 @@ function App() {
       case 1:
         return (
           <div className="space-y-4 sm:space-y-6">
-            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
+            <GuidanceAlert
+              step={currentStep}
+              partyAName={formData.partyAName}
+              partyBName={formData.partyBName}
+            />
 
             <SectionSeparator title="Party Information" />
             <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
-              Let's start by gathering some basic information about the conflict and the parties involved.
+              Let's start by gathering some basic information about the conflict
+              and the parties involved.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               <FormField
@@ -428,14 +492,14 @@ function App() {
                 label="Party A Name"
                 placeholder="Enter first person's name"
                 value={formData.partyAName}
-                onChange={(value) => updateFormData('partyAName', value)}
+                onChange={(value) => updateFormData("partyAName", value)}
               />
               <FormField
                 id="partyBName"
                 label="Party B Name"
                 placeholder="Enter second person's name"
                 value={formData.partyBName}
-                onChange={(value) => updateFormData('partyBName', value)}
+                onChange={(value) => updateFormData("partyBName", value)}
               />
             </div>
 
@@ -446,21 +510,23 @@ function App() {
                 label="Date of Incident"
                 type="date"
                 value={formData.dateOfIncident}
-                onChange={(value) => updateFormData('dateOfIncident', value)}
+                onChange={(value) => updateFormData("dateOfIncident", value)}
               />
               <FormField
                 id="dateOfMediation"
                 label="Date of Mediation"
                 type="date"
                 value={formData.dateOfMediation}
-                onChange={(value) => updateFormData('dateOfMediation', value)}
+                onChange={(value) => updateFormData("dateOfMediation", value)}
               />
               <FormField
                 id="locationOfConflict"
                 label="Location of Conflict"
                 placeholder="Where did this happen?"
                 value={formData.locationOfConflict}
-                onChange={(value) => updateFormData('locationOfConflict', value)}
+                onChange={(value) =>
+                  updateFormData("locationOfConflict", value)
+                }
               />
             </div>
 
@@ -469,7 +535,7 @@ function App() {
               label="Agreed Upon Description of Conflict"
               placeholder="Both parties should agree on this description of what happened..."
               value={formData.conflictDescription}
-              onChange={(value) => updateFormData('conflictDescription', value)}
+              onChange={(value) => updateFormData("conflictDescription", value)}
               type="textarea"
               rows={4}
             />
@@ -485,47 +551,79 @@ function App() {
       case 4:
         return (
           <div className="space-y-4 sm:space-y-6">
-            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
+            <GuidanceAlert
+              step={currentStep}
+              partyAName={formData.partyAName}
+              partyBName={formData.partyBName}
+            />
 
             <SectionSeparator title="ABCDE Model Discussion" />
             <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
-              Work through this cognitive behavioral model together to understand the conflict better.
+              Work through this cognitive behavioral model together to
+              understand the conflict better.
             </p>
 
             <div className="space-y-4 sm:space-y-6">
               <div className="space-y-3 sm:space-y-4">
-                <Label htmlFor="activatingEvent" className="text-base font-semibold">A - Activating Event</Label>
-                <p className="text-sm text-muted-foreground">What actually happened? Stick to observable facts.</p>
+                <Label
+                  htmlFor="activatingEvent"
+                  className="text-base font-semibold"
+                >
+                  A - Activating Event
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  What actually happened? Stick to observable facts.
+                </p>
                 <Textarea
                   id="activatingEvent"
                   placeholder="Describe the factual events that triggered this conflict..."
                   value={formData.activatingEvent}
-                  onChange={(e) => updateFormData('activatingEvent', e.target.value)}
+                  onChange={(e) =>
+                    updateFormData("activatingEvent", e.target.value)
+                  }
                   rows={3}
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyABeliefs" className="text-base font-semibold">B - {formData.partyAName || 'Party A'} Beliefs</Label>
-                  <p className="text-sm text-muted-foreground">What thoughts or beliefs do you have about this event?</p>
+                  <Label
+                    htmlFor="partyABeliefs"
+                    className="text-base font-semibold"
+                  >
+                    B - {formData.partyAName || "Party A"} Beliefs
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    What thoughts or beliefs do you have about this event?
+                  </p>
                   <Textarea
                     id="partyABeliefs"
                     placeholder="Your thoughts and beliefs about what happened..."
                     value={formData.partyABeliefs}
-                    onChange={(e) => updateFormData('partyABeliefs', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyABeliefs", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
 
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyBBeliefs" className="text-base font-semibold">B - {formData.partyBName || 'Party B'} Beliefs</Label>
-                  <p className="text-sm text-muted-foreground">What thoughts or beliefs do you have about this event?</p>
+                  <Label
+                    htmlFor="partyBBeliefs"
+                    className="text-base font-semibold"
+                  >
+                    B - {formData.partyBName || "Party B"} Beliefs
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    What thoughts or beliefs do you have about this event?
+                  </p>
                   <Textarea
                     id="partyBBeliefs"
                     placeholder="Your thoughts and beliefs about what happened..."
                     value={formData.partyBBeliefs}
-                    onChange={(e) => updateFormData('partyBBeliefs', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyBBeliefs", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
@@ -533,25 +631,43 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyAConsequences" className="text-base font-semibold">C - {formData.partyAName || 'Party A'} Consequences</Label>
-                  <p className="text-sm text-muted-foreground">How did your beliefs make you feel and behave?</p>
+                  <Label
+                    htmlFor="partyAConsequences"
+                    className="text-base font-semibold"
+                  >
+                    C - {formData.partyAName || "Party A"} Consequences
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    How did your beliefs make you feel and behave?
+                  </p>
                   <Textarea
                     id="partyAConsequences"
                     placeholder="Your emotional and behavioral responses..."
                     value={formData.partyAConsequences}
-                    onChange={(e) => updateFormData('partyAConsequences', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyAConsequences", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
 
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyBConsequences" className="text-base font-semibold">C - {formData.partyBName || 'Party B'} Consequences</Label>
-                  <p className="text-sm text-muted-foreground">How did your beliefs make you feel and behave?</p>
+                  <Label
+                    htmlFor="partyBConsequences"
+                    className="text-base font-semibold"
+                  >
+                    C - {formData.partyBName || "Party B"} Consequences
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    How did your beliefs make you feel and behave?
+                  </p>
                   <Textarea
                     id="partyBConsequences"
                     placeholder="Your emotional and behavioral responses..."
                     value={formData.partyBConsequences}
-                    onChange={(e) => updateFormData('partyBConsequences', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyBConsequences", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
@@ -559,38 +675,67 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyADisputations" className="text-base font-semibold">D - {formData.partyAName || 'Party A'} Disputations</Label>
-                  <p className="text-sm text-muted-foreground">Challenge your beliefs. Are they helpful? Accurate? Realistic?</p>
+                  <Label
+                    htmlFor="partyADisputations"
+                    className="text-base font-semibold"
+                  >
+                    D - {formData.partyAName || "Party A"} Disputations
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Challenge your beliefs. Are they helpful? Accurate?
+                    Realistic?
+                  </p>
                   <Textarea
                     id="partyADisputations"
                     placeholder="Question and challenge your initial beliefs..."
                     value={formData.partyADisputations}
-                    onChange={(e) => updateFormData('partyADisputations', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyADisputations", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
 
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyBDisputations" className="text-base font-semibold">D - {formData.partyBName || 'Party B'} Disputations</Label>
-                  <p className="text-sm text-muted-foreground">Challenge your beliefs. Are they helpful? Accurate? Realistic?</p>
+                  <Label
+                    htmlFor="partyBDisputations"
+                    className="text-base font-semibold"
+                  >
+                    D - {formData.partyBName || "Party B"} Disputations
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Challenge your beliefs. Are they helpful? Accurate?
+                    Realistic?
+                  </p>
                   <Textarea
                     id="partyBDisputations"
                     placeholder="Question and challenge your initial beliefs..."
                     value={formData.partyBDisputations}
-                    onChange={(e) => updateFormData('partyBDisputations', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyBDisputations", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
               </div>
 
               <div className="space-y-3 sm:space-y-4">
-                <Label htmlFor="effectsReflections" className="text-base font-semibold">E - Effects & Reflections</Label>
-                <p className="text-sm text-muted-foreground">What new insights have emerged? How do you both feel now?</p>
+                <Label
+                  htmlFor="effectsReflections"
+                  className="text-base font-semibold"
+                >
+                  E - Effects & Reflections
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  What new insights have emerged? How do you both feel now?
+                </p>
                 <Textarea
                   id="effectsReflections"
                   placeholder="Reflect on new perspectives and feelings that have emerged..."
                   value={formData.effectsReflections}
-                  onChange={(e) => updateFormData('effectsReflections', e.target.value)}
+                  onChange={(e) =>
+                    updateFormData("effectsReflections", e.target.value)
+                  }
                   rows={4}
                 />
               </div>
@@ -601,7 +746,11 @@ function App() {
       case 5:
         return (
           <div className="space-y-4 sm:space-y-6">
-            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
+            <GuidanceAlert
+              step={currentStep}
+              partyAName={formData.partyAName}
+              partyBName={formData.partyBName}
+            />
 
             <SectionSeparator title="Solution Development" />
             <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
@@ -611,25 +760,45 @@ function App() {
             <div className="space-y-4 sm:space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyAMiracle" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Miracle Question</Label>
-                  <p className="text-sm text-muted-foreground">If you woke up tomorrow and this conflict was completely resolved, what would be different?</p>
+                  <Label
+                    htmlFor="partyAMiracle"
+                    className="text-base font-semibold"
+                  >
+                    {formData.partyAName || "Party A"} - Miracle Question
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    If you woke up tomorrow and this conflict was completely
+                    resolved, what would be different?
+                  </p>
                   <Textarea
                     id="partyAMiracle"
                     placeholder="Describe your ideal resolution..."
                     value={formData.partyAMiracle}
-                    onChange={(e) => updateFormData('partyAMiracle', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyAMiracle", e.target.value)
+                    }
                     rows={4}
                   />
                 </div>
 
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyBMiracle" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Miracle Question</Label>
-                  <p className="text-sm text-muted-foreground">If you woke up tomorrow and this conflict was completely resolved, what would be different?</p>
+                  <Label
+                    htmlFor="partyBMiracle"
+                    className="text-base font-semibold"
+                  >
+                    {formData.partyBName || "Party B"} - Miracle Question
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    If you woke up tomorrow and this conflict was completely
+                    resolved, what would be different?
+                  </p>
                   <Textarea
                     id="partyBMiracle"
                     placeholder="Describe your ideal resolution..."
                     value={formData.partyBMiracle}
-                    onChange={(e) => updateFormData('partyBMiracle', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyBMiracle", e.target.value)
+                    }
                     rows={4}
                   />
                 </div>
@@ -637,23 +806,37 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyATop3Solutions" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Top 3 Solutions</Label>
+                  <Label
+                    htmlFor="partyATop3Solutions"
+                    className="text-base font-semibold"
+                  >
+                    {formData.partyAName || "Party A"} - Top 3 Solutions
+                  </Label>
                   <Textarea
                     id="partyATop3Solutions"
                     placeholder="List your top 3 preferred solutions..."
                     value={formData.partyATop3Solutions}
-                    onChange={(e) => updateFormData('partyATop3Solutions', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyATop3Solutions", e.target.value)
+                    }
                     rows={4}
                   />
                 </div>
 
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyBTop3Solutions" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Top 3 Solutions</Label>
+                  <Label
+                    htmlFor="partyBTop3Solutions"
+                    className="text-base font-semibold"
+                  >
+                    {formData.partyBName || "Party B"} - Top 3 Solutions
+                  </Label>
                   <Textarea
                     id="partyBTop3Solutions"
                     placeholder="List your top 3 preferred solutions..."
                     value={formData.partyBTop3Solutions}
-                    onChange={(e) => updateFormData('partyBTop3Solutions', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyBTop3Solutions", e.target.value)
+                    }
                     rows={4}
                   />
                 </div>
@@ -663,38 +846,66 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyAPerspective" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Other's Perspective</Label>
-                  <p className="text-sm text-muted-foreground">Try to understand the other person's point of view.</p>
+                  <Label
+                    htmlFor="partyAPerspective"
+                    className="text-base font-semibold"
+                  >
+                    {formData.partyAName || "Party A"} - Other's Perspective
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Try to understand the other person's point of view.
+                  </p>
                   <Textarea
                     id="partyAPerspective"
                     placeholder="What might the other person be thinking or feeling?"
                     value={formData.partyAPerspective}
-                    onChange={(e) => updateFormData('partyAPerspective', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyAPerspective", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
 
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyBPerspective" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Other's Perspective</Label>
-                  <p className="text-sm text-muted-foreground">Try to understand the other person's point of view.</p>
+                  <Label
+                    htmlFor="partyBPerspective"
+                    className="text-base font-semibold"
+                  >
+                    {formData.partyBName || "Party B"} - Other's Perspective
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    Try to understand the other person's point of view.
+                  </p>
                   <Textarea
                     id="partyBPerspective"
                     placeholder="What might the other person be thinking or feeling?"
                     value={formData.partyBPerspective}
-                    onChange={(e) => updateFormData('partyBPerspective', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyBPerspective", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
               </div>
 
               <div className="space-y-3 sm:space-y-4">
-                <Label htmlFor="compromiseSolutions" className="text-base font-semibold">Compromise Solutions</Label>
-                <p className="text-sm text-muted-foreground">What solutions can you both agree on? What compromises are you willing to make?</p>
+                <Label
+                  htmlFor="compromiseSolutions"
+                  className="text-base font-semibold"
+                >
+                  Compromise Solutions
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  What solutions can you both agree on? What compromises are you
+                  willing to make?
+                </p>
                 <Textarea
                   id="compromiseSolutions"
                   placeholder="Describe the solutions you both can accept..."
                   value={formData.compromiseSolutions}
-                  onChange={(e) => updateFormData('compromiseSolutions', e.target.value)}
+                  onChange={(e) =>
+                    updateFormData("compromiseSolutions", e.target.value)
+                  }
                   rows={4}
                 />
               </div>
@@ -705,7 +916,11 @@ function App() {
       case 6:
         return (
           <div className="space-y-4 sm:space-y-6">
-            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />
+            <GuidanceAlert
+              step={currentStep}
+              partyAName={formData.partyAName}
+              partyBName={formData.partyBName}
+            />
 
             <SectionSeparator title="Agreement & Action Steps" />
             <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
@@ -715,25 +930,43 @@ function App() {
             <div className="space-y-4 sm:space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyAUnmetNeeds" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Unmet Needs</Label>
-                  <p className="text-sm text-muted-foreground">What needs of yours weren't being met in this situation?</p>
+                  <Label
+                    htmlFor="partyAUnmetNeeds"
+                    className="text-base font-semibold"
+                  >
+                    {formData.partyAName || "Party A"} - Unmet Needs
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    What needs of yours weren't being met in this situation?
+                  </p>
                   <Textarea
                     id="partyAUnmetNeeds"
                     placeholder="Describe your unmet needs..."
                     value={formData.partyAUnmetNeeds}
-                    onChange={(e) => updateFormData('partyAUnmetNeeds', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyAUnmetNeeds", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
 
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyBUnmetNeeds" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Unmet Needs</Label>
-                  <p className="text-sm text-muted-foreground">What needs of yours weren't being met in this situation?</p>
+                  <Label
+                    htmlFor="partyBUnmetNeeds"
+                    className="text-base font-semibold"
+                  >
+                    {formData.partyBName || "Party B"} - Unmet Needs
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    What needs of yours weren't being met in this situation?
+                  </p>
                   <Textarea
                     id="partyBUnmetNeeds"
                     placeholder="Describe your unmet needs..."
                     value={formData.partyBUnmetNeeds}
-                    onChange={(e) => updateFormData('partyBUnmetNeeds', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyBUnmetNeeds", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
@@ -741,62 +974,108 @@ function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyANeedsInPractice" className="text-base font-semibold">{formData.partyAName || 'Party A'} - Needs in Practice</Label>
-                  <p className="text-sm text-muted-foreground">How can these needs be met going forward?</p>
+                  <Label
+                    htmlFor="partyANeedsInPractice"
+                    className="text-base font-semibold"
+                  >
+                    {formData.partyAName || "Party A"} - Needs in Practice
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    How can these needs be met going forward?
+                  </p>
                   <Textarea
                     id="partyANeedsInPractice"
                     placeholder="Practical ways to meet your needs..."
                     value={formData.partyANeedsInPractice}
-                    onChange={(e) => updateFormData('partyANeedsInPractice', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyANeedsInPractice", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
 
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="partyBNeedsInPractice" className="text-base font-semibold">{formData.partyBName || 'Party B'} - Needs in Practice</Label>
-                  <p className="text-sm text-muted-foreground">How can these needs be met going forward?</p>
+                  <Label
+                    htmlFor="partyBNeedsInPractice"
+                    className="text-base font-semibold"
+                  >
+                    {formData.partyBName || "Party B"} - Needs in Practice
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    How can these needs be met going forward?
+                  </p>
                   <Textarea
                     id="partyBNeedsInPractice"
                     placeholder="Practical ways to meet your needs..."
                     value={formData.partyBNeedsInPractice}
-                    onChange={(e) => updateFormData('partyBNeedsInPractice', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("partyBNeedsInPractice", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
               </div>
 
               <div className="space-y-3 sm:space-y-4">
-                <Label htmlFor="actionSteps" className="text-base font-semibold">Specific Action Steps</Label>
-                <p className="text-sm text-muted-foreground">What specific actions will each person take? Include deadlines and accountability measures.</p>
+                <Label
+                  htmlFor="actionSteps"
+                  className="text-base font-semibold"
+                >
+                  Specific Action Steps
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  What specific actions will each person take? Include deadlines
+                  and accountability measures.
+                </p>
                 <Textarea
                   id="actionSteps"
                   placeholder="List specific, measurable action steps with deadlines..."
                   value={formData.actionSteps}
-                  onChange={(e) => updateFormData('actionSteps', e.target.value)}
+                  onChange={(e) =>
+                    updateFormData("actionSteps", e.target.value)
+                  }
                   rows={5}
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="followUpDate" className="text-base font-semibold">Follow-up Date</Label>
-                  <p className="text-sm text-muted-foreground">When should you check in on progress?</p>
+                  <Label
+                    htmlFor="followUpDate"
+                    className="text-base font-semibold"
+                  >
+                    Follow-up Date
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    When should you check in on progress?
+                  </p>
                   <Input
                     id="followUpDate"
                     type="date"
                     value={formData.followUpDate}
-                    onChange={(e) => updateFormData('followUpDate', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("followUpDate", e.target.value)
+                    }
                   />
                 </div>
 
                 <div className="space-y-3 sm:space-y-4">
-                  <Label htmlFor="additionalSupport" className="text-base font-semibold">Additional Support Needed</Label>
-                  <p className="text-sm text-muted-foreground">What additional resources or support might be helpful?</p>
+                  <Label
+                    htmlFor="additionalSupport"
+                    className="text-base font-semibold"
+                  >
+                    Additional Support Needed
+                  </Label>
+                  <p className="text-sm text-muted-foreground">
+                    What additional resources or support might be helpful?
+                  </p>
                   <Textarea
                     id="additionalSupport"
                     placeholder="Describe any additional support needed..."
                     value={formData.additionalSupport}
-                    onChange={(e) => updateFormData('additionalSupport', e.target.value)}
+                    onChange={(e) =>
+                      updateFormData("additionalSupport", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
@@ -841,7 +1120,9 @@ function App() {
           <div className="flex items-center justify-center gap-2 sm:gap-4 mb-2 sm:mb-4">
             <img src={logo} alt="Logo" className="h-8 w-8 sm:h-12 sm:w-12" />
             <div className="text-center">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Co-op Conflict Resolution Platform</h1>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">
+                Co-op Conflict Resolution Platform
+              </h1>
               <p className="text-primary-foreground/80 mt-1 sm:mt-2 text-sm sm:text-base">
                 A structured approach to resolving interpersonal conflicts
               </p>
@@ -853,8 +1134,12 @@ function App() {
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-4xl">
         <div className="mb-4 sm:mb-8">
           <div className="flex justify-between items-center mb-2 sm:mb-4">
-            <span className="text-xs sm:text-sm font-medium">Step {currentStep} of {TOTAL_STEPS}: {STEPS[currentStep - 1]}</span>
-            <span className="text-xs sm:text-sm text-muted-foreground">{progressPercentage}% Complete</span>
+            <span className="text-xs sm:text-sm font-medium">
+              Step {currentStep} of {TOTAL_STEPS}: {STEPS[currentStep - 1]}
+            </span>
+            <span className="text-xs sm:text-sm text-muted-foreground">
+              {progressPercentage}% Complete
+            </span>
           </div>
           <Progress value={progressPercentage} className="h-2" />
 
@@ -862,12 +1147,13 @@ function App() {
             {STEPS.map((step, index) => (
               <div
                 key={index}
-                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${index + 1 < currentStep
-                  ? 'bg-primary text-primary-foreground'
-                  : index + 1 === currentStep
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground'
-                  }`}
+                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium ${
+                  index + 1 < currentStep
+                    ? "bg-primary text-primary-foreground"
+                    : index + 1 === currentStep
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground"
+                }`}
               >
                 {index + 1}
               </div>
@@ -876,16 +1162,71 @@ function App() {
         </div>
 
         {/* Card Stack Container */}
-        <div className="relative mb-4 sm:mb-8 min-h-[500px]" style={{ height: 'auto' }}>
+        <div
+          className="relative mb-4 sm:mb-8 min-h-[500px]"
+          style={{ height: "auto" }}
+        >
           {renderCardStack()}
         </div>
 
+        {/* Desktop Navigation Buttons - Outside Container */}
+        <div className="hidden sm:block fixed top-1/2 transform -translate-y-1/2 left-4 z-50">
+          {/* Previous Button */}
+          {currentStep > 1 && (
+            <button
+              onClick={() => navigateToStep("prev")}
+              disabled={isAnimating}
+              className="w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-background/90 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Previous step"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+          )}
+        </div>
 
+        <div className="hidden sm:block fixed top-1/2 transform -translate-y-1/2 right-4 z-50">
+          {/* Next Button */}
+          {currentStep < TOTAL_STEPS && (
+            <button
+              onClick={() => navigateToStep("next")}
+              disabled={isAnimating}
+              className="w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-background/90 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Next step"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+          )}
+        </div>
 
         {/* Navigation instructions */}
         <div className="text-center text-xs text-muted-foreground mt-4 space-y-1">
           <div className="hidden sm:block">
-            💡 Desktop: Use arrow keys ← → or drag cards to navigate
+            💡 Desktop: Use arrow keys ← →, click navigation buttons, or drag
+            cards to navigate
           </div>
           <div className="sm:hidden">
             💡 Mobile: Swipe left/right to navigate

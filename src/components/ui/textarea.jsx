@@ -1,11 +1,8 @@
-import * as React from "react"
+import * as React from "react";
 
-import { cn } from "../../lib/utils"
+import { cn } from "../../lib/utils";
 
-function Textarea({
-  className,
-  ...props
-}) {
+function Textarea({ className, ...props }) {
   return (
     <textarea
       data-slot="textarea"
@@ -16,8 +13,11 @@ function Textarea({
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
         className
       )}
-      {...props} />
+      onMouseDown={(e) => e.stopPropagation()}
+      onTouchStart={(e) => e.stopPropagation()}
+      {...props}
+    />
   );
 }
 
-export { Textarea }
+export { Textarea };
