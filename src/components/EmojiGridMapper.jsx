@@ -226,30 +226,57 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
 
 // * Component for the draggable emoji
 const DraggableEmoji = React.memo(
-  ({ position, containerSize, isDragging, emotionData, onStart }) => (
-    <div
-      className="absolute w-12 h-12 flex items-center justify-center text-2xl rounded-full backdrop-blur-md border border-white/30"
-      style={{
-        left: `${(position.x / containerSize) * 100}%`,
-        top: `${(position.y / containerSize) * 100}%`,
-        transform: `translate(-50%, -50%) scale(${
-          emotionData.scaleFactor * (isDragging ? 1.1 : 1)
-        })`,
-        background:
-          "linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))",
-        boxShadow:
-          "0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 0 rgba(255,255,255,0.3)",
-        cursor: isDragging ? "grabbing" : "grab",
-      }}
-      onMouseDown={onStart}
-      onTouchStart={onStart}
-      role="button"
-      aria-label={`Drag to express emotion: ${emotionData.label}`}
-      tabIndex={0}
-    >
-      {emotionData.emoji}
-    </div>
-  )
+  ({ position, containerSize, isDragging, emotionData, onStart }) => {
+    const emojiRef = useRef(null);
+
+    useEffect(() => {
+      const emojiElement = emojiRef.current;
+      if (!emojiElement) return;
+
+      const handleMouseDown = (e) => {
+        if (onStart) onStart(e);
+      };
+
+      const handleTouchStart = (e) => {
+        if (onStart) onStart(e);
+      };
+
+      // Add event listeners with passive: false for touch events
+      emojiElement.addEventListener("mousedown", handleMouseDown);
+      emojiElement.addEventListener("touchstart", handleTouchStart, {
+        passive: false,
+      });
+
+      return () => {
+        emojiElement.removeEventListener("mousedown", handleMouseDown);
+        emojiElement.removeEventListener("touchstart", handleTouchStart);
+      };
+    }, [onStart]);
+
+    return (
+      <div
+        ref={emojiRef}
+        className="absolute w-12 h-12 flex items-center justify-center text-2xl rounded-full backdrop-blur-md border border-white/30"
+        style={{
+          left: `${(position.x / containerSize) * 100}%`,
+          top: `${(position.y / containerSize) * 100}%`,
+          transform: `translate(-50%, -50%) scale(${
+            emotionData.scaleFactor * (isDragging ? 1.1 : 1)
+          })`,
+          background:
+            "linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))",
+          boxShadow:
+            "0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 0 rgba(255,255,255,0.3)",
+          cursor: isDragging ? "grabbing" : "grab",
+        }}
+        role="button"
+        aria-label={`Drag to express emotion: ${emotionData.label}`}
+        tabIndex={0}
+      >
+        {emotionData.emoji}
+      </div>
+    );
+  }
 );
 
 // * Component for axis labels

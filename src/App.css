@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "./styles/natural-utilities.css";
-@import "./styles/shared-variables.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -235,6 +234,151 @@
   box-shadow: 0 0 0 2px rgba(107, 142, 71, 0.2);
 }
 
+/* Enhanced form styling */
+.form-field {
+  position: relative;
+  transition: all 0.3s ease;
+  pointer-events: auto;
+}
+
+.form-field:focus-within {
+  transform: translateY(-1px);
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  transition: all 0.2s ease;
+  resize: vertical;
+  min-height: 44px;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 10;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(107, 142, 71, 0.1);
+  background: var(--background);
+}
+
+.form-input:hover {
+  border-color: var(--primary/60);
+}
+
+.form-input::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.7;
+}
+
+.form-textarea {
+  min-height: 100px;
+  resize: vertical;
+  font-family: inherit;
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 10;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.form-field:focus-within .form-label {
+  color: var(--primary);
+}
+
+.form-description {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  margin-top: 0.25rem;
+  line-height: 1.4;
+}
+
+/* Date input specific styling */
+.form-input[type="date"] {
+  position: relative;
+  cursor: pointer;
+}
+
+.form-input[type="date"]::-webkit-calendar-picker-indicator {
+  background: transparent;
+  bottom: 0;
+  color: transparent;
+  cursor: pointer;
+  height: auto;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: auto;
+}
+
+/* Enhanced form field groups */
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-field-group .form-field {
+  flex: 1;
+}
+
+/* Grid layout for form fields */
+.form-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.form-grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* Form validation states */
+.form-input.error {
+  border-color: var(--destructive);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.form-input.success {
+  border-color: var(--success);
+  box-shadow: 0 0 0 3px rgba(107, 142, 71, 0.1);
+}
+
+/* Form field animations */
+@keyframes formFieldFocus {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.form-field:focus-within {
+  animation: formFieldFocus 0.2s ease-out;
+}
+
 /* Tooltip styles */
 .tooltip {
   position: relative;
@@ -389,9 +533,18 @@
   -ms-user-select: text;
 }
 
+/* Ensure form inputs are always interactive */
+.fixed-content input,
+.fixed-content textarea {
+  pointer-events: auto !important;
+  touch-action: auto !important;
+  position: relative;
+  z-index: 20;
+}
+
 /* Draggable card container */
 .draggable-card-container {
-  touch-action: pan-y; /* Allow vertical scrolling but handle horizontal ourselves */
+  touch-action: manipulation; /* Allow all touch actions except double-tap zoom */
   cursor: default;
 }
 
