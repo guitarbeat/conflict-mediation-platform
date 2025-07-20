@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
@@ -11,6 +11,7 @@ import SectionSeparator from "./components/SectionSeparator";
 import DarkModeToggle from "./components/DarkModeToggle";
 import GuidanceAlert from "./components/GuidanceAlert";
 import ParticleBackground from "./components/ParticleBackground";
+import DebugPanel from "./components/DebugPanel";
 import { generateEnhancedPDF } from "./utils/pdfGenerator";
 import logo from "./assets/logo.png";
 import "./App.css";
@@ -204,23 +205,6 @@ function App() {
       setDragOffset(0);
     }
   };
-
-  // Keyboard navigation for desktop
-  useEffect(() => {
-    const handleKeyPress = (e) => {
-      if (isAnimating) return;
-
-      if (e.key === "ArrowLeft" && currentStep > 1) {
-        navigateToStep("prev");
-      }
-      if (e.key === "ArrowRight" && currentStep < TOTAL_STEPS) {
-        navigateToStep("next");
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [currentStep, isAnimating]);
 
   // Reusable form components
   const FormField = ({
@@ -1114,6 +1098,7 @@ function App() {
     <div className="min-h-screen bg-background">
       <ParticleBackground />
       <DarkModeToggle />
+      <DebugPanel />
 
       <div className="bg-gradient-to-r from-primary to-secondary text-primary-foreground py-4 sm:py-8">
         <div className="container mx-auto px-2 sm:px-4">

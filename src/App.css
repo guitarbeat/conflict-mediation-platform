@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "./styles/natural-utilities.css";
+@import "./styles/shared-variables.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -44,59 +45,41 @@
 
 :root {
   /* Natural Design System - Spacing Scale */
-  --space-xs: 0.25rem;    /* 4px */
-  --space-sm: 0.5rem;     /* 8px */
-  --space-md: 1rem;       /* 16px */
-  --space-lg: 1.5rem;     /* 24px */
-  --space-xl: 2rem;       /* 32px */
-  --space-2xl: 3rem;      /* 48px */
-  --space-3xl: 4rem;      /* 64px */
-  
+  --space-xs: 0.25rem; /* 4px */
+  --space-sm: 0.5rem; /* 8px */
+  --space-md: 1rem; /* 16px */
+  --space-lg: 1.5rem; /* 24px */
+  --space-xl: 2rem; /* 32px */
+  --space-2xl: 3rem; /* 48px */
+  --space-3xl: 4rem; /* 64px */
+
   /* Natural Border Radius Scale */
-  --radius-xs: 0.25rem;   /* 4px - subtle curves */
-  --radius-sm: 0.5rem;    /* 8px - gentle curves */
-  --radius: 0.75rem;      /* 12px - natural curves */
-  --radius-md: 1rem;      /* 16px - soft curves */
-  --radius-lg: 1.5rem;    /* 24px - organic curves */
-  --radius-xl: 2rem;      /* 32px - flowing curves */
-  --radius-full: 9999px;  /* full circles */
-  
+  --radius-xs: 0.25rem; /* 4px - subtle curves */
+  --radius-sm: 0.5rem; /* 8px - gentle curves */
+  --radius: 0.75rem; /* 12px - natural curves */
+  --radius-md: 1rem; /* 16px - soft curves */
+  --radius-lg: 1.5rem; /* 24px - organic curves */
+  --radius-xl: 2rem; /* 32px - flowing curves */
+  --radius-full: 9999px; /* full circles */
+
+  /* * Import shared color variables to eliminate duplication */
   /* Enhanced Natural Color Palette - Much darker tones for better contrast */
-  --background: #ffffff;           /* pure white background */
-  --foreground: #1a1f16;           /* very dark forest green */
-  --card: #ffffff;                 /* pure white for maximum contrast */
-  --card-foreground: #1a1f16;      /* very dark forest green */
-  --popover: #ffffff;              /* pure white */
-  --popover-foreground: #1a1f16;   /* very dark forest green */
-  --primary: #4a6332;              /* darker forest green */
-  --primary-foreground: #ffffff;    /* white text on primary */
-  --secondary: #78716c;            /* much darker warm stone */
-  --secondary-foreground: #ffffff; /* white text on secondary */
-  --muted: #f5f5f4;                /* light neutral background */
-  --muted-foreground: #44403c;     /* much darker taupe for better contrast */
-  --accent: #0f766e;               /* much deeper teal */
-  --accent-foreground: #ffffff;     /* white text on accent */
-  --destructive: #dc2626;          /* darker natural red */
-  --destructive-foreground: #ffffff; /* white text on destructive */
-  --border: #d6d3d1;               /* darker stone border */
-  --input: #ffffff;                /* pure white input background */
-  --ring: #4a6332;                 /* darker forest green focus ring */
-  
+
   /* Additional semantic colors */
-  --success: #6b8e47;              /* forest green */
-  --success-foreground: #ffffff;    /* white text */
-  --warning: #e39849;              /* golden amber */
-  --warning-foreground: #ffffff;    /* white text */
-  --info: #3ba88f;                 /* teal */
-  --info-foreground: #ffffff;      /* white text */
-  
+  --success: #6b8e47; /* forest green */
+  --success-foreground: #ffffff; /* white text */
+  --warning: #e39849; /* golden amber */
+  --warning-foreground: #ffffff; /* white text */
+  --info: #3ba88f; /* teal */
+  --info-foreground: #ffffff; /* white text */
+
   /* Natural Chart Colors */
-  --chart-1: #6b8e47;              /* forest green */
-  --chart-2: #2d9d7e;              /* teal */
-  --chart-3: #9a8f7e;              /* taupe */
-  --chart-4: #b8d19f;              /* light sage */
-  --chart-5: #7dd3c0;              /* light teal */
-  
+  --chart-1: #6b8e47; /* forest green */
+  --chart-2: #2d9d7e; /* teal */
+  --chart-3: #9a8f7e; /* taupe */
+  --chart-4: #b8d19f; /* light sage */
+  --chart-5: #7dd3c0; /* light teal */
+
   /* Sidebar Colors */
   --sidebar: #ffffff;
   --sidebar-foreground: #2d3a20;
@@ -106,52 +89,38 @@
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: #e8e4de;
   --sidebar-ring: #6b8e47;
-  
+
   /* Natural Shadows with warmer tones */
   --shadow-sm: 0 1px 2px 0 rgba(45, 58, 32, 0.08);
-  --shadow: 0 1px 3px 0 rgba(45, 58, 32, 0.12), 0 1px 2px -1px rgba(45, 58, 32, 0.08);
-  --shadow-md: 0 4px 6px -1px rgba(45, 58, 32, 0.12), 0 2px 4px -2px rgba(45, 58, 32, 0.08);
-  --shadow-lg: 0 10px 15px -3px rgba(45, 58, 32, 0.12), 0 4px 6px -4px rgba(45, 58, 32, 0.08);
-  --shadow-xl: 0 20px 25px -5px rgba(45, 58, 32, 0.15), 0 8px 10px -6px rgba(45, 58, 32, 0.08);
+  --shadow: 0 1px 3px 0 rgba(45, 58, 32, 0.12),
+    0 1px 2px -1px rgba(45, 58, 32, 0.08);
+  --shadow-md: 0 4px 6px -1px rgba(45, 58, 32, 0.12),
+    0 2px 4px -2px rgba(45, 58, 32, 0.08);
+  --shadow-lg: 0 10px 15px -3px rgba(45, 58, 32, 0.12),
+    0 4px 6px -4px rgba(45, 58, 32, 0.08);
+  --shadow-xl: 0 20px 25px -5px rgba(45, 58, 32, 0.15),
+    0 8px 10px -6px rgba(45, 58, 32, 0.08);
 }
 
 .dark {
+  /* * Import shared dark mode color variables to eliminate duplication */
   /* Enhanced Dark mode with natural earth tones */
-  --background: #1f2817;           /* deepest forest night */
-  --foreground: #f0f4ea;           /* pale sage */
-  --card: #2d3a20;                 /* forest night card */
-  --card-foreground: #f0f4ea;      /* pale sage */
-  --popover: #2d3a20;              /* forest night */
-  --popover-foreground: #f0f4ea;   /* pale sage */
-  --primary: #a8c285;              /* sage green */
-  --primary-foreground: #2d3a20;   /* forest night */
-  --secondary: #635a4f;            /* darker taupe */
-  --secondary-foreground: #f8f6f2; /* light cream */
-  --muted: #364825;                /* deepest forest */
-  --muted-foreground: #d1c9bc;     /* medium stone */
-  --accent: #5fc4ab;               /* mint green */
-  --accent-foreground: #1f2817;    /* deepest night */
-  --destructive: #ef4444;          /* natural red */
-  --destructive-foreground: #ffffff; /* white text */
-  --border: #4a6332;               /* darker forest border */
-  --input: #364825;                /* deepest forest input */
-  --ring: #a8c285;                 /* sage green focus ring */
-  
+
   /* Additional semantic colors for dark mode */
-  --success: #a8c285;              /* sage green */
-  --success-foreground: #2d3a20;   /* forest night */
-  --warning: #edb572;              /* warm gold */
-  --warning-foreground: #2d3a20;   /* forest night */
-  --info: #5fc4ab;                 /* mint green */
-  --info-foreground: #1f2817;     /* deepest night */
-  
+  --success: #a8c285; /* sage green */
+  --success-foreground: #2d3a20; /* forest night */
+  --warning: #edb572; /* warm gold */
+  --warning-foreground: #2d3a20; /* forest night */
+  --info: #5fc4ab; /* mint green */
+  --info-foreground: #1f2817; /* deepest night */
+
   /* Enhanced dark mode chart colors */
-  --chart-1: #a8c285;              /* sage green */
-  --chart-2: #5fc4ab;              /* mint green */
-  --chart-3: #d1c9bc;              /* medium stone */
-  --chart-4: #94d9c8;              /* medium mint */
-  --chart-5: #edb572;              /* warm gold */
-  
+  --chart-1: #a8c285; /* sage green */
+  --chart-2: #5fc4ab; /* mint green */
+  --chart-3: #d1c9bc; /* medium stone */
+  --chart-4: #94d9c8; /* medium mint */
+  --chart-5: #edb572; /* warm gold */
+
   /* Enhanced dark sidebar colors */
   --sidebar: #2d3a20;
   --sidebar-foreground: #f0f4ea;
@@ -174,7 +143,7 @@
 }
 
 .section-divider::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 0;
@@ -192,7 +161,8 @@
 
 .card-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 /* Removed floating animation for natural aesthetic */
@@ -323,16 +293,12 @@
 
 /* Enhanced shadows with natural tones */
 .shadow-enhanced {
-  box-shadow:
-    0 1px 3px rgba(45, 58, 32, 0.12),
-    0 1px 2px rgba(45, 58, 32, 0.08),
+  box-shadow: 0 1px 3px rgba(45, 58, 32, 0.12), 0 1px 2px rgba(45, 58, 32, 0.08),
     0 0 0 1px rgba(107, 142, 71, 0.1);
 }
 
 .dark .shadow-enhanced {
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.4),
-    0 1px 2px rgba(0, 0, 0, 0.2),
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.2),
     0 0 0 1px rgba(143, 181, 107, 0.2);
 }
 
@@ -440,9 +406,8 @@
 
 /* Enhanced card transitions for stack effect */
 .card-transition {
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.3s ease,
-              z-index 0s;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease,
+    z-index 0s;
 }
 
 .slide-in-left {
