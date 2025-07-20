@@ -75,37 +75,37 @@ function MyComponent() {
 }
 ```
 
-### 4. **Performance Monitoring** (`src/hooks/use-performance.js`)
+### 4. **Form Debugging** (`src/hooks/use-form-debug.js`)
 
-Hooks for monitoring application performance:
+Hooks for debugging form interactions:
 
-#### `useRenderPerformance(componentName, options)`
-Monitors render performance and memory usage:
+#### `useFormFieldDebug(fieldName, value, options)`
+Monitors individual field interactions:
 ```javascript
-import { useRenderPerformance } from '../hooks/use-performance';
+import { useFormFieldDebug } from '../hooks/use-form-debug';
 
-function MyComponent() {
-  useRenderPerformance('MyComponent', { 
-    threshold: 16, // 16ms = 60fps
-    trackMemory: true 
-  });
-  // ...
+function MyFormField({ fieldName, value, onChange }) {
+  const debugHandlers = useFormFieldDebug(fieldName, value);
+  
+  return (
+    <Input
+      value={value}
+      onChange={onChange}
+      {...debugHandlers}
+    />
+  );
 }
 ```
 
-#### `useAsyncPerformance(context, options)`
-Monitors async operation performance:
+#### `useFormStats(formData, options)`
+Tracks overall form statistics:
 ```javascript
-import { useAsyncPerformance } from '../hooks/use-performance';
+import { useFormStats } from '../hooks/use-form-debug';
 
-function MyComponent() {
-  const debugAsync = useAsyncPerformance('MyComponent');
-  
-  const handleAsyncOperation = async () => {
-    await debugAsync(async () => {
-      // async operation
-    }, 'fetchData');
-  };
+function MyForm() {
+  const [formData, setFormData] = useState({});
+  useFormStats(formData, { logLevel: 'info' });
+  // ...
 }
 ```
 
@@ -114,7 +114,7 @@ function MyComponent() {
 Interactive debugging interface (development only):
 - **Log level control**: Change logging verbosity
 - **Real-time logs**: View recent log entries
-- **Performance metrics**: Memory usage and timing
+- **Form debug tab**: Dedicated form debugging interface
 - **Export capabilities**: Download logs as JSON
 - **Quick actions**: Test logging functionality
 
@@ -135,11 +135,11 @@ useDebugState(myState, 'ComponentName');
 useDebugForm(formData, 'FormComponent');
 ```
 
-#### **Performance Problems**
+#### **Form Interaction Issues**
 ```javascript
-// Add to slow components
-useRenderPerformance('SlowComponent', { threshold: 16 });
-useAsyncPerformance('SlowComponent');
+// Add to form components
+const debugHandlers = useFormFieldDebug('fieldName', value);
+useFormStats(formData, { logLevel: 'info' });
 ```
 
 #### **Effect Dependencies**
@@ -172,36 +172,39 @@ const handleClick = debugHandler(originalHandler, 'click');
 - **DEBUG**: Detailed debugging information
 - **TRACE**: Very detailed tracing (use sparingly)
 
-### 4. **Performance Analysis**
+### 4. **Form Analysis**
 
-#### **Memory Monitoring**
-- Check memory usage in debug panel
-- Look for memory leaks (increasing usage over time)
-- Monitor heap size limits
+#### **User Interaction Patterns**
+- Track field focus order and duration
+- Monitor typing patterns and corrections
+- Identify copy/paste behavior
+- Analyze form completion rates
 
-#### **Render Performance**
-- Watch for slow renders (>16ms)
-- Identify components that render too frequently
-- Check for unnecessary re-renders
+#### **Form Statistics**
+- Monitor overall form completion percentage
+- Track character counts and field usage
+- Identify problematic or unused fields
+- Analyze data quality and complexity
 
-#### **Async Operations**
-- Monitor operation duration
-- Identify slow API calls
-- Track error rates
+#### **Validation Patterns**
+- Track validation error frequency
+- Monitor error resolution patterns
+- Identify fields with high error rates
+- Analyze validation timing
 
 ## 🚨 Troubleshooting Common Issues
 
-### **High Memory Usage**
-1. Check memory metrics in debug panel
-2. Look for components not unmounting properly
-3. Check for event listener leaks
-4. Monitor for large objects in state
+### **Form Interaction Issues**
+1. Check form debug tab in debug panel
+2. Look for fields with high error rates
+3. Monitor user interaction patterns
+4. Analyze form completion statistics
 
-### **Slow Renders**
-1. Use `useRenderPerformance` to identify slow components
-2. Check for expensive calculations in render
-3. Look for unnecessary re-renders
-4. Consider memoization with `useMemo` and `useCallback`
+### **Form Validation Problems**
+1. Use `useFormValidationDebug` to track validation errors
+2. Check for fields with high error rates
+3. Monitor validation timing and patterns
+4. Analyze error resolution patterns
 
 ### **State Update Issues**
 1. Use `useDebugState` to track state changes
@@ -209,11 +212,11 @@ const handleClick = debugHandler(originalHandler, 'click');
 3. Verify dependency arrays in hooks
 4. Look for infinite update loops
 
-### **Async Operation Failures**
-1. Use `useAsyncPerformance` to monitor operations
+### **Form Submission Issues**
+1. Use `useFormSubmissionDebug` to monitor submissions
 2. Check error logs for specific failure reasons
-3. Verify API endpoints and network connectivity
-4. Look for timeout issues
+3. Verify form data integrity
+4. Look for validation issues
 
 ## 📊 Debug Panel Features
 
@@ -221,7 +224,7 @@ const handleClick = debugHandler(originalHandler, 'click');
 - **Log Level**: Adjust verbosity (ERROR, WARN, INFO, DEBUG, TRACE)
 - **Export Logs**: Download logs as JSON file
 - **Clear Logs**: Reset log history
-- **Performance**: Real-time memory usage
+- **Form Debug**: Toggle form debugging features
 
 ### **Log Viewer**
 - **Real-time updates**: Logs appear as they happen
@@ -244,7 +247,7 @@ const handleClick = debugHandler(originalHandler, 'click');
 ### **Performance Impact**
 - Debug tools have minimal impact when disabled
 - Log history is limited to 1000 entries
-- Performance monitoring uses efficient APIs
+- Form debugging uses efficient event handling
 
 ### **Security**
 - No sensitive data in logs by default
@@ -255,9 +258,9 @@ const handleClick = debugHandler(originalHandler, 'click');
 
 ### **When to Use Debug Tools**
 - ✅ During development and testing
-- ✅ When investigating specific issues
-- ✅ For performance optimization
-- ✅ When adding new features
+- ✅ When investigating form issues
+- ✅ For user experience optimization
+- ✅ When adding new form features
 
 ### **When Not to Use**
 - ❌ In production code
@@ -271,11 +274,11 @@ const handleClick = debugHandler(originalHandler, 'click');
 - Use appropriate log levels
 - Keep log messages concise but informative
 
-### **Performance Monitoring**
-- Set realistic thresholds
-- Monitor key user interactions
-- Track memory usage over time
-- Focus on user-perceived performance
+### **Form Monitoring**
+- Track user interaction patterns
+- Monitor form completion rates
+- Analyze validation error patterns
+- Focus on user experience improvements
 
 ## 🆘 Getting Help
 

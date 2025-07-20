@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Settings, X, Download, Trash2, Eye, EyeOff } from "lucide-react";
+import {
+  Settings,
+  X,
+  Download,
+  Trash2,
+  Eye,
+  EyeOff,
+  Copy,
+  Check,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -10,7 +19,7 @@ const DebugPanel = () => {
   const [logLevel, setLogLevel] = useState(logger.level);
   const [logHistory, setLogHistory] = useState([]);
   const [showLogs, setShowLogs] = useState(true);
-  const [performanceData, setPerformanceData] = useState({});
+  const [copyStatus, setCopyStatus] = useState({});
 
   useEffect(() => {
     // * Only run in development
@@ -20,27 +29,26 @@ const DebugPanel = () => {
       setLogHistory(logger.getLogHistory());
     };
 
-    const updatePerformanceData = () => {
-      if (performance.memory) {
-        const memory = performance.memory;
-        setPerformanceData({
-          usedMB: Math.round((memory.usedJSHeapSize / 1024 / 1024) * 100) / 100,
-          totalMB:
-            Math.round((memory.totalJSHeapSize / 1024 / 1024) * 100) / 100,
-          limitMB:
-            Math.round((memory.jsHeapSizeLimit / 1024 / 1024) * 100) / 100,
-        });
+    // * Add keyboard shortcut for debug panel
+    const handleKeyDown = (event) => {
+      if (event.key === "F12" || (event.ctrlKey && event.key === "d")) {
+        event.preventDefault();
+        setIsOpen(!isOpen);
       }
     };
+
+    window.addEventListener("keydown", handleKeyDown);
 
     // * Update every second
     const intervalId = setInterval(() => {
       updateLogHistory();
-      updatePerformanceData();
     }, 1000);
 
-    return () => clearInterval(intervalId);
-  }, []);
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
 
   const handleLogLevelChange = (newLevel) => {
     setLogLevel(newLevel);
@@ -64,6 +72,78 @@ const DebugPanel = () => {
   const clearLogs = () => {
     logger.clearLogHistory();
     setLogHistory([]);
+  };
+
+  const copyToClipboard = async (text, key) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyStatus((prev) => ({ ...prev, [key]: true }));
+      setTimeout(() => {
+        setCopyStatus((prev) => ({ ...prev, [key]: false }));
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to copy to clipboard:", err);
+    }
+  };
+
+  const copyAllLogs = () => {
+    const logText = logHistory
+      .map(
+        (log) =>
+          `[${log.level.toUpperCase()}] [${log.context}] ${log.message}${
+            log.data ? "\n" + JSON.stringify(log.data, null, 2) : ""
+          }`
+      )
+      .join("\n");
+    copyToClipboard(logText, "allLogs");
+  };
+
+  const copyFormData = () => {
+    const formDataText = `Form Debug Data:\n\nLogs (${
+      logHistory.length
+    } entries):\n${logHistory
+      .filter(
+        (log) => log.context === "FormField" || log.context === "FormStats"
+      )
+      .map(
+        (log) =>
+          `[${log.level.toUpperCase()}] [${log.context}] ${log.message}${
+            log.data ? "\n" + JSON.stringify(log.data, null, 2) : ""
+          }`
+      )
+      .join("\n")}`;
+    copyToClipboard(formDataText, "formData");
+  };
+
+  const copyCurrentFormState = () => {
+    // Get the current form state from the most recent FormStats log
+    const latestFormStats = logHistory
+      .filter((log) => log.context === "FormStats")
+      .pop();
+
+    const formStateText = latestFormStats
+      ? `Current Form State:\n${JSON.stringify(latestFormStats.data, null, 2)}`
+      : "No form statistics available yet. Try interacting with the form first.";
+
+    copyToClipboard(formStateText, "formState");
+  };
+
+  const copyFormFieldLogs = () => {
+    const formFieldLogs = logHistory
+      .filter((log) => log.context === "FormField")
+      .map(
+        (log) =>
+          `[${log.level.toUpperCase()}] [${log.context}] ${log.message}${
+            log.data ? "\n" + JSON.stringify(log.data, null, 2) : ""
+          }`
+      )
+      .join("\n");
+
+    const logText = formFieldLogs
+      ? `Form Field Logs:\n\n${formFieldLogs}`
+      : "No form field logs available yet. Try interacting with form fields first.";
+
+    copyToClipboard(logText, "formFieldLogs");
   };
 
   const getLogLevelColor = (level) => {
@@ -101,8 +181,8 @@ const DebugPanel = () => {
 
       {/* * Debug Panel */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <Card className="w-full max-w-4xl max-h-[90vh] overflow-hidden">
+        <div className="fixed top-0 right-0 h-full z-50 bg-background/95 backdrop-blur-sm border-l border-border shadow-lg">
+          <Card className="h-full w-96 max-w-[90vw] rounded-none border-0 shadow-none">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-lg font-semibold">
                 Debug Panel
@@ -116,9 +196,9 @@ const DebugPanel = () => {
               </Button>
             </CardHeader>
 
-            <CardContent className="space-y-4 overflow-y-auto max-h-[calc(90vh-80px)]">
+            <CardContent className="space-y-4 overflow-y-auto h-[calc(100vh-80px)]">
               {/* * Controls Section */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Log Level</label>
                   <select
@@ -138,36 +218,24 @@ const DebugPanel = () => {
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Actions</label>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 flex-wrap">
                     <Button size="sm" onClick={exportLogs}>
                       <Download className="h-3 w-3 mr-1" />
                       Export
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={copyAllLogs}>
+                      {copyStatus.allLogs ? (
+                        <Check className="h-3 w-3 mr-1" />
+                      ) : (
+                        <Copy className="h-3 w-3 mr-1" />
+                      )}
+                      {copyStatus.allLogs ? "Copied!" : "Copy All"}
                     </Button>
                     <Button size="sm" variant="outline" onClick={clearLogs}>
                       <Trash2 className="h-3 w-3 mr-1" />
                       Clear
                     </Button>
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Performance</label>
-                  {performanceData.usedMB && (
-                    <div className="text-xs space-y-1">
-                      <div>
-                        Memory: {performanceData.usedMB}MB /{" "}
-                        {performanceData.limitMB}MB
-                      </div>
-                      <div>
-                        Usage:{" "}
-                        {Math.round(
-                          (performanceData.usedMB / performanceData.limitMB) *
-                            100
-                        )}
-                        %
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -191,7 +259,7 @@ const DebugPanel = () => {
                 </div>
 
                 {showLogs && (
-                  <div className="bg-muted/50 rounded-md p-2 max-h-60 overflow-y-auto">
+                  <div className="bg-muted/50 rounded-md p-2 max-h-80 overflow-y-auto">
                     {logHistory.length === 0 ? (
                       <p className="text-muted-foreground text-sm">
                         No logs yet
@@ -199,32 +267,80 @@ const DebugPanel = () => {
                     ) : (
                       <div className="space-y-1">
                         {logHistory
-                          .slice(-50)
+                          .slice(-30)
                           .reverse()
                           .map((log, index) => (
-                            <div key={index} className="text-xs font-mono">
-                              <Badge
-                                className={`mr-2 ${getLogLevelColor(
-                                  log.level
-                                )}`}
+                            <div
+                              key={index}
+                              className="text-xs font-mono border-b border-border/20 pb-1 relative group"
+                            >
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="absolute top-1 right-1 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() =>
+                                  copyToClipboard(
+                                    `[${log.level.toUpperCase()}] [${
+                                      log.context
+                                    }] ${log.message}${
+                                      log.data
+                                        ? "\n" +
+                                          JSON.stringify(log.data, null, 2)
+                                        : ""
+                                    }`,
+                                    `logEntry-${index}`
+                                  )
+                                }
                               >
-                                {log.level}
-                              </Badge>
-                              <span className="text-muted-foreground">
-                                {log.timestamp}
-                              </span>
-                              <span className="text-blue-600 ml-2">
+                                {copyStatus[`logEntry-${index}`] ? (
+                                  <Check className="h-3 w-3" />
+                                ) : (
+                                  <Copy className="h-3 w-3" />
+                                )}
+                              </Button>
+                              <div className="flex items-center gap-1 mb-1">
+                                <Badge
+                                  className={`${getLogLevelColor(
+                                    log.level
+                                  )} text-xs px-1 py-0`}
+                                >
+                                  {log.level}
+                                </Badge>
+                                <span className="text-muted-foreground text-xs">
+                                  {new Date(log.timestamp).toLocaleTimeString()}
+                                </span>
+                              </div>
+                              <div className="text-blue-600 text-xs">
                                 [{log.context}]
-                              </span>
-                              <span className="ml-2">{log.message}</span>
+                              </div>
+                              <div className="text-xs">{log.message}</div>
                               {log.data && (
-                                <details className="ml-4 mt-1">
-                                  <summary className="cursor-pointer text-blue-600">
+                                <details className="mt-1">
+                                  <summary className="cursor-pointer text-blue-600 text-xs">
                                     Data
                                   </summary>
-                                  <pre className="text-xs bg-background p-2 rounded mt-1 overflow-x-auto">
-                                    {JSON.stringify(log.data, null, 2)}
-                                  </pre>
+                                  <div className="relative">
+                                    <pre className="text-xs bg-background p-1 rounded mt-1 overflow-x-auto max-h-20">
+                                      {JSON.stringify(log.data, null, 1)}
+                                    </pre>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      className="absolute top-1 right-1 h-6 w-6 p-0"
+                                      onClick={() =>
+                                        copyToClipboard(
+                                          JSON.stringify(log.data, null, 2),
+                                          `log-${index}`
+                                        )
+                                      }
+                                    >
+                                      {copyStatus[`log-${index}`] ? (
+                                        <Check className="h-3 w-3" />
+                                      ) : (
+                                        <Copy className="h-3 w-3" />
+                                      )}
+                                    </Button>
+                                  </div>
                                 </details>
                               )}
                             </div>
@@ -269,6 +385,45 @@ const DebugPanel = () => {
                     }}
                   >
                     Test Error
+                  </Button>
+                </div>
+              </div>
+
+              {/* * Form Debug Controls */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Form Debug</label>
+                <div className="flex gap-2 flex-wrap">
+                  <Button size="sm" variant="outline" onClick={copyFormData}>
+                    {copyStatus.formData ? (
+                      <Check className="h-3 w-3 mr-1" />
+                    ) : (
+                      <Copy className="h-3 w-3 mr-1" />
+                    )}
+                    {copyStatus.formData ? "Copied!" : "Copy Form Data"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={copyCurrentFormState}
+                  >
+                    {copyStatus.formState ? (
+                      <Check className="h-3 w-3 mr-1" />
+                    ) : (
+                      <Copy className="h-3 w-3 mr-1" />
+                    )}
+                    {copyStatus.formState ? "Copied!" : "Copy Form State"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={copyFormFieldLogs}
+                  >
+                    {copyStatus.formFieldLogs ? (
+                      <Check className="h-3 w-3 mr-1" />
+                    ) : (
+                      <Copy className="h-3 w-3 mr-1" />
+                    )}
+                    {copyStatus.formFieldLogs ? "Copied!" : "Copy Field Logs"}
                   </Button>
                 </div>
               </div>

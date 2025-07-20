@@ -13,6 +13,7 @@ import GuidanceAlert from "./components/GuidanceAlert";
 import ParticleBackground from "./components/ParticleBackground";
 import DebugPanel from "./components/DebugPanel";
 import { generateEnhancedPDF } from "./utils/pdfGenerator";
+import { useFormFieldDebug, useFormStats } from "./hooks/use-form-debug";
 import logo from "./assets/logo.png";
 import "./App.css";
 
@@ -93,6 +94,9 @@ function App() {
   // Computed values
   const progressPercentage = Math.round((currentStep / TOTAL_STEPS) * 100);
   const isAnimating = animatingCard !== null;
+
+  // * Add form debugging and statistics
+  useFormStats(formData, { logLevel: "info" });
 
   // Helper functions
   const updateFormData = (field, value) => {
@@ -216,30 +220,37 @@ function App() {
     type = "input",
     rows = 3,
     className = "",
-  }) => (
-    <div className="space-y-2">
-      <Label htmlFor={id} className={className}>
-        {label}
-      </Label>
-      {type === "textarea" ? (
-        <Textarea
-          id={id}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          rows={rows}
-        />
-      ) : (
-        <Input
-          id={id}
-          type={type}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      )}
-    </div>
-  );
+  }) => {
+    // * Add form debugging
+    const debugHandlers = useFormFieldDebug(id, value);
+
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={id} className={className}>
+          {label}
+        </Label>
+        {type === "textarea" ? (
+          <Textarea
+            id={id}
+            placeholder={placeholder}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            rows={rows}
+            {...debugHandlers}
+          />
+        ) : (
+          <Input
+            id={id}
+            type={type}
+            placeholder={placeholder}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            {...debugHandlers}
+          />
+        )}
+      </div>
+    );
+  };
 
   const CommunicationApproaches = ({ prefix }) => (
     <div className="space-y-4 sm:space-y-6">
