@@ -5,6 +5,7 @@ An interactive web application designed to help co-op members work through inter
 ## 🌟 Features
 
 ### Core Functionality
+
 - **6-Step Guided Process**: Based on ICC Austin's proven conflict mediation framework
 - **Individual Reflection**: Private spaces for each party to process thoughts and emotions
 - **Shared Discussion**: ABCDE cognitive behavioral model for structured conversation
@@ -12,12 +13,14 @@ An interactive web application designed to help co-op members work through inter
 - **Agreement Documentation**: Action steps and follow-up planning
 
 ### Enhanced Emotion Expression
+
 - **Draggable Valence-Arousal Chart**: Interactive emotion mapping with smooth animations
 - **Emotion Word Selection**: 30+ emotion words for precise feeling identification
 - **Dual Data Capture**: Separate tracking of chart positions and selected words
 - **Visual Feedback**: Real-time emotion summary cards
 
 ### Professional Design
+
 - **Co-op Branding**: Custom color palette and logo integration
 - **Dark/Light Mode**: Complete theme switching with user preference storage
 - **Responsive Design**: Works perfectly on desktop, tablet, and mobile
