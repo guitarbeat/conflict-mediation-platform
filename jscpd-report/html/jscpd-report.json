@@ -1,0 +1,2830 @@
+{
+  "statistics": {
+    "detectionDate": "2025-07-26T21:50:41.343Z",
+    "formats": {
+      "javascript": {
+        "sources": {
+          "src/components/ui/tooltip.jsx": {
+            "lines": 33,
+            "tokens": 176,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/toggle.jsx": {
+            "lines": 0,
+            "tokens": 15,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/toggle-group.jsx": {
+            "lines": 31,
+            "tokens": 180,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/textarea.jsx": {
+            "lines": 8,
+            "tokens": 48,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/tabs.jsx": {
+            "lines": 42,
+            "tokens": 187,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/table.jsx": {
+            "lines": 94,
+            "tokens": 429,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/switch.jsx": {
+            "lines": 9,
+            "tokens": 36,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/sonner.jsx": {
+            "lines": 8,
+            "tokens": 36,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/slider.jsx": {
+            "lines": 23,
+            "tokens": 134,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/skeleton.jsx": {
+            "lines": 0,
+            "tokens": 8,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/sidebar.jsx": {
+            "lines": 511,
+            "tokens": 2773,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/sheet.jsx": {
+            "lines": 86,
+            "tokens": 421,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/separator.jsx": {
+            "lines": 5,
+            "tokens": 21,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/select.jsx": {
+            "lines": 112,
+            "tokens": 563,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/scroll-area.jsx": {
+            "lines": 28,
+            "tokens": 143,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/resizable.jsx": {
+            "lines": 25,
+            "tokens": 111,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/radio-group.jsx": {
+            "lines": 15,
+            "tokens": 68,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/progress.jsx": {
+            "lines": 3,
+            "tokens": 9,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/popover.jsx": {
+            "lines": 5,
+            "tokens": 21,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/pagination.jsx": {
+            "lines": 82,
+            "tokens": 453,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/navigation-menu.jsx": {
+            "lines": 117,
+            "tokens": 529,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/menubar.jsx": {
+            "lines": 214,
+            "tokens": 1032,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/menu-base.jsx": {
+            "lines": 153,
+            "tokens": 788,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/label.jsx": {
+            "lines": 3,
+            "tokens": 9,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/input.jsx": {
+            "lines": 10,
+            "tokens": 60,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/input-otp.jsx": {
+            "lines": 33,
+            "tokens": 194,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/hover-card.jsx": {
+            "lines": 5,
+            "tokens": 21,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/form.jsx": {
+            "lines": 109,
+            "tokens": 737,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/dropdown-menu.jsx": {
+            "lines": 111,
+            "tokens": 584,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/drawer.jsx": {
+            "lines": 78,
+            "tokens": 364,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/dialog.jsx": {
+            "lines": 77,
+            "tokens": 381,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/context-menu.jsx": {
+            "lines": 3,
+            "tokens": 9,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/command.jsx": {
+            "lines": 117,
+            "tokens": 583,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/checkbox.jsx": {
+            "lines": 3,
+            "tokens": 9,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/chart.jsx": {
+            "lines": 220,
+            "tokens": 1461,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/carousel.jsx": {
+            "lines": 115,
+            "tokens": 610,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/card.jsx": {
+            "lines": 76,
+            "tokens": 361,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/calendar.jsx": {
+            "lines": 3,
+            "tokens": 54,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/button.jsx": {
+            "lines": 0,
+            "tokens": 15,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/breadcrumb.jsx": {
+            "lines": 76,
+            "tokens": 389,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/badge.jsx": {
+            "lines": 0,
+            "tokens": 13,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/avatar.jsx": {
+            "lines": 27,
+            "tokens": 127,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/alert.jsx": {
+            "lines": 27,
+            "tokens": 132,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/alert-dialog.jsx": {
+            "lines": 87,
+            "tokens": 434,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/accordion.jsx": {
+            "lines": 37,
+            "tokens": 188,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/utils/pdfGenerator.js": {
+            "lines": 228,
+            "tokens": 2629,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 228,
+            "duplicatedTokens": 2627,
+            "percentage": 100,
+            "percentageTokens": 99.92,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/lib/utils.js": {
+            "lines": 5,
+            "tokens": 50,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/hooks/useNavigation.js": {
+            "lines": 178,
+            "tokens": 1140,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/hooks/useFormData.js": {
+            "lines": 254,
+            "tokens": 1670,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/StepContent.jsx": {
+            "lines": 530,
+            "tokens": 3808,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/StepCard.jsx": {
+            "lines": 0,
+            "tokens": 7,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/SectionSeparator.jsx": {
+            "lines": 0,
+            "tokens": 7,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ProgressHeader.jsx": {
+            "lines": 16,
+            "tokens": 122,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ParticleBackground.jsx": {
+            "lines": 2,
+            "tokens": 21,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/NavigationButtons.jsx": {
+            "lines": 40,
+            "tokens": 229,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/GuidanceAlert.jsx": {
+            "lines": 40,
+            "tokens": 302,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/FormField.jsx": {
+            "lines": 20,
+            "tokens": 174,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/EmojiGridMapper.jsx": {
+            "lines": 148,
+            "tokens": 989,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/DarkModeToggle.jsx": {
+            "lines": 0,
+            "tokens": 3,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/CardStack.jsx": {
+            "lines": 0,
+            "tokens": 9,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/App.jsx": {
+            "lines": 57,
+            "tokens": 360,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/pdfGenerator.js": {
+            "lines": 228,
+            "tokens": 2629,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 228,
+            "duplicatedTokens": 2627,
+            "percentage": 100,
+            "percentageTokens": 99.92,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/app_temp.jsx": {
+            "lines": 632,
+            "tokens": 6188,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 632,
+            "duplicatedTokens": 6188,
+            "percentage": 100,
+            "percentageTokens": 100,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/SectionSeparator.jsx": {
+            "lines": 31,
+            "tokens": 281,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/ParticleBackground.jsx": {
+            "lines": 2,
+            "tokens": 21,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/GuidanceAlert.jsx": {
+            "lines": 43,
+            "tokens": 422,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/EmojiGridMapper.jsx": {
+            "lines": 78,
+            "tokens": 655,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/DarkModeToggle.jsx": {
+            "lines": 0,
+            "tokens": 3,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/App.jsx": {
+            "lines": 632,
+            "tokens": 6188,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 632,
+            "duplicatedTokens": 6188,
+            "percentage": 100,
+            "percentageTokens": 100,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "vite.config.js": {
+            "lines": 20,
+            "tokens": 156,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "eslint.config.js": {
+            "lines": 32,
+            "tokens": 232,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 6037,
+          "tokens": 43211,
+          "sources": 71,
+          "clones": 4,
+          "duplicatedLines": 860,
+          "duplicatedTokens": 8815,
+          "percentage": 14.25,
+          "percentageTokens": 20.4,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "jsx": {
+        "sources": {
+          "src/components/ui/tooltip.jsx": {
+            "lines": 52,
+            "tokens": 308,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/toggle.jsx": {
+            "lines": 42,
+            "tokens": 246,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/toggle-group.jsx": {
+            "lines": 60,
+            "tokens": 344,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/textarea.jsx": {
+            "lines": 22,
+            "tokens": 132,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/tabs.jsx": {
+            "lines": 61,
+            "tokens": 294,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/table.jsx": {
+            "lines": 120,
+            "tokens": 559,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/switch.jsx": {
+            "lines": 28,
+            "tokens": 134,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/sonner.jsx": {
+            "lines": 23,
+            "tokens": 138,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/slider.jsx": {
+            "lines": 55,
+            "tokens": 337,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/skeleton.jsx": {
+            "lines": 14,
+            "tokens": 78,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/sidebar.jsx": {
+            "lines": 639,
+            "tokens": 3649,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/sheet.jsx": {
+            "lines": 137,
+            "tokens": 710,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/separator.jsx": {
+            "lines": 26,
+            "tokens": 135,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/select.jsx": {
+            "lines": 163,
+            "tokens": 856,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/scroll-area.jsx": {
+            "lines": 50,
+            "tokens": 270,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/resizable.jsx": {
+            "lines": 50,
+            "tokens": 268,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/radio-group.jsx": {
+            "lines": 42,
+            "tokens": 219,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/progress.jsx": {
+            "lines": 26,
+            "tokens": 160,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/popover.jsx": {
+            "lines": 46,
+            "tokens": 268,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/pagination.jsx": {
+            "lines": 117,
+            "tokens": 642,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/navigation-menu.jsx": {
+            "lines": 151,
+            "tokens": 710,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/menubar.jsx": {
+            "lines": 249,
+            "tokens": 1207,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/menu-base.jsx": {
+            "lines": 170,
+            "tokens": 880,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/label.jsx": {
+            "lines": 22,
+            "tokens": 107,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/input.jsx": {
+            "lines": 23,
+            "tokens": 141,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/input-otp.jsx": {
+            "lines": 72,
+            "tokens": 429,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/hover-card.jsx": {
+            "lines": 38,
+            "tokens": 232,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/form.jsx": {
+            "lines": 142,
+            "tokens": 928,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/dropdown-menu.jsx": {
+            "lines": 221,
+            "tokens": 1140,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/drawer.jsx": {
+            "lines": 130,
+            "tokens": 653,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/dialog.jsx": {
+            "lines": 130,
+            "tokens": 678,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/context-menu.jsx": {
+            "lines": 130,
+            "tokens": 686,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/command.jsx": {
+            "lines": 154,
+            "tokens": 761,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/collapsible.jsx": {
+            "lines": 20,
+            "tokens": 143,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/checkbox.jsx": {
+            "lines": 29,
+            "tokens": 157,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/chart.jsx": {
+            "lines": 308,
+            "tokens": 1981,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/carousel.jsx": {
+            "lines": 201,
+            "tokens": 1251,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/card.jsx": {
+            "lines": 100,
+            "tokens": 470,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/calendar.jsx": {
+            "lines": 71,
+            "tokens": 493,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/button.jsx": {
+            "lines": 54,
+            "tokens": 311,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/breadcrumb.jsx": {
+            "lines": 111,
+            "tokens": 600,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/badge.jsx": {
+            "lines": 43,
+            "tokens": 245,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/avatar.jsx": {
+            "lines": 46,
+            "tokens": 231,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/aspect-ratio.jsx": {
+            "lines": 8,
+            "tokens": 57,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/alert.jsx": {
+            "lines": 62,
+            "tokens": 318,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/alert-dialog.jsx": {
+            "lines": 137,
+            "tokens": 704,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ui/accordion.jsx": {
+            "lines": 61,
+            "tokens": 347,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/StepContent.jsx": {
+            "lines": 577,
+            "tokens": 4241,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/StepCard.jsx": {
+            "lines": 13,
+            "tokens": 122,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/SectionSeparator.jsx": {
+            "lines": 27,
+            "tokens": 227,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ProgressHeader.jsx": {
+            "lines": 104,
+            "tokens": 721,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/ParticleBackground.jsx": {
+            "lines": 123,
+            "tokens": 1179,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 123,
+            "duplicatedTokens": 1178,
+            "percentage": 100,
+            "percentageTokens": 99.92,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/NavigationButtons.jsx": {
+            "lines": 65,
+            "tokens": 360,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 24,
+            "duplicatedTokens": 118,
+            "percentage": 36.92,
+            "percentageTokens": 32.78,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/GuidanceAlert.jsx": {
+            "lines": 162,
+            "tokens": 1053,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/FormField.jsx": {
+            "lines": 42,
+            "tokens": 299,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/EmojiGridMapper.jsx": {
+            "lines": 474,
+            "tokens": 3655,
+            "sources": 1,
+            "clones": 3,
+            "duplicatedLines": 41,
+            "duplicatedTokens": 377,
+            "percentage": 8.65,
+            "percentageTokens": 10.31,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/DarkModeToggle.jsx": {
+            "lines": 51,
+            "tokens": 435,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 51,
+            "duplicatedTokens": 435,
+            "percentage": 100,
+            "percentageTokens": 100,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/components/CardStack.jsx": {
+            "lines": 184,
+            "tokens": 1420,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/main.jsx": {
+            "lines": 9,
+            "tokens": 71,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/App.jsx": {
+            "lines": 124,
+            "tokens": 858,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/app_temp.jsx": {
+            "lines": 760,
+            "tokens": 7255,
+            "sources": 1,
+            "clones": 5,
+            "duplicatedLines": 822,
+            "duplicatedTokens": 7897,
+            "percentage": 108.16,
+            "percentageTokens": 108.85,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/SectionSeparator.jsx": {
+            "lines": 44,
+            "tokens": 382,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/ParticleBackground.jsx": {
+            "lines": 123,
+            "tokens": 1179,
+            "sources": 1,
+            "clones": 2,
+            "duplicatedLines": 123,
+            "duplicatedTokens": 1178,
+            "percentage": 100,
+            "percentageTokens": 99.92,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/GuidanceAlert.jsx": {
+            "lines": 138,
+            "tokens": 1079,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/EmojiGridMapper.jsx": {
+            "lines": 261,
+            "tokens": 2486,
+            "sources": 1,
+            "clones": 5,
+            "duplicatedLines": 79,
+            "duplicatedTokens": 771,
+            "percentage": 30.27,
+            "percentageTokens": 31.01,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/DarkModeToggle.jsx": {
+            "lines": 51,
+            "tokens": 435,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 51,
+            "duplicatedTokens": 435,
+            "percentage": 100,
+            "percentageTokens": 100,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/App.jsx": {
+            "lines": 760,
+            "tokens": 7255,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 760,
+            "duplicatedTokens": 7255,
+            "percentage": 100,
+            "percentageTokens": 100,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 8748,
+          "tokens": 60319,
+          "sources": 67,
+          "clones": 11,
+          "duplicatedLines": 1037,
+          "duplicatedTokens": 9822,
+          "percentage": 11.85,
+          "percentageTokens": 16.28,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "markdown": {
+        "sources": {
+          ".kiro/specs/smooth-emoji-dragging/tasks.md": {
+            "lines": 58,
+            "tokens": 751,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          ".kiro/specs/smooth-emoji-dragging/requirements.md": {
+            "lines": 46,
+            "tokens": 942,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          ".kiro/specs/smooth-emoji-dragging/design.md": {
+            "lines": 190,
+            "tokens": 1227,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          ".kiro/specs/mobile-responsive-layout/requirements.md": {
+            "lines": 34,
+            "tokens": 708,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/website_design.md": {
+            "lines": 129,
+            "tokens": 1163,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/pasted_content.txt": {
+            "lines": 512,
+            "tokens": 1461,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/mediation_summary.md": {
+            "lines": 56,
+            "tokens": 839,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/Copyof1.ExampleIntpersonalConflictMediationWorksheet.txt": {
+            "lines": 206,
+            "tokens": 4313,
+            "sources": 1,
+            "clones": 6,
+            "duplicatedLines": 38,
+            "duplicatedTokens": 990,
+            "percentage": 18.45,
+            "percentageTokens": 22.95,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/ConflictMediationProcessSummary(forMediators).txt": {
+            "lines": 74,
+            "tokens": 1140,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "README.md": {
+            "lines": 143,
+            "tokens": 1215,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 1448,
+          "tokens": 13759,
+          "sources": 10,
+          "clones": 3,
+          "duplicatedLines": 19,
+          "duplicatedTokens": 495,
+          "percentage": 1.31,
+          "percentageTokens": 3.6,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "css": {
+        "sources": {
+          "src/styles/natural-utilities.css": {
+            "lines": 785,
+            "tokens": 4378,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/index.css": {
+            "lines": 104,
+            "tokens": 547,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "src/App.css": {
+            "lines": 589,
+            "tokens": 3759,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 106,
+            "duplicatedTokens": 837,
+            "percentage": 18,
+            "percentageTokens": 22.27,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "manus-working/App.css": {
+            "lines": 436,
+            "tokens": 3192,
+            "sources": 1,
+            "clones": 4,
+            "duplicatedLines": 106,
+            "duplicatedTokens": 837,
+            "percentage": 24.31,
+            "percentageTokens": 26.22,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 1914,
+          "tokens": 11876,
+          "sources": 4,
+          "clones": 4,
+          "duplicatedLines": 106,
+          "duplicatedTokens": 837,
+          "percentage": 5.54,
+          "percentageTokens": 7.05,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "markup": {
+        "sources": {
+          "manus-working/index.html": {
+            "lines": 15,
+            "tokens": 134,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 8,
+            "duplicatedTokens": 86,
+            "percentage": 53.33,
+            "percentageTokens": 64.18,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "index.html": {
+            "lines": 12,
+            "tokens": 135,
+            "sources": 1,
+            "clones": 1,
+            "duplicatedLines": 8,
+            "duplicatedTokens": 86,
+            "percentage": 66.67,
+            "percentageTokens": 63.7,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 27,
+          "tokens": 269,
+          "sources": 2,
+          "clones": 1,
+          "duplicatedLines": 8,
+          "duplicatedTokens": 86,
+          "percentage": 29.63,
+          "percentageTokens": 31.97,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      },
+      "json": {
+        "sources": {
+          "package.json": {
+            "lines": 90,
+            "tokens": 576,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "jsconfig.json": {
+            "lines": 7,
+            "tokens": 35,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          },
+          "components.json": {
+            "lines": 20,
+            "tokens": 124,
+            "sources": 1,
+            "clones": 0,
+            "duplicatedLines": 0,
+            "duplicatedTokens": 0,
+            "percentage": 0,
+            "percentageTokens": 0,
+            "newDuplicatedLines": 0,
+            "newClones": 0
+          }
+        },
+        "total": {
+          "lines": 117,
+          "tokens": 735,
+          "sources": 3,
+          "clones": 0,
+          "duplicatedLines": 0,
+          "duplicatedTokens": 0,
+          "percentage": 0,
+          "percentageTokens": 0,
+          "newDuplicatedLines": 0,
+          "newClones": 0
+        }
+      }
+    },
+    "total": {
+      "lines": 18291,
+      "tokens": 130169,
+      "sources": 157,
+      "clones": 23,
+      "duplicatedLines": 2030,
+      "duplicatedTokens": 20055,
+      "percentage": 11.1,
+      "percentageTokens": 15.41,
+      "newDuplicatedLines": 0,
+      "newClones": 0
+    }
+  },
+  "duplicates": [
+    {
+      "format": "jsx",
+      "lines": 13,
+      "fragment": "\"\n          >\n            <svg\n              className=\"w-6 h-6\"\n              fill=\"none\"\n              stroke=\"currentColor\"\n              viewBox=\"0 0 24 24\"\n            >\n              <path\n                strokeLinecap=\"round\"\n                strokeLinejoin=\"round\"\n                strokeWidth={2}\n                d=\"M9 5l7 7-7 7",
+      "tokens": 0,
+      "firstFile": {
+        "name": "src/components/NavigationButtons.jsx",
+        "start": 44,
+        "end": 56,
+        "startLoc": {
+          "line": 44,
+          "column": 10,
+          "position": 259
+        },
+        "endLoc": {
+          "line": 56,
+          "column": 13,
+          "position": 318
+        }
+      },
+      "secondFile": {
+        "name": "src/components/NavigationButtons.jsx",
+        "start": 18,
+        "end": 30,
+        "startLoc": {
+          "line": 18,
+          "column": 14,
+          "position": 113
+        },
+        "endLoc": {
+          "line": 30,
+          "column": 16,
+          "position": 172
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 139,
+      "fragment": "import jsPDF from 'jspdf';\n\nexport const generateEnhancedPDF = (formData) => {\n  const pdf = new jsPDF('p', 'mm', 'a4');\n  const pageWidth = pdf.internal.pageSize.getWidth();\n  const pageHeight = pdf.internal.pageSize.getHeight();\n  const margin = 20;\n  let yPosition = margin;\n\n  // Colors\n  const primaryColor = [59, 152, 26]; // #3B981A\n  const secondaryColor = [129, 182, 34]; // #81B622\n  const textColor = [61, 85, 12]; // #3D550C\n  const lightGray = [240, 240, 240];\n\n  // Helper function to check if we need a new page\n  const checkNewPage = (requiredSpace = 20) => {\n    if (yPosition + requiredSpace > pageHeight - margin) {\n      pdf.addPage();\n      yPosition = margin;\n      return true;\n    }\n    return false;\n  };\n\n  // Helper function to add a section header\n  const addSectionHeader = (title, icon = '') => {\n    checkNewPage(30);\n    \n    // Background rectangle for header\n    pdf.setFillColor(...secondaryColor);\n    pdf.rect(margin, yPosition - 5, pageWidth - 2 * margin, 15, 'F');\n    \n    // Header text\n    pdf.setTextColor(255, 255, 255);\n    pdf.setFontSize(14);\n    pdf.setFont('helvetica', 'bold');\n    pdf.text(`${icon} ${title}`, margin + 5, yPosition + 5);\n    \n    yPosition += 20;\n    pdf.setTextColor(...textColor);\n  };\n\n  // Helper function to add a subsection\n  const addSubsection = (title) => {\n    checkNewPage(15);\n    pdf.setFontSize(12);\n    pdf.setFont('helvetica', 'bold');\n    pdf.setTextColor(...primaryColor);\n    pdf.text(title, margin, yPosition);\n    yPosition += 8;\n    pdf.setTextColor(...textColor);\n  };\n\n  // Helper function to add regular text\n  const addText = (text, indent = 0) => {\n    if (!text || text.trim() === '') {\n      text = 'Not provided';\n      pdf.setTextColor(150, 150, 150);\n    } else {\n      pdf.setTextColor(...textColor);\n    }\n    \n    pdf.setFontSize(10);\n    pdf.setFont('helvetica', 'normal');\n    \n    const maxWidth = pageWidth - 2 * margin - indent;\n    const lines = pdf.splitTextToSize(text, maxWidth);\n    \n    for (let i = 0; i < lines.length; i++) {\n      checkNewPage();\n      pdf.text(lines[i], margin + indent, yPosition);\n      yPosition += 5;\n    }\n    yPosition += 3;\n    pdf.setTextColor(...textColor);\n  };\n\n  // Helper function to add a data field\n  const addField = (label, value, indent = 5) => {\n    checkNewPage();\n    pdf.setFontSize(10);\n    pdf.setFont('helvetica', 'bold');\n    pdf.setTextColor(...primaryColor);\n    pdf.text(`${label}:`, margin + indent, yPosition);\n    \n    pdf.setFont('helvetica', 'normal');\n    pdf.setTextColor(...textColor);\n    const labelWidth = pdf.getTextWidth(`${label}: `);\n    \n    if (!value || value.trim() === '') {\n      value = 'Not provided';\n      pdf.setTextColor(150, 150, 150);\n    }\n    \n    const maxWidth = pageWidth - 2 * margin - indent - labelWidth;\n    const lines = pdf.splitTextToSize(value, maxWidth);\n    \n    pdf.text(lines[0], margin + indent + labelWidth, yPosition);\n    yPosition += 5;\n    \n    for (let i = 1; i < lines.length; i++) {\n      checkNewPage();\n      pdf.text(lines[i], margin + indent + labelWidth, yPosition);\n      yPosition += 5;\n    }\n    yPosition += 2;\n    pdf.setTextColor(...textColor);\n  };\n\n  // Helper function to add emotion data\n  const addEmotionData = (label, emotionWords, chartPosition, indent = 5) => {\n    addSubsection(label);\n    \n    if (chartPosition) {\n      addField('Chart Position', `${chartPosition.label} (${chartPosition.emoji})`, indent);\n      addField('Valence', chartPosition.valence > 0 ? `+${chartPosition.valence} (Pleasant)` : `${chartPosition.valence} (Unpleasant)`, indent);\n      addField('Arousal', chartPosition.arousal > 0 ? `+${chartPosition.arousal} (High Energy)` : `${chartPosition.arousal} (Low Energy)`, indent);\n    }\n    \n    if (emotionWords && emotionWords.length > 0) {\n      addField('Selected Emotion Words', emotionWords.join(', '), indent);\n    }\n    \n    if ((!chartPosition) && (!emotionWords || emotionWords.length === 0)) {\n      addText('No emotion data provided', indent);\n    }\n    \n    yPosition += 5;\n  };\n\n  // Title Page\n  pdf.setFillColor(...primaryColor);\n  pdf.rect(0, 0, pageWidth, 60, 'F');\n  \n  pdf.setTextColor(255, 255, 255);\n  pdf.setFontSize(24);\n  pdf.setFont('helvetica', 'bold');\n  pdf.text('Co-op Conflict Resolution'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/pdfGenerator.js",
+        "start": 1,
+        "end": 139,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 139,
+          "column": 28,
+          "position": 1475
+        }
+      },
+      "secondFile": {
+        "name": "src/utils/pdfGenerator.js",
+        "start": 1,
+        "end": 139,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 139,
+          "column": 22,
+          "position": 1475
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 85,
+      "fragment": ", pageWidth / 2, 25, { align: 'center' });\n  \n  pdf.setFontSize(16);\n  pdf.setFont('helvetica', 'normal');\n  pdf.text('Session Summary Report', pageWidth / 2, 35, { align: 'center' });\n  \n  pdf.setFontSize(12);\n  pdf.text(`Generated on ${new Date().toLocaleDateString()}`, pageWidth / 2, 50, { align: 'center' });\n  \n  yPosition = 80;\n  pdf.setTextColor(...textColor);\n\n  // Setup Information\n  addSectionHeader('Setup Information', '📋');\n  addField('Party A Name', formData.partyAName);\n  addField('Party B Name', formData.partyBName);\n  addField('Date of Incident', formData.dateOfIncident);\n  addField('Date of Mediation', formData.dateOfMediation);\n  addField('Location of Conflict', formData.locationOfConflict);\n  addField('Conflict Description', formData.conflictDescription);\n  yPosition += 10;\n\n  // Individual Reflections\n  addSectionHeader('Individual Reflections', '🤔');\n  \n  // Party A Reflection\n  addSubsection(`${formData.partyAName || 'Party A'} - Individual Reflection`);\n  addField('Thoughts', formData.partyAThoughts, 10);\n  addEmotionData('Emotions', formData.partyASelectedEmotionWords, formData.partyAEmotionChartPosition, 10);\n  addField('Aggressive Approach', formData.partyAAggressiveApproach, 10);\n  addField('Passive Approach', formData.partyAPassiveApproach, 10);\n  addField('Assertive Approach', formData.partyAAssertiveApproach, 10);\n  addField('Why/Because', formData.partyAWhyBecause, 10);\n  yPosition += 10;\n\n  // Party B Reflection\n  addSubsection(`${formData.partyBName || 'Party B'} - Individual Reflection`);\n  addField('Thoughts', formData.partyBThoughts, 10);\n  addEmotionData('Emotions', formData.partyBSelectedEmotionWords, formData.partyBEmotionChartPosition, 10);\n  addField('Aggressive Approach', formData.partyBAggressiveApproach, 10);\n  addField('Passive Approach', formData.partyBPassiveApproach, 10);\n  addField('Assertive Approach', formData.partyBAssertiveApproach, 10);\n  addField('Why/Because', formData.partyBWhyBecause, 10);\n  yPosition += 10;\n\n  // ABCDE Model\n  addSectionHeader('Shared Discussion (ABCDE Model)', '💬');\n  addField('A - Activating Event', formData.activatingEvent);\n  addField(`B - ${formData.partyAName || 'Party A'} Beliefs`, formData.partyABeliefs);\n  addField(`B - ${formData.partyBName || 'Party B'} Beliefs`, formData.partyBBeliefs);\n  addField(`C - ${formData.partyAName || 'Party A'} Consequences`, formData.partyAConsequences);\n  addField(`C - ${formData.partyBName || 'Party B'} Consequences`, formData.partyBConsequences);\n  addField(`D - ${formData.partyAName || 'Party A'} Disputations`, formData.partyADisputations);\n  addField(`D - ${formData.partyBName || 'Party B'} Disputations`, formData.partyBDisputations);\n  addField('E - Effects & Reflections', formData.effectsReflections);\n  yPosition += 10;\n\n  // Solution Development\n  addSectionHeader('Solution Development', '💡');\n  addField(`${formData.partyAName || 'Party A'} - Miracle Question`, formData.partyAMiracle);\n  addField(`${formData.partyBName || 'Party B'} - Miracle Question`, formData.partyBMiracle);\n  addField(`${formData.partyAName || 'Party A'} - Top 3 Solutions`, formData.partyATop3Solutions);\n  addField(`${formData.partyBName || 'Party B'} - Top 3 Solutions`, formData.partyBTop3Solutions);\n  addField(`${formData.partyAName || 'Party A'} - Perspective`, formData.partyAPerspective);\n  addField(`${formData.partyBName || 'Party B'} - Perspective`, formData.partyBPerspective);\n  addField('Compromise Solutions', formData.compromiseSolutions);\n  yPosition += 10;\n\n  // Agreement & Action Steps\n  addSectionHeader('Agreement & Action Steps', '✅');\n  addField(`${formData.partyAName || 'Party A'} - Unmet Needs`, formData.partyAUnmetNeeds);\n  addField(`${formData.partyBName || 'Party B'} - Unmet Needs`, formData.partyBUnmetNeeds);\n  addField(`${formData.partyAName || 'Party A'} - Needs in Practice`, formData.partyANeedsInPractice);\n  addField(`${formData.partyBName || 'Party B'} - Needs in Practice`, formData.partyBNeedsInPractice);\n  addField('Action Steps', formData.actionSteps);\n  addField('Follow-up Date', formData.followUpDate);\n  addField('Additional Support Needed', formData.additionalSupport);\n\n  // Footer on each page\n  const totalPages = pdf.internal.getNumberOfPages();\n  for (let i = 1; i <= totalPages; i++) {\n    pdf.setPage(i);\n    pdf.setFontSize(8);\n    pdf.setTextColor(150, 150, 150);\n    pdf.text(`Co-op Conflict Resolution Platform - Page ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/pdfGenerator.js",
+        "start": 139,
+        "end": 223,
+        "startLoc": {
+          "line": 139,
+          "column": 28,
+          "position": 1476
+        },
+        "endLoc": {
+          "line": 223,
+          "column": 44,
+          "position": 2528
+        }
+      },
+      "secondFile": {
+        "name": "src/utils/pdfGenerator.js",
+        "start": 139,
+        "end": 223,
+        "startLoc": {
+          "line": 139,
+          "column": 22,
+          "position": 1476
+        },
+        "endLoc": {
+          "line": 223,
+          "column": 38,
+          "position": 2528
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 7,
+      "fragment": "${i} of ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });\n  }\n\n  // Save the PDF\n  const fileName = `conflict-mediation-${formData.partyAName || 'PartyA'}-${formData.partyBName || 'PartyB'}-${new Date().toISOString().split('T')[0]}.pdf`;\n  pdf.save(fileName);\n};",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/pdfGenerator.js",
+        "start": 223,
+        "end": 229,
+        "startLoc": {
+          "line": 223,
+          "column": 44,
+          "position": 2529
+        },
+        "endLoc": {
+          "line": 229,
+          "column": 2,
+          "position": 2629
+        }
+      },
+      "secondFile": {
+        "name": "src/utils/pdfGenerator.js",
+        "start": 223,
+        "end": 229,
+        "startLoc": {
+          "line": 223,
+          "column": 38,
+          "position": 2529
+        },
+        "endLoc": {
+          "line": 229,
+          "column": 2,
+          "position": 2629
+        }
+      }
+    },
+    {
+      "format": "jsx",
+      "lines": 8,
+      "fragment": ":\n        return (\n          <div className=\"space-y-6\">\n            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"Thoughts & Beliefs\" icon=\"🤔\" />\n            <div className=\"space-y-4\">\n              <Label htmlFor=\"partyBThoughts",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/app_temp.jsx",
+        "start": 269,
+        "end": 276,
+        "startLoc": {
+          "line": 269,
+          "column": 2,
+          "position": 2407
+        },
+        "endLoc": {
+          "line": 276,
+          "column": 15,
+          "position": 2491
+        }
+      },
+      "secondFile": {
+        "name": "manus-working/app_temp.jsx",
+        "start": 190,
+        "end": 197,
+        "startLoc": {
+          "line": 190,
+          "column": 2,
+          "position": 1690
+        },
+        "endLoc": {
+          "line": 197,
+          "column": 15,
+          "position": 1774
+        }
+      }
+    },
+    {
+      "format": "jsx",
+      "lines": 25,
+      "fragment": "\"\n                placeholder=\"Explain what you think or believe to be true about the conflict...\"\n                value={formData.partyBThoughts}\n                onChange={(e) => updateFormData('partyBThoughts', e.target.value)}\n                rows={4}\n              />\n            </div>\n\n            <SectionSeparator title=\"Emotions & Feelings\" icon=\"💚\" />\n            <div className=\"space-y-4\">\n              <Label>I feel... (Use both methods to express your emotions)</Label>\n              <EmojiGridMapper\n                onEmotionWordsChange={(words) => updateFormData('partyBSelectedEmotionWords', words)}\n                onChartPositionChange={(position) => updateFormData('partyBEmotionChartPosition', position)}\n                selectedEmotionWords={formData.partyBSelectedEmotionWords}\n                chartPosition={formData.partyBEmotionChartPosition}\n              />\n            </div>\n\n            <SectionSeparator title=\"Communication Approaches\" icon=\"💬\" />\n            <div className=\"space-y-6\">\n              <Label>I want... (Communication Approaches)</Label>\n              \n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyBAggressiveApproach",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/app_temp.jsx",
+        "start": 278,
+        "end": 302,
+        "startLoc": {
+          "line": 278,
+          "column": 15,
+          "position": 2510
+        },
+        "endLoc": {
+          "line": 302,
+          "column": 25,
+          "position": 2747
+        }
+      },
+      "secondFile": {
+        "name": "manus-working/app_temp.jsx",
+        "start": 199,
+        "end": 223,
+        "startLoc": {
+          "line": 199,
+          "column": 15,
+          "position": 1793
+        },
+        "endLoc": {
+          "line": 223,
+          "column": 25,
+          "position": 2030
+        }
+      }
+    },
+    {
+      "format": "jsx",
+      "lines": 42,
+      "fragment": "import React, { useEffect, useRef } from 'react';\n\nconst ParticleBackground = () => {\n  const canvasRef = useRef(null);\n  const particlesRef = useRef([]);\n  const animationRef = useRef(null);\n\n  useEffect(() => {\n    const canvas = canvasRef.current;\n    if (!canvas) return;\n\n    const ctx = canvas.getContext('2d');\n    const particles = particlesRef.current;\n\n    // Set canvas size\n    const resizeCanvas = () => {\n      canvas.width = window.innerWidth;\n      canvas.height = window.innerHeight;\n    };\n\n    resizeCanvas();\n    window.addEventListener('resize', resizeCanvas);\n\n    // Particle class\n    class Particle {\n      constructor() {\n        this.reset();\n        this.y = Math.random() * canvas.height;\n        this.fadeDelay = Math.random() * 600;\n        this.fadeStart = Date.now() + this.fadeDelay;\n        this.fadingIn = true;\n      }\n\n      reset() {\n        this.x = Math.random() * canvas.width;\n        this.y = canvas.height + 10;\n        this.vx = (Math.random() - 0.5) * 0.5;\n        this.vy = Math.random() * -1 - 0.5;\n        this.life = Math.random() * 0.6 + 0.4;\n        this.fade = 0;\n        this.size = Math.random() * 2 + 1;\n        this.color = `rgba(129, 182, 34, ",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/ParticleBackground.jsx",
+        "start": 1,
+        "end": 42,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 42,
+          "column": 21,
+          "position": 449
+        }
+      },
+      "secondFile": {
+        "name": "src/components/ParticleBackground.jsx",
+        "start": 1,
+        "end": 42,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 42,
+          "column": 21,
+          "position": 449
+        }
+      }
+    },
+    {
+      "format": "jsx",
+      "lines": 83,
+      "fragment": "${this.life})`;\n      }\n\n      update() {\n        this.x += this.vx;\n        this.y += this.vy;\n\n        if (this.fadingIn) {\n          const now = Date.now();\n          if (now > this.fadeStart) {\n            this.fade += 0.005;\n            if (this.fade >= this.life) {\n              this.fade = this.life;\n              this.fadingIn = false;\n            }\n          }\n        } else {\n          this.fade -= 0.005;\n          if (this.fade <= 0) {\n            this.reset();\n            this.fadeDelay = Math.random() * 600;\n            this.fadeStart = Date.now() + this.fadeDelay;\n            this.fadingIn = true;\n          }\n        }\n\n        if (this.y < -10 || this.x < -10 || this.x > canvas.width + 10) {\n          this.reset();\n          this.fadeDelay = Math.random() * 600;\n          this.fadeStart = Date.now() + this.fadeDelay;\n          this.fadingIn = true;\n        }\n      }\n\n      draw() {\n        ctx.save();\n        ctx.globalAlpha = this.fade;\n        ctx.fillStyle = this.color;\n        ctx.beginPath();\n        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);\n        ctx.fill();\n        ctx.restore();\n      }\n    }\n\n    // Create particles\n    const particleCount = Math.min(50, Math.floor(canvas.width * canvas.height / 15000));\n    for (let i = 0; i < particleCount; i++) {\n      particles.push(new Particle());\n    }\n\n    // Animation loop\n    const animate = () => {\n      ctx.clearRect(0, 0, canvas.width, canvas.height);\n\n      particles.forEach(particle => {\n        particle.update();\n        particle.draw();\n      });\n\n      animationRef.current = requestAnimationFrame(animate);\n    };\n\n    animate();\n\n    return () => {\n      window.removeEventListener('resize', resizeCanvas);\n      if (animationRef.current) {\n        cancelAnimationFrame(animationRef.current);\n      }\n    };\n  }, []);\n\n  return (\n    <canvas\n      ref={canvasRef}\n      className=\"fixed top-0 left-0 w-full h-full pointer-events-none z-0\"\n      style={{ opacity: 0.6 }}\n    />\n  );\n};\n\nexport default ParticleBackground;",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/ParticleBackground.jsx",
+        "start": 42,
+        "end": 124,
+        "startLoc": {
+          "line": 42,
+          "column": 21,
+          "position": 450
+        },
+        "endLoc": {
+          "line": 124,
+          "column": 2,
+          "position": 1179
+        }
+      },
+      "secondFile": {
+        "name": "src/components/ParticleBackground.jsx",
+        "start": 42,
+        "end": 124,
+        "startLoc": {
+          "line": 42,
+          "column": 21,
+          "position": 450
+        },
+        "endLoc": {
+          "line": 124,
+          "column": 2,
+          "position": 1179
+        }
+      }
+    },
+    {
+      "format": "jsx",
+      "lines": 20,
+      "fragment": ".clientY - rect.top;\n    \n    // Constrain to circle\n    const dx = x - centerX;\n    const dy = y - centerY;\n    const distance = Math.sqrt(dx * dx + dy * dy);\n    \n    if (distance > radius) {\n      const angle = Math.atan2(dy, dx);\n      x = centerX + Math.cos(angle) * radius;\n      y = centerY + Math.sin(angle) * radius;\n    }\n    \n    setPosition({ x, y });\n    \n    const emotionData = calculateEmotionData(x, y);\n    onChartPositionChange(emotionData);\n  };\n\n  const handleTouchEnd",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/EmojiGridMapper.jsx",
+        "start": 111,
+        "end": 130,
+        "startLoc": {
+          "line": 111,
+          "column": 6,
+          "position": 1155
+        },
+        "endLoc": {
+          "line": 130,
+          "column": 15,
+          "position": 1352
+        }
+      },
+      "secondFile": {
+        "name": "manus-working/EmojiGridMapper.jsx",
+        "start": 73,
+        "end": 92,
+        "startLoc": {
+          "line": 73,
+          "column": 2,
+          "position": 776
+        },
+        "endLoc": {
+          "line": 92,
+          "column": 14,
+          "position": 973
+        }
+      }
+    },
+    {
+      "format": "jsx",
+      "lines": 14,
+      "fragment": "<div className=\"absolute top-2 left-1/2 transform -translate-x-1/2 text-sm font-medium text-muted-foreground\">\n            High Energy\n          </div>\n          <div className=\"absolute bottom-2 left-1/2 transform -translate-x-1/2 text-sm font-medium text-muted-foreground\">\n            Low Energy\n          </div>\n          <div className=\"absolute left-2 top-1/2 transform -translate-y-1/2 -rotate-90 text-sm font-medium text-muted-foreground\">\n            Unpleasant\n          </div>\n          <div className=\"absolute right-2 top-1/2 transform -translate-y-1/2 rotate-90 text-sm font-medium text-muted-foreground\">\n            Pleasant\n          </div>\n          \n          {",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/EmojiGridMapper.jsx",
+        "start": 177,
+        "end": 190,
+        "startLoc": {
+          "line": 177,
+          "column": 11,
+          "position": 1795
+        },
+        "endLoc": {
+          "line": 190,
+          "column": 2,
+          "position": 1877
+        }
+      },
+      "secondFile": {
+        "name": "src/components/EmojiGridMapper.jsx",
+        "start": 285,
+        "end": 297,
+        "startLoc": {
+          "line": 285,
+          "column": 5,
+          "position": 2352
+        },
+        "endLoc": {
+          "line": 297,
+          "column": 2,
+          "position": 2432
+        }
+      }
+    },
+    {
+      "format": "jsx",
+      "lines": 6,
+      "fragment": ">\n            <span className=\"text-2xl\">{currentEmotionData.emoji}</span>\n            <div className=\"text-sm\">\n              <div className=\"font-medium\">{currentEmotionData.label}</div>\n              <div className=\"text-muted-foreground\">\n                Valence: {currentEmotionData.valence > 0 ? '+'",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/EmojiGridMapper.jsx",
+        "start": 212,
+        "end": 217,
+        "startLoc": {
+          "line": 212,
+          "column": 2,
+          "position": 2036
+        },
+        "endLoc": {
+          "line": 217,
+          "column": 4,
+          "position": 2113
+        }
+      },
+      "secondFile": {
+        "name": "src/components/EmojiGridMapper.jsx",
+        "start": 451,
+        "end": 456,
+        "startLoc": {
+          "line": 451,
+          "column": 11,
+          "position": 3462
+        },
+        "endLoc": {
+          "line": 456,
+          "column": 4,
+          "position": 3539
+        }
+      }
+    },
+    {
+      "format": "jsx",
+      "lines": 24,
+      "fragment": "<div className=\"space-y-4\">\n        <h3 className=\"text-lg font-semibold\">Or select emotion words that describe how you feel:</h3>\n        <div className=\"flex flex-wrap gap-2\">\n          {emotionWords.map((word) => (\n            <Badge\n              key={word}\n              variant={selectedEmotionWords.includes(word) ? \"default\" : \"outline\"}\n              className={`cursor-pointer transition-all duration-200 hover:scale-105 ${\n                selectedEmotionWords.includes(word) \n                  ? 'bg-primary text-primary-foreground' \n                  : 'hover:bg-primary/10'\n              }`}\n              onClick={() => toggleEmotionWord(word)}\n            >\n              {word}\n            </Badge>\n          ))}\n        </div>\n        \n        {selectedEmotionWords.length > 0 && (\n          <div className=\"mt-4 p-3 bg-muted rounded-lg\">\n            <div className=\"text-sm font-medium mb-2\">Selected emotions:</div>\n            <div className=\"flex flex-wrap gap-1\">\n              {selectedEmotionWords.map(word",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/EmojiGridMapper.jsx",
+        "start": 226,
+        "end": 249,
+        "startLoc": {
+          "line": 226,
+          "column": 7,
+          "position": 2187
+        },
+        "endLoc": {
+          "line": 249,
+          "column": 5,
+          "position": 2405
+        }
+      },
+      "secondFile": {
+        "name": "src/components/EmojiGridMapper.jsx",
+        "start": 314,
+        "end": 341,
+        "startLoc": {
+          "line": 314,
+          "column": 7,
+          "position": 2568
+        },
+        "endLoc": {
+          "line": 341,
+          "column": 2,
+          "position": 2790
+        }
+      }
+    },
+    {
+      "format": "jsx",
+      "lines": 52,
+      "fragment": "import React, { useState, useEffect } from 'react';\nimport { Moon, Sun } from 'lucide-react';\nimport { Button } from './ui/button';\n\nconst DarkModeToggle = () => {\n  const [isDark, setIsDark] = useState(false);\n\n  useEffect(() => {\n    // Check for saved theme preference or default to light mode\n    const savedTheme = localStorage.getItem('theme');\n    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;\n    \n    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {\n      setIsDark(true);\n      document.documentElement.classList.add('dark');\n    } else {\n      setIsDark(false);\n      document.documentElement.classList.remove('dark');\n    }\n  }, []);\n\n  const toggleDarkMode = () => {\n    const newIsDark = !isDark;\n    setIsDark(newIsDark);\n    \n    if (newIsDark) {\n      document.documentElement.classList.add('dark');\n      localStorage.setItem('theme', 'dark');\n    } else {\n      document.documentElement.classList.remove('dark');\n      localStorage.setItem('theme', 'light');\n    }\n  };\n\n  return (\n    <Button\n      variant=\"outline\"\n      size=\"sm\"\n      onClick={toggleDarkMode}\n      className=\"fixed top-4 right-4 z-50 bg-background/80 backdrop-blur-sm border-primary/20 hover:bg-primary/10\"\n    >\n      {isDark ? (\n        <Sun className=\"h-4 w-4 text-yellow-500\" />\n      ) : (\n        <Moon className=\"h-4 w-4 text-blue-600\" />\n      )}\n      <span className=\"sr-only\">Toggle dark mode</span>\n    </Button>\n  );\n};\n\nexport default DarkModeToggle;",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/DarkModeToggle.jsx",
+        "start": 1,
+        "end": 52,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 52,
+          "column": 2,
+          "position": 435
+        }
+      },
+      "secondFile": {
+        "name": "src/components/DarkModeToggle.jsx",
+        "start": 1,
+        "end": 52,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 52,
+          "column": 2,
+          "position": 435
+        }
+      }
+    },
+    {
+      "format": "markdown",
+      "lines": 6,
+      "fragment": "Intrapersonal - The process by which an individual communicates within themselves, acting as both sender and receiver of messages, and encompasses the use of unspoken words to consciously engage in self-talk and inner speech.\n\nIn this section, reflect on what you’re experiencing due to the conflict.\nI think…\n-Explain what you think or believe to be true about the conflict.\nI think Katara",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/Copyof1.ExampleIntpersonalConflictMediationWorksheet.txt",
+        "start": 45,
+        "end": 50,
+        "startLoc": {
+          "line": 45,
+          "column": 1,
+          "position": 695
+        },
+        "endLoc": {
+          "line": 50,
+          "column": 7,
+          "position": 820
+        }
+      },
+      "secondFile": {
+        "name": "manus-working/Copyof1.ExampleIntpersonalConflictMediationWorksheet.txt",
+        "start": 16,
+        "end": 21,
+        "startLoc": {
+          "line": 16,
+          "column": 1,
+          "position": 124
+        },
+        "endLoc": {
+          "line": 21,
+          "column": 5,
+          "position": 249
+        }
+      }
+    },
+    {
+      "format": "markdown",
+      "lines": 10,
+      "fragment": "I feel…\nWrite down some emotions that arise due to the conflict (only use single word descriptions)\n\n*Saying 'I feel like Bruce doesn’t like me and he’s acting in a passive-aggressive way’ is not an emotion; it is a belief/judgment. Emotions are an internal experience, not an evaluation of someone else’s behavior. \n\nYou may research more words to describe how you are feeling.\nList of more emotions\n\n\nOffended,",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/Copyof1.ExampleIntpersonalConflictMediationWorksheet.txt",
+        "start": 51,
+        "end": 60,
+        "startLoc": {
+          "line": 51,
+          "column": 1,
+          "position": 884
+        },
+        "endLoc": {
+          "line": 60,
+          "column": 10,
+          "position": 1023
+        }
+      },
+      "secondFile": {
+        "name": "manus-working/Copyof1.ExampleIntpersonalConflictMediationWorksheet.txt",
+        "start": 22,
+        "end": 31,
+        "startLoc": {
+          "line": 22,
+          "column": 1,
+          "position": 290
+        },
+        "endLoc": {
+          "line": 31,
+          "column": 12,
+          "position": 429
+        }
+      }
+    },
+    {
+      "format": "markdown",
+      "lines": 6,
+      "fragment": "Use the section to reflect on the previous conversation between the conflicting parties.\n\nMiracle Question:\nThe ‘miracle question’ is an extension of goal setting or a technique for facilitating the identification of goals. It also helps to throw light on existing solutions and resources while fostering a climate of change (O'Connell, 2005; p48). The ‘miracle question’ invites people to use their imagination to describe in some detail what their lives will be like when the problem no longer dominates or controls it (O’Connell, 2003).\nMiracle Question: If you woke up tomorrow, and by magic or miracle, the conflict had been resolved, what do you imagine you’d feel as a result of the change?\nI’d feel respected,",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/Copyof1.ExampleIntpersonalConflictMediationWorksheet.txt",
+        "start": 125,
+        "end": 130,
+        "startLoc": {
+          "line": 125,
+          "column": 1,
+          "position": 2891
+        },
+        "endLoc": {
+          "line": 130,
+          "column": 11,
+          "position": 3122
+        }
+      },
+      "secondFile": {
+        "name": "manus-working/Copyof1.ExampleIntpersonalConflictMediationWorksheet.txt",
+        "start": 100,
+        "end": 105,
+        "startLoc": {
+          "line": 100,
+          "column": 1,
+          "position": 2343
+        },
+        "endLoc": {
+          "line": 105,
+          "column": 10,
+          "position": 2574
+        }
+      }
+    },
+    {
+      "format": "javascript",
+      "lines": 633,
+      "fragment": "={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"Conflict Mediation Setup\" icon=\"🏠\" />\n            <p className=\"text-center text-muted-foreground mb-6\">\n              Let's start by gathering some basic information about the conflict and the parties involved.\n            </p>\n\n            <SectionSeparator title=\"Party Information\" icon=\"👥\" />\n            <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n              <div className=\"space-y-2\">\n                <Label htmlFor=\"partyAName\">Party A Name</Label>\n                <Input\n                  id=\"partyAName\"\n                  placeholder=\"Enter first person's name\"\n                  value={formData.partyAName}\n                  onChange={(e) => updateFormData('partyAName', e.target.value)}\n                />\n              </div>\n              <div className=\"space-y-2\">\n                <Label htmlFor=\"partyBName\">Party B Name</Label>\n                <Input\n                  id=\"partyBName\"\n                  placeholder=\"Enter second person's name\"\n                  value={formData.partyBName}\n                  onChange={(e) => updateFormData('partyBName', e.target.value)}\n                />\n              </div>\n            </div>\n\n            <SectionSeparator title=\"Conflict Details\" icon=\"📋\" />\n            <div className=\"grid grid-cols-1 md:grid-cols-3 gap-6\">\n              <div className=\"space-y-2\">\n                <Label htmlFor=\"dateOfIncident\">Date of Incident</Label>\n                <Input\n                  id=\"dateOfIncident\"\n                  type=\"date\"\n                  value={formData.dateOfIncident}\n                  onChange={(e) => updateFormData('dateOfIncident', e.target.value)}\n                />\n              </div>\n              <div className=\"space-y-2\">\n                <Label htmlFor=\"dateOfMediation\">Date of Mediation</Label>\n                <Input\n                  id=\"dateOfMediation\"\n                  type=\"date\"\n                  value={formData.dateOfMediation}\n                  onChange={(e) => updateFormData('dateOfMediation', e.target.value)}\n                />\n              </div>\n              <div className=\"space-y-2\">\n                <Label htmlFor=\"locationOfConflict\">Location of Conflict</Label>\n                <Input\n                  id=\"locationOfConflict\"\n                  placeholder=\"Where did this happen?\"\n                  value={formData.locationOfConflict}\n                  onChange={(e) => updateFormData('locationOfConflict', e.target.value)}\n                />\n              </div>\n            </div>\n\n            <div className=\"space-y-2\">\n              <Label htmlFor=\"conflictDescription\">Agreed Upon Description of Conflict</Label>\n              <Textarea\n                id=\"conflictDescription\"\n                placeholder=\"Both parties should agree on this description of what happened...\"\n                value={formData.conflictDescription}\n                onChange={(e) => updateFormData('conflictDescription', e.target.value)}\n                rows={4}\n              />\n            </div>\n          </div>\n        );\n\n      case 2:\n        return (\n          <div className=\"space-y-6\">\n            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"Thoughts & Beliefs\" icon=\"🤔\" />\n            <div className=\"space-y-4\">\n              <Label htmlFor=\"partyAThoughts\">I think...</Label>\n              <Textarea\n                id=\"partyAThoughts\"\n                placeholder=\"Explain what you think or believe to be true about the conflict...\"\n                value={formData.partyAThoughts}\n                onChange={(e) => updateFormData('partyAThoughts', e.target.value)}\n                rows={4}\n              />\n            </div>\n\n            <SectionSeparator title=\"Emotions & Feelings\" icon=\"💚\" />\n            <div className=\"space-y-4\">\n              <Label>I feel... (Use both methods to express your emotions)</Label>\n              <EmojiGridMapper\n                onEmotionWordsChange={(words) => updateFormData('partyASelectedEmotionWords', words)}\n                onChartPositionChange={(position) => updateFormData('partyAEmotionChartPosition', position)}\n                selectedEmotionWords={formData.partyASelectedEmotionWords}\n                chartPosition={formData.partyAEmotionChartPosition}\n              />\n            </div>\n\n            <SectionSeparator title=\"Communication Approaches\" icon=\"💬\" />\n            <div className=\"space-y-6\">\n              <Label>I want... (Communication Approaches)</Label>\n              \n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyAAggressiveApproach\" className=\"text-red-600\">Aggressive Approach (Not Recommended)</Label>\n                <Textarea\n                  id=\"partyAAggressiveApproach\"\n                  placeholder=\"What would you want to say if you were being aggressive?\"\n                  value={formData.partyAAggressiveApproach}\n                  onChange={(e) => updateFormData('partyAAggressiveApproach', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyAPassiveApproach\" className=\"text-blue-600\">Passive Approach</Label>\n                <Textarea\n                  id=\"partyAPassiveApproach\"\n                  placeholder=\"What would you want if you were being passive?\"\n                  value={formData.partyAPassiveApproach}\n                  onChange={(e) => updateFormData('partyAPassiveApproach', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyAAssertiveApproach\" className=\"text-green-600\">Assertive Approach (Recommended)</Label>\n                <Textarea\n                  id=\"partyAAssertiveApproach\"\n                  placeholder=\"What would you want to say if you were being assertive and respectful?\"\n                  value={formData.partyAAssertiveApproach}\n                  onChange={(e) => updateFormData('partyAAssertiveApproach', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyAWhyBecause\">Why/Because...</Label>\n                <Textarea\n                  id=\"partyAWhyBecause\"\n                  placeholder=\"Explain your reasoning...\"\n                  value={formData.partyAWhyBecause}\n                  onChange={(e) => updateFormData('partyAWhyBecause', e.target.value)}\n                  rows={3}\n                />\n              </div>\n            </div>\n          </div>\n        );\n\n      case 3:\n        return (\n          <div className=\"space-y-6\">\n            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"Thoughts & Beliefs\" icon=\"🤔\" />\n            <div className=\"space-y-4\">\n              <Label htmlFor=\"partyBThoughts\">I think...</Label>\n              <Textarea\n                id=\"partyBThoughts\"\n                placeholder=\"Explain what you think or believe to be true about the conflict...\"\n                value={formData.partyBThoughts}\n                onChange={(e) => updateFormData('partyBThoughts', e.target.value)}\n                rows={4}\n              />\n            </div>\n\n            <SectionSeparator title=\"Emotions & Feelings\" icon=\"💚\" />\n            <div className=\"space-y-4\">\n              <Label>I feel... (Use both methods to express your emotions)</Label>\n              <EmojiGridMapper\n                onEmotionWordsChange={(words) => updateFormData('partyBSelectedEmotionWords', words)}\n                onChartPositionChange={(position) => updateFormData('partyBEmotionChartPosition', position)}\n                selectedEmotionWords={formData.partyBSelectedEmotionWords}\n                chartPosition={formData.partyBEmotionChartPosition}\n              />\n            </div>\n\n            <SectionSeparator title=\"Communication Approaches\" icon=\"💬\" />\n            <div className=\"space-y-6\">\n              <Label>I want... (Communication Approaches)</Label>\n              \n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyBAggressiveApproach\" className=\"text-red-600\">Aggressive Approach (Not Recommended)</Label>\n                <Textarea\n                  id=\"partyBAggressiveApproach\"\n                  placeholder=\"What would you want to say if you were being aggressive?\"\n                  value={formData.partyBAggressiveApproach}\n                  onChange={(e) => updateFormData('partyBAggressiveApproach', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyBPassiveApproach\" className=\"text-blue-600\">Passive Approach</Label>\n                <Textarea\n                  id=\"partyBPassiveApproach\"\n                  placeholder=\"What would you want if you were being passive?\"\n                  value={formData.partyBPassiveApproach}\n                  onChange={(e) => updateFormData('partyBPassiveApproach', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyBAssertiveApproach\" className=\"text-green-600\">Assertive Approach (Recommended)</Label>\n                <Textarea\n                  id=\"partyBAssertiveApproach\"\n                  placeholder=\"What would you want to say if you were being assertive and respectful?\"\n                  value={formData.partyBAssertiveApproach}\n                  onChange={(e) => updateFormData('partyBAssertiveApproach', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyBWhyBecause\">Why/Because...</Label>\n                <Textarea\n                  id=\"partyBWhyBecause\"\n                  placeholder=\"Explain your reasoning...\"\n                  value={formData.partyBWhyBecause}\n                  onChange={(e) => updateFormData('partyBWhyBecause', e.target.value)}\n                  rows={3}\n                />\n              </div>\n            </div>\n          </div>\n        );\n\n      case 4:\n        return (\n          <div className=\"space-y-6\">\n            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"ABCDE Model Discussion\" icon=\"🗣️\" />\n            <p className=\"text-center text-muted-foreground mb-6\">\n              Work through this cognitive behavioral model together to understand the conflict better.\n            </p>\n\n            <div className=\"space-y-6\">\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"activatingEvent\" className=\"text-lg font-semibold\">A - Activating Event</Label>\n                <p className=\"text-sm text-muted-foreground\">What actually happened? Stick to observable facts.</p>\n                <Textarea\n                  id=\"activatingEvent\"\n                  placeholder=\"Describe the factual events that triggered this conflict...\"\n                  value={formData.activatingEvent}\n                  onChange={(e) => updateFormData('activatingEvent', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyABeliefs\" className=\"text-lg font-semibold\">B - {formData.partyAName || 'Party A'} Beliefs</Label>\n                  <p className=\"text-sm text-muted-foreground\">What thoughts or beliefs do you have about this event?</p>\n                  <Textarea\n                    id=\"partyABeliefs\"\n                    placeholder=\"Your thoughts and beliefs about what happened...\"\n                    value={formData.partyABeliefs}\n                    onChange={(e) => updateFormData('partyABeliefs', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBBeliefs\" className=\"text-lg font-semibold\">B - {formData.partyBName || 'Party B'} Beliefs</Label>\n                  <p className=\"text-sm text-muted-foreground\">What thoughts or beliefs do you have about this event?</p>\n                  <Textarea\n                    id=\"partyBBeliefs\"\n                    placeholder=\"Your thoughts and beliefs about what happened...\"\n                    value={formData.partyBBeliefs}\n                    onChange={(e) => updateFormData('partyBBeliefs', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyAConsequences\" className=\"text-lg font-semibold\">C - {formData.partyAName || 'Party A'} Consequences</Label>\n                  <p className=\"text-sm text-muted-foreground\">How did your beliefs make you feel and behave?</p>\n                  <Textarea\n                    id=\"partyAConsequences\"\n                    placeholder=\"Your emotional and behavioral responses...\"\n                    value={formData.partyAConsequences}\n                    onChange={(e) => updateFormData('partyAConsequences', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBConsequences\" className=\"text-lg font-semibold\">C - {formData.partyBName || 'Party B'} Consequences</Label>\n                  <p className=\"text-sm text-muted-foreground\">How did your beliefs make you feel and behave?</p>\n                  <Textarea\n                    id=\"partyBConsequences\"\n                    placeholder=\"Your emotional and behavioral responses...\"\n                    value={formData.partyBConsequences}\n                    onChange={(e) => updateFormData('partyBConsequences', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyADisputations\" className=\"text-lg font-semibold\">D - {formData.partyAName || 'Party A'} Disputations</Label>\n                  <p className=\"text-sm text-muted-foreground\">Challenge your beliefs. Are they helpful? Accurate? Realistic?</p>\n                  <Textarea\n                    id=\"partyADisputations\"\n                    placeholder=\"Question and challenge your initial beliefs...\"\n                    value={formData.partyADisputations}\n                    onChange={(e) => updateFormData('partyADisputations', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBDisputations\" className=\"text-lg font-semibold\">D - {formData.partyBName || 'Party B'} Disputations</Label>\n                  <p className=\"text-sm text-muted-foreground\">Challenge your beliefs. Are they helpful? Accurate? Realistic?</p>\n                  <Textarea\n                    id=\"partyBDisputations\"\n                    placeholder=\"Question and challenge your initial beliefs...\"\n                    value={formData.partyBDisputations}\n                    onChange={(e) => updateFormData('partyBDisputations', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"effectsReflections\" className=\"text-lg font-semibold\">E - Effects & Reflections</Label>\n                <p className=\"text-sm text-muted-foreground\">What new insights have emerged? How do you both feel now?</p>\n                <Textarea\n                  id=\"effectsReflections\"\n                  placeholder=\"Reflect on new perspectives and feelings that have emerged...\"\n                  value={formData.effectsReflections}\n                  onChange={(e) => updateFormData('effectsReflections', e.target.value)}\n                  rows={4}\n                />\n              </div>\n            </div>\n          </div>\n        );\n\n      case 5:\n        return (\n          <div className=\"space-y-6\">\n            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"Solution Development\" icon=\"💡\" />\n            <p className=\"text-center text-muted-foreground mb-6\">\n              Now let's explore possibilities and develop solutions together.\n            </p>\n\n            <div className=\"space-y-6\">\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyAMiracle\" className=\"text-lg font-semibold\">{formData.partyAName || 'Party A'} - Miracle Question</Label>\n                  <p className=\"text-sm text-muted-foreground\">If you woke up tomorrow and this conflict was completely resolved, what would be different?</p>\n                  <Textarea\n                    id=\"partyAMiracle\"\n                    placeholder=\"Describe your ideal resolution...\"\n                    value={formData.partyAMiracle}\n                    onChange={(e) => updateFormData('partyAMiracle', e.target.value)}\n                    rows={4}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBMiracle\" className=\"text-lg font-semibold\">{formData.partyBName || 'Party B'} - Miracle Question</Label>\n                  <p className=\"text-sm text-muted-foreground\">If you woke up tomorrow and this conflict was completely resolved, what would be different?</p>\n                  <Textarea\n                    id=\"partyBMiracle\"\n                    placeholder=\"Describe your ideal resolution...\"\n                    value={formData.partyBMiracle}\n                    onChange={(e) => updateFormData('partyBMiracle', e.target.value)}\n                    rows={4}\n                  />\n                </div>\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyATop3Solutions\" className=\"text-lg font-semibold\">{formData.partyAName || 'Party A'} - Top 3 Solutions</Label>\n                  <Textarea\n                    id=\"partyATop3Solutions\"\n                    placeholder=\"List your top 3 preferred solutions...\"\n                    value={formData.partyATop3Solutions}\n                    onChange={(e) => updateFormData('partyATop3Solutions', e.target.value)}\n                    rows={4}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBTop3Solutions\" className=\"text-lg font-semibold\">{formData.partyBName || 'Party B'} - Top 3 Solutions</Label>\n                  <Textarea\n                    id=\"partyBTop3Solutions\"\n                    placeholder=\"List your top 3 preferred solutions...\"\n                    value={formData.partyBTop3Solutions}\n                    onChange={(e) => updateFormData('partyBTop3Solutions', e.target.value)}\n                    rows={4}\n                  />\n                </div>\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyAPerspective\" className=\"text-lg font-semibold\">{formData.partyAName || 'Party A'} - Other's Perspective</Label>\n                  <p className=\"text-sm text-muted-foreground\">Try to understand the other person's point of view.</p>\n                  <Textarea\n                    id=\"partyAPerspective\"\n                    placeholder=\"What might the other person be thinking or feeling?\"\n                    value={formData.partyAPerspective}\n                    onChange={(e) => updateFormData('partyAPerspective', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBPerspective\" className=\"text-lg font-semibold\">{formData.partyBName || 'Party B'} - Other's Perspective</Label>\n                  <p className=\"text-sm text-muted-foreground\">Try to understand the other person's point of view.</p>\n                  <Textarea\n                    id=\"partyBPerspective\"\n                    placeholder=\"What might the other person be thinking or feeling?\"\n                    value={formData.partyBPerspective}\n                    onChange={(e) => updateFormData('partyBPerspective', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"compromiseSolutions\" className=\"text-lg font-semibold\">Compromise Solutions</Label>\n                <p className=\"text-sm text-muted-foreground\">What solutions can you both agree on? What compromises are you willing to make?</p>\n                <Textarea\n                  id=\"compromiseSolutions\"\n                  placeholder=\"Describe the solutions you both can accept...\"\n                  value={formData.compromiseSolutions}\n                  onChange={(e) => updateFormData('compromiseSolutions', e.target.value)}\n                  rows={4}\n                />\n              </div>\n            </div>\n          </div>\n        );\n\n      case 6:\n        return (\n          <div className=\"space-y-6\">\n            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"Agreement & Action Steps\" icon=\"✅\" />\n            <p className=\"text-center text-muted-foreground mb-6\">\n              Finalize your agreement and create actionable next steps.\n            </p>\n\n            <div className=\"space-y-6\">\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyAUnmetNeeds\" className=\"text-lg font-semibold\">{formData.partyAName || 'Party A'} - Unmet Needs</Label>\n                  <p className=\"text-sm text-muted-foreground\">What needs of yours weren't being met in this situation?</p>\n                  <Textarea\n                    id=\"partyAUnmetNeeds\"\n                    placeholder=\"Describe your unmet needs...\"\n                    value={formData.partyAUnmetNeeds}\n                    onChange={(e) => updateFormData('partyAUnmetNeeds', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBUnmetNeeds\" className=\"text-lg font-semibold\">{formData.partyBName || 'Party B'} - Unmet Needs</Label>\n                  <p className=\"text-sm text-muted-foreground\">What needs of yours weren't being met in this situation?</p>\n                  <Textarea\n                    id=\"partyBUnmetNeeds\"\n                    placeholder=\"Describe your unmet needs...\"\n                    value={formData.partyBUnmetNeeds}\n                    onChange={(e) => updateFormData('partyBUnmetNeeds', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyANeedsInPractice\" className=\"text-lg font-semibold\">{formData.partyAName || 'Party A'} - Needs in Practice</Label>\n                  <p className=\"text-sm text-muted-foreground\">How can these needs be met going forward?</p>\n                  <Textarea\n                    id=\"partyANeedsInPractice\"\n                    placeholder=\"Practical ways to meet your needs...\"\n                    value={formData.partyANeedsInPractice}\n                    onChange={(e) => updateFormData('partyANeedsInPractice', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBNeedsInPractice\" className=\"text-lg font-semibold\">{formData.partyBName || 'Party B'} - Needs in Practice</Label>\n                  <p className=\"text-sm text-muted-foreground\">How can these needs be met going forward?</p>\n                  <Textarea\n                    id=\"partyBNeedsInPractice\"\n                    placeholder=\"Practical ways to meet your needs...\"\n                    value={formData.partyBNeedsInPractice}\n                    onChange={(e) => updateFormData('partyBNeedsInPractice', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"actionSteps\" className=\"text-lg font-semibold\">Specific Action Steps</Label>\n                <p className=\"text-sm text-muted-foreground\">What specific actions will each person take? Include deadlines and accountability measures.</p>\n                <Textarea\n                  id=\"actionSteps\"\n                  placeholder=\"List specific, measurable action steps with deadlines...\"\n                  value={formData.actionSteps}\n                  onChange={(e) => updateFormData('actionSteps', e.target.value)}\n                  rows={5}\n                />\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"followUpDate\">Follow-up Date</Label>\n                  <Input\n                    id=\"followUpDate\"\n                    type=\"date\"\n                    value={formData.followUpDate}\n                    onChange={(e) => updateFormData('followUpDate', e.target.value)}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"additionalSupport\">Additional Support Needed</Label>\n                  <Input\n                    id=\"additionalSupport\"\n                    placeholder=\"What additional support might be helpful?\"\n                    value={formData.additionalSupport}\n                    onChange={(e) => updateFormData('additionalSupport', e.target.value)}\n                  />\n                </div>\n              </div>\n\n              <div className=\"flex gap-4 pt-6\">\n                <Button onClick={exportToJSON} variant=\"outline\" className=\"flex items-center gap-2\">\n                  <Download className=\"h-4 w-4\" />\n                  Export JSON\n                </Button>\n                <Button onClick={exportToPDF} className=\"flex items-center gap-2\">\n                  <FileText className=\"h-4 w-4\" />\n                  Export PDF\n                </Button>\n              </div>\n            </div>\n          </div>\n        );\n\n      default:\n        return <div>Step not found</div>;\n    }\n  };\n\n  return (\n    <div className=\"min-h-screen bg-background\">\n      <div className=\"container mx-auto px-4 py-8 max-w-4xl\">\n        {/* Header */}\n        <div className=\"flex items-center justify-between mb-8\">\n          <div className=\"flex items-center gap-4\">\n            <img src={logo} alt=\"Co-op Logo\" className=\"h-12 w-12\" />\n            <div>\n              <h1 className=\"text-3xl font-bold text-primary\">Co-op Conflict Resolution Platform</h1>\n              <p className=\"text-muted-foreground\">A guided process for working through interpersonal conflicts</p>\n            </div>\n          </div>\n          <DarkModeToggle />\n        </div>\n\n        {/* Progress Bar */}\n        <div className=\"mb-8\">\n          <div className=\"flex items-center justify-between mb-2\">\n            <span className=\"text-sm font-medium\">Step {currentStep} of {totalSteps}: {STEPS[currentStep - 1]}</span>\n            <span className=\"text-sm text-muted-foreground\">{progressPercentage}% Complete</span>\n          </div>\n          <Progress value={progressPercentage} className=\"h-2\" />\n          \n          {/* Step indicators */}\n          <div className=\"flex justify-between mt-4\">\n            {STEPS.map((step, index) => (\n              <div\n                key={index}\n                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${\n                  index + 1 < currentStep\n                    ? 'bg-primary text-primary-foreground'\n                    : index + 1 === currentStep\n                    ? 'bg-primary text-primary-foreground'\n                    : 'bg-muted text-muted-foreground'\n                }`}\n              >\n                {index + 1}\n              </div>\n            ))}\n          </div>\n        </div>\n\n        {/* Main Content */}\n        <Card className=\"mb-8\">\n          <CardContent className=\"p-8\">\n            {renderStep()}\n          </CardContent>\n        </Card>\n\n        {/* Navigation */}\n        <div className=\"flex justify-between\">\n          <Button\n            onClick={prevStep}\n            disabled={currentStep === 1}\n            variant=\"outline\"\n            className=\"flex items-center gap-2\"\n          >\n            <ChevronLeft className=\"h-4 w-4\" />\n            Previous\n          </Button>\n          \n          <div className=\"text-center text-sm text-muted-foreground\">\n            Step {currentStep} of {totalSteps}\n          </div>\n          \n          <Button\n            onClick={nextStep}\n            disabled={currentStep === totalSteps}",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/App.jsx",
+        "start": 117,
+        "end": 749,
+        "startLoc": {
+          "line": 117,
+          "column": 5,
+          "position": 1010
+        },
+        "endLoc": {
+          "line": 749,
+          "column": 2,
+          "position": 7198
+        }
+      },
+      "secondFile": {
+        "name": "manus-working/app_temp.jsx",
+        "start": 117,
+        "end": 749,
+        "startLoc": {
+          "line": 117,
+          "column": 5,
+          "position": 1010
+        },
+        "endLoc": {
+          "line": 749,
+          "column": 2,
+          "position": 7198
+        }
+      }
+    },
+    {
+      "format": "jsx",
+      "lines": 761,
+      "fragment": "import React, { useState } from 'react';\nimport { Button } from './components/ui/button';\nimport { Input } from './components/ui/input';\nimport { Label } from './components/ui/label';\nimport { Textarea } from './components/ui/textarea';\nimport { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';\nimport { Badge } from './components/ui/badge';\nimport { Progress } from './components/ui/progress';\nimport { Users, Heart, MessageCircle, Target, Handshake, FileText, ChevronLeft, ChevronRight, Download } from 'lucide-react';\nimport EmojiGridMapper from './components/EmojiGridMapper';\nimport SectionSeparator from './components/SectionSeparator';\nimport DarkModeToggle from './components/DarkModeToggle';\nimport GuidanceAlert from './components/GuidanceAlert';\nimport { generateEnhancedPDF } from './utils/pdfGenerator';\nimport logo from './assets/logo.png';\nimport './App.css';\n\nfunction App() {\n  const [currentStep, setCurrentStep] = useState(1);\n  const [formData, setFormData] = useState({\n    partyAName: '',\n    partyBName: '',\n    dateOfIncident: '',\n    dateOfMediation: '',\n    locationOfConflict: '',\n    conflictDescription: '',\n    // Individual Reflection A\n    partyAThoughts: '',\n    partyASelectedEmotionWords: [], // Array of selected emotion words\n    partyAEmotionChartPosition: null, // {x, y, valence, arousal, emoji, label}\n    partyAAggressiveApproach: '',\n    partyAPassiveApproach: '',\n    partyAAssertiveApproach: '',\n    partyAWhyBecause: '',\n    // Individual Reflection B\n    partyBThoughts: '',\n    partyBSelectedEmotionWords: [], // Array of selected emotion words\n    partyBEmotionChartPosition: null, // {x, y, valence, arousal, emoji, label}\n    partyBAggressiveApproach: '',\n    partyBPassiveApproach: '',\n    partyBAssertiveApproach: '',\n    partyBWhyBecause: '',\n    // ABCDE Model\n    activatingEvent: '',\n    partyABeliefs: '',\n    partyBBeliefs: '',\n    partyAConsequences: '',\n    partyBConsequences: '',\n    partyADisputations: '',\n    partyBDisputations: '',\n    effectsReflections: '',\n    // Solution Development\n    partyAMiracle: '',\n    partyBMiracle: '',\n    partyATop3Solutions: '',\n    partyBTop3Solutions: '',\n    partyAPerspective: '',\n    partyBPerspective: '',\n    compromiseSolutions: '',\n    // Agreement & Action Steps\n    partyAUnmetNeeds: '',\n    partyBUnmetNeeds: '',\n    partyANeedsInPractice: '',\n    partyBNeedsInPractice: '',\n    actionSteps: '',\n    followUpDate: '',\n    additionalSupport: ''\n  });\n\n  const totalSteps = 6;\n  const progressPercentage = Math.round((currentStep / totalSteps) * 100);\n\n  const updateFormData = (field, value) => {\n    setFormData(prev => ({ ...prev, [field]: value }));\n  };\n\n  const nextStep = () => {\n    if (currentStep < totalSteps) {\n      setCurrentStep(currentStep + 1);\n    }\n  };\n\n  const prevStep = () => {\n    if (currentStep > 1) {\n      setCurrentStep(currentStep - 1);\n    }\n  };\n\n  const exportToJSON = () => {\n    const dataStr = JSON.stringify(formData, null, 2);\n    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);\n    const exportFileDefaultName = `conflict-mediation-${new Date().toISOString().split('T')[0]}.json`;\n    const linkElement = document.createElement('a');\n    linkElement.setAttribute('href', dataUri);\n    linkElement.setAttribute('download', exportFileDefaultName);\n    linkElement.click();\n  };\n\n  const exportToPDF = () => {\n    generateEnhancedPDF(formData);\n  };\n\n  const STEPS = [\n    'Setup',\n    'Individual Reflection - Party A',\n    'Individual Reflection - Party B', \n    'Shared Discussion (ABCDE)',\n    'Solution Development',\n    'Agreement & Action Steps'\n  ];\n\n  const renderStep = () => {\n    switch (currentStep) {\n      case 1:\n        return (\n          <div className=\"space-y-6\">\n            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"Conflict Mediation Setup\" icon=\"🏠\" />\n            <p className=\"text-center text-muted-foreground mb-6\">\n              Let's start by gathering some basic information about the conflict and the parties involved.\n            </p>\n\n            <SectionSeparator title=\"Party Information\" icon=\"👥\" />\n            <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n              <div className=\"space-y-2\">\n                <Label htmlFor=\"partyAName\">Party A Name</Label>\n                <Input\n                  id=\"partyAName\"\n                  placeholder=\"Enter first person's name\"\n                  value={formData.partyAName}\n                  onChange={(e) => updateFormData('partyAName', e.target.value)}\n                />\n              </div>\n              <div className=\"space-y-2\">\n                <Label htmlFor=\"partyBName\">Party B Name</Label>\n                <Input\n                  id=\"partyBName\"\n                  placeholder=\"Enter second person's name\"\n                  value={formData.partyBName}\n                  onChange={(e) => updateFormData('partyBName', e.target.value)}\n                />\n              </div>\n            </div>\n\n            <SectionSeparator title=\"Conflict Details\" icon=\"📋\" />\n            <div className=\"grid grid-cols-1 md:grid-cols-3 gap-6\">\n              <div className=\"space-y-2\">\n                <Label htmlFor=\"dateOfIncident\">Date of Incident</Label>\n                <Input\n                  id=\"dateOfIncident\"\n                  type=\"date\"\n                  value={formData.dateOfIncident}\n                  onChange={(e) => updateFormData('dateOfIncident', e.target.value)}\n                />\n              </div>\n              <div className=\"space-y-2\">\n                <Label htmlFor=\"dateOfMediation\">Date of Mediation</Label>\n                <Input\n                  id=\"dateOfMediation\"\n                  type=\"date\"\n                  value={formData.dateOfMediation}\n                  onChange={(e) => updateFormData('dateOfMediation', e.target.value)}\n                />\n              </div>\n              <div className=\"space-y-2\">\n                <Label htmlFor=\"locationOfConflict\">Location of Conflict</Label>\n                <Input\n                  id=\"locationOfConflict\"\n                  placeholder=\"Where did this happen?\"\n                  value={formData.locationOfConflict}\n                  onChange={(e) => updateFormData('locationOfConflict', e.target.value)}\n                />\n              </div>\n            </div>\n\n            <div className=\"space-y-2\">\n              <Label htmlFor=\"conflictDescription\">Agreed Upon Description of Conflict</Label>\n              <Textarea\n                id=\"conflictDescription\"\n                placeholder=\"Both parties should agree on this description of what happened...\"\n                value={formData.conflictDescription}\n                onChange={(e) => updateFormData('conflictDescription', e.target.value)}\n                rows={4}\n              />\n            </div>\n          </div>\n        );\n\n      case 2:\n        return (\n          <div className=\"space-y-6\">\n            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"Thoughts & Beliefs\" icon=\"🤔\" />\n            <div className=\"space-y-4\">\n              <Label htmlFor=\"partyAThoughts\">I think...</Label>\n              <Textarea\n                id=\"partyAThoughts\"\n                placeholder=\"Explain what you think or believe to be true about the conflict...\"\n                value={formData.partyAThoughts}\n                onChange={(e) => updateFormData('partyAThoughts', e.target.value)}\n                rows={4}\n              />\n            </div>\n\n            <SectionSeparator title=\"Emotions & Feelings\" icon=\"💚\" />\n            <div className=\"space-y-4\">\n              <Label>I feel... (Use both methods to express your emotions)</Label>\n              <EmojiGridMapper\n                onEmotionWordsChange={(words) => updateFormData('partyASelectedEmotionWords', words)}\n                onChartPositionChange={(position) => updateFormData('partyAEmotionChartPosition', position)}\n                selectedEmotionWords={formData.partyASelectedEmotionWords}\n                chartPosition={formData.partyAEmotionChartPosition}\n              />\n            </div>\n\n            <SectionSeparator title=\"Communication Approaches\" icon=\"💬\" />\n            <div className=\"space-y-6\">\n              <Label>I want... (Communication Approaches)</Label>\n              \n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyAAggressiveApproach\" className=\"text-red-600\">Aggressive Approach (Not Recommended)</Label>\n                <Textarea\n                  id=\"partyAAggressiveApproach\"\n                  placeholder=\"What would you want to say if you were being aggressive?\"\n                  value={formData.partyAAggressiveApproach}\n                  onChange={(e) => updateFormData('partyAAggressiveApproach', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyAPassiveApproach\" className=\"text-blue-600\">Passive Approach</Label>\n                <Textarea\n                  id=\"partyAPassiveApproach\"\n                  placeholder=\"What would you want if you were being passive?\"\n                  value={formData.partyAPassiveApproach}\n                  onChange={(e) => updateFormData('partyAPassiveApproach', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyAAssertiveApproach\" className=\"text-green-600\">Assertive Approach (Recommended)</Label>\n                <Textarea\n                  id=\"partyAAssertiveApproach\"\n                  placeholder=\"What would you want to say if you were being assertive and respectful?\"\n                  value={formData.partyAAssertiveApproach}\n                  onChange={(e) => updateFormData('partyAAssertiveApproach', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyAWhyBecause\">Why/Because...</Label>\n                <Textarea\n                  id=\"partyAWhyBecause\"\n                  placeholder=\"Explain your reasoning...\"\n                  value={formData.partyAWhyBecause}\n                  onChange={(e) => updateFormData('partyAWhyBecause', e.target.value)}\n                  rows={3}\n                />\n              </div>\n            </div>\n          </div>\n        );\n\n      case 3:\n        return (\n          <div className=\"space-y-6\">\n            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"Thoughts & Beliefs\" icon=\"🤔\" />\n            <div className=\"space-y-4\">\n              <Label htmlFor=\"partyBThoughts\">I think...</Label>\n              <Textarea\n                id=\"partyBThoughts\"\n                placeholder=\"Explain what you think or believe to be true about the conflict...\"\n                value={formData.partyBThoughts}\n                onChange={(e) => updateFormData('partyBThoughts', e.target.value)}\n                rows={4}\n              />\n            </div>\n\n            <SectionSeparator title=\"Emotions & Feelings\" icon=\"💚\" />\n            <div className=\"space-y-4\">\n              <Label>I feel... (Use both methods to express your emotions)</Label>\n              <EmojiGridMapper\n                onEmotionWordsChange={(words) => updateFormData('partyBSelectedEmotionWords', words)}\n                onChartPositionChange={(position) => updateFormData('partyBEmotionChartPosition', position)}\n                selectedEmotionWords={formData.partyBSelectedEmotionWords}\n                chartPosition={formData.partyBEmotionChartPosition}\n              />\n            </div>\n\n            <SectionSeparator title=\"Communication Approaches\" icon=\"💬\" />\n            <div className=\"space-y-6\">\n              <Label>I want... (Communication Approaches)</Label>\n              \n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyBAggressiveApproach\" className=\"text-red-600\">Aggressive Approach (Not Recommended)</Label>\n                <Textarea\n                  id=\"partyBAggressiveApproach\"\n                  placeholder=\"What would you want to say if you were being aggressive?\"\n                  value={formData.partyBAggressiveApproach}\n                  onChange={(e) => updateFormData('partyBAggressiveApproach', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyBPassiveApproach\" className=\"text-blue-600\">Passive Approach</Label>\n                <Textarea\n                  id=\"partyBPassiveApproach\"\n                  placeholder=\"What would you want if you were being passive?\"\n                  value={formData.partyBPassiveApproach}\n                  onChange={(e) => updateFormData('partyBPassiveApproach', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyBAssertiveApproach\" className=\"text-green-600\">Assertive Approach (Recommended)</Label>\n                <Textarea\n                  id=\"partyBAssertiveApproach\"\n                  placeholder=\"What would you want to say if you were being assertive and respectful?\"\n                  value={formData.partyBAssertiveApproach}\n                  onChange={(e) => updateFormData('partyBAssertiveApproach', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"partyBWhyBecause\">Why/Because...</Label>\n                <Textarea\n                  id=\"partyBWhyBecause\"\n                  placeholder=\"Explain your reasoning...\"\n                  value={formData.partyBWhyBecause}\n                  onChange={(e) => updateFormData('partyBWhyBecause', e.target.value)}\n                  rows={3}\n                />\n              </div>\n            </div>\n          </div>\n        );\n\n      case 4:\n        return (\n          <div className=\"space-y-6\">\n            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"ABCDE Model Discussion\" icon=\"🗣️\" />\n            <p className=\"text-center text-muted-foreground mb-6\">\n              Work through this cognitive behavioral model together to understand the conflict better.\n            </p>\n\n            <div className=\"space-y-6\">\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"activatingEvent\" className=\"text-lg font-semibold\">A - Activating Event</Label>\n                <p className=\"text-sm text-muted-foreground\">What actually happened? Stick to observable facts.</p>\n                <Textarea\n                  id=\"activatingEvent\"\n                  placeholder=\"Describe the factual events that triggered this conflict...\"\n                  value={formData.activatingEvent}\n                  onChange={(e) => updateFormData('activatingEvent', e.target.value)}\n                  rows={3}\n                />\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyABeliefs\" className=\"text-lg font-semibold\">B - {formData.partyAName || 'Party A'} Beliefs</Label>\n                  <p className=\"text-sm text-muted-foreground\">What thoughts or beliefs do you have about this event?</p>\n                  <Textarea\n                    id=\"partyABeliefs\"\n                    placeholder=\"Your thoughts and beliefs about what happened...\"\n                    value={formData.partyABeliefs}\n                    onChange={(e) => updateFormData('partyABeliefs', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBBeliefs\" className=\"text-lg font-semibold\">B - {formData.partyBName || 'Party B'} Beliefs</Label>\n                  <p className=\"text-sm text-muted-foreground\">What thoughts or beliefs do you have about this event?</p>\n                  <Textarea\n                    id=\"partyBBeliefs\"\n                    placeholder=\"Your thoughts and beliefs about what happened...\"\n                    value={formData.partyBBeliefs}\n                    onChange={(e) => updateFormData('partyBBeliefs', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyAConsequences\" className=\"text-lg font-semibold\">C - {formData.partyAName || 'Party A'} Consequences</Label>\n                  <p className=\"text-sm text-muted-foreground\">How did your beliefs make you feel and behave?</p>\n                  <Textarea\n                    id=\"partyAConsequences\"\n                    placeholder=\"Your emotional and behavioral responses...\"\n                    value={formData.partyAConsequences}\n                    onChange={(e) => updateFormData('partyAConsequences', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBConsequences\" className=\"text-lg font-semibold\">C - {formData.partyBName || 'Party B'} Consequences</Label>\n                  <p className=\"text-sm text-muted-foreground\">How did your beliefs make you feel and behave?</p>\n                  <Textarea\n                    id=\"partyBConsequences\"\n                    placeholder=\"Your emotional and behavioral responses...\"\n                    value={formData.partyBConsequences}\n                    onChange={(e) => updateFormData('partyBConsequences', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyADisputations\" className=\"text-lg font-semibold\">D - {formData.partyAName || 'Party A'} Disputations</Label>\n                  <p className=\"text-sm text-muted-foreground\">Challenge your beliefs. Are they helpful? Accurate? Realistic?</p>\n                  <Textarea\n                    id=\"partyADisputations\"\n                    placeholder=\"Question and challenge your initial beliefs...\"\n                    value={formData.partyADisputations}\n                    onChange={(e) => updateFormData('partyADisputations', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBDisputations\" className=\"text-lg font-semibold\">D - {formData.partyBName || 'Party B'} Disputations</Label>\n                  <p className=\"text-sm text-muted-foreground\">Challenge your beliefs. Are they helpful? Accurate? Realistic?</p>\n                  <Textarea\n                    id=\"partyBDisputations\"\n                    placeholder=\"Question and challenge your initial beliefs...\"\n                    value={formData.partyBDisputations}\n                    onChange={(e) => updateFormData('partyBDisputations', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"effectsReflections\" className=\"text-lg font-semibold\">E - Effects & Reflections</Label>\n                <p className=\"text-sm text-muted-foreground\">What new insights have emerged? How do you both feel now?</p>\n                <Textarea\n                  id=\"effectsReflections\"\n                  placeholder=\"Reflect on new perspectives and feelings that have emerged...\"\n                  value={formData.effectsReflections}\n                  onChange={(e) => updateFormData('effectsReflections', e.target.value)}\n                  rows={4}\n                />\n              </div>\n            </div>\n          </div>\n        );\n\n      case 5:\n        return (\n          <div className=\"space-y-6\">\n            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"Solution Development\" icon=\"💡\" />\n            <p className=\"text-center text-muted-foreground mb-6\">\n              Now let's explore possibilities and develop solutions together.\n            </p>\n\n            <div className=\"space-y-6\">\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyAMiracle\" className=\"text-lg font-semibold\">{formData.partyAName || 'Party A'} - Miracle Question</Label>\n                  <p className=\"text-sm text-muted-foreground\">If you woke up tomorrow and this conflict was completely resolved, what would be different?</p>\n                  <Textarea\n                    id=\"partyAMiracle\"\n                    placeholder=\"Describe your ideal resolution...\"\n                    value={formData.partyAMiracle}\n                    onChange={(e) => updateFormData('partyAMiracle', e.target.value)}\n                    rows={4}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBMiracle\" className=\"text-lg font-semibold\">{formData.partyBName || 'Party B'} - Miracle Question</Label>\n                  <p className=\"text-sm text-muted-foreground\">If you woke up tomorrow and this conflict was completely resolved, what would be different?</p>\n                  <Textarea\n                    id=\"partyBMiracle\"\n                    placeholder=\"Describe your ideal resolution...\"\n                    value={formData.partyBMiracle}\n                    onChange={(e) => updateFormData('partyBMiracle', e.target.value)}\n                    rows={4}\n                  />\n                </div>\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyATop3Solutions\" className=\"text-lg font-semibold\">{formData.partyAName || 'Party A'} - Top 3 Solutions</Label>\n                  <Textarea\n                    id=\"partyATop3Solutions\"\n                    placeholder=\"List your top 3 preferred solutions...\"\n                    value={formData.partyATop3Solutions}\n                    onChange={(e) => updateFormData('partyATop3Solutions', e.target.value)}\n                    rows={4}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBTop3Solutions\" className=\"text-lg font-semibold\">{formData.partyBName || 'Party B'} - Top 3 Solutions</Label>\n                  <Textarea\n                    id=\"partyBTop3Solutions\"\n                    placeholder=\"List your top 3 preferred solutions...\"\n                    value={formData.partyBTop3Solutions}\n                    onChange={(e) => updateFormData('partyBTop3Solutions', e.target.value)}\n                    rows={4}\n                  />\n                </div>\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyAPerspective\" className=\"text-lg font-semibold\">{formData.partyAName || 'Party A'} - Other's Perspective</Label>\n                  <p className=\"text-sm text-muted-foreground\">Try to understand the other person's point of view.</p>\n                  <Textarea\n                    id=\"partyAPerspective\"\n                    placeholder=\"What might the other person be thinking or feeling?\"\n                    value={formData.partyAPerspective}\n                    onChange={(e) => updateFormData('partyAPerspective', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBPerspective\" className=\"text-lg font-semibold\">{formData.partyBName || 'Party B'} - Other's Perspective</Label>\n                  <p className=\"text-sm text-muted-foreground\">Try to understand the other person's point of view.</p>\n                  <Textarea\n                    id=\"partyBPerspective\"\n                    placeholder=\"What might the other person be thinking or feeling?\"\n                    value={formData.partyBPerspective}\n                    onChange={(e) => updateFormData('partyBPerspective', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"compromiseSolutions\" className=\"text-lg font-semibold\">Compromise Solutions</Label>\n                <p className=\"text-sm text-muted-foreground\">What solutions can you both agree on? What compromises are you willing to make?</p>\n                <Textarea\n                  id=\"compromiseSolutions\"\n                  placeholder=\"Describe the solutions you both can accept...\"\n                  value={formData.compromiseSolutions}\n                  onChange={(e) => updateFormData('compromiseSolutions', e.target.value)}\n                  rows={4}\n                />\n              </div>\n            </div>\n          </div>\n        );\n\n      case 6:\n        return (\n          <div className=\"space-y-6\">\n            <GuidanceAlert step={currentStep} partyAName={formData.partyAName} partyBName={formData.partyBName} />\n            \n            <SectionSeparator title=\"Agreement & Action Steps\" icon=\"✅\" />\n            <p className=\"text-center text-muted-foreground mb-6\">\n              Finalize your agreement and create actionable next steps.\n            </p>\n\n            <div className=\"space-y-6\">\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyAUnmetNeeds\" className=\"text-lg font-semibold\">{formData.partyAName || 'Party A'} - Unmet Needs</Label>\n                  <p className=\"text-sm text-muted-foreground\">What needs of yours weren't being met in this situation?</p>\n                  <Textarea\n                    id=\"partyAUnmetNeeds\"\n                    placeholder=\"Describe your unmet needs...\"\n                    value={formData.partyAUnmetNeeds}\n                    onChange={(e) => updateFormData('partyAUnmetNeeds', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBUnmetNeeds\" className=\"text-lg font-semibold\">{formData.partyBName || 'Party B'} - Unmet Needs</Label>\n                  <p className=\"text-sm text-muted-foreground\">What needs of yours weren't being met in this situation?</p>\n                  <Textarea\n                    id=\"partyBUnmetNeeds\"\n                    placeholder=\"Describe your unmet needs...\"\n                    value={formData.partyBUnmetNeeds}\n                    onChange={(e) => updateFormData('partyBUnmetNeeds', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyANeedsInPractice\" className=\"text-lg font-semibold\">{formData.partyAName || 'Party A'} - Needs in Practice</Label>\n                  <p className=\"text-sm text-muted-foreground\">How can these needs be met going forward?</p>\n                  <Textarea\n                    id=\"partyANeedsInPractice\"\n                    placeholder=\"Practical ways to meet your needs...\"\n                    value={formData.partyANeedsInPractice}\n                    onChange={(e) => updateFormData('partyANeedsInPractice', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"partyBNeedsInPractice\" className=\"text-lg font-semibold\">{formData.partyBName || 'Party B'} - Needs in Practice</Label>\n                  <p className=\"text-sm text-muted-foreground\">How can these needs be met going forward?</p>\n                  <Textarea\n                    id=\"partyBNeedsInPractice\"\n                    placeholder=\"Practical ways to meet your needs...\"\n                    value={formData.partyBNeedsInPractice}\n                    onChange={(e) => updateFormData('partyBNeedsInPractice', e.target.value)}\n                    rows={3}\n                  />\n                </div>\n              </div>\n\n              <div className=\"space-y-4\">\n                <Label htmlFor=\"actionSteps\" className=\"text-lg font-semibold\">Specific Action Steps</Label>\n                <p className=\"text-sm text-muted-foreground\">What specific actions will each person take? Include deadlines and accountability measures.</p>\n                <Textarea\n                  id=\"actionSteps\"\n                  placeholder=\"List specific, measurable action steps with deadlines...\"\n                  value={formData.actionSteps}\n                  onChange={(e) => updateFormData('actionSteps', e.target.value)}\n                  rows={5}\n                />\n              </div>\n\n              <div className=\"grid grid-cols-1 md:grid-cols-2 gap-6\">\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"followUpDate\">Follow-up Date</Label>\n                  <Input\n                    id=\"followUpDate\"\n                    type=\"date\"\n                    value={formData.followUpDate}\n                    onChange={(e) => updateFormData('followUpDate', e.target.value)}\n                  />\n                </div>\n\n                <div className=\"space-y-4\">\n                  <Label htmlFor=\"additionalSupport\">Additional Support Needed</Label>\n                  <Input\n                    id=\"additionalSupport\"\n                    placeholder=\"What additional support might be helpful?\"\n                    value={formData.additionalSupport}\n                    onChange={(e) => updateFormData('additionalSupport', e.target.value)}\n                  />\n                </div>\n              </div>\n\n              <div className=\"flex gap-4 pt-6\">\n                <Button onClick={exportToJSON} variant=\"outline\" className=\"flex items-center gap-2\">\n                  <Download className=\"h-4 w-4\" />\n                  Export JSON\n                </Button>\n                <Button onClick={exportToPDF} className=\"flex items-center gap-2\">\n                  <FileText className=\"h-4 w-4\" />\n                  Export PDF\n                </Button>\n              </div>\n            </div>\n          </div>\n        );\n\n      default:\n        return <div>Step not found</div>;\n    }\n  };\n\n  return (\n    <div className=\"min-h-screen bg-background\">\n      <div className=\"container mx-auto px-4 py-8 max-w-4xl\">\n        {/* Header */}\n        <div className=\"flex items-center justify-between mb-8\">\n          <div className=\"flex items-center gap-4\">\n            <img src={logo} alt=\"Co-op Logo\" className=\"h-12 w-12\" />\n            <div>\n              <h1 className=\"text-3xl font-bold text-primary\">Co-op Conflict Resolution Platform</h1>\n              <p className=\"text-muted-foreground\">A guided process for working through interpersonal conflicts</p>\n            </div>\n          </div>\n          <DarkModeToggle />\n        </div>\n\n        {/* Progress Bar */}\n        <div className=\"mb-8\">\n          <div className=\"flex items-center justify-between mb-2\">\n            <span className=\"text-sm font-medium\">Step {currentStep} of {totalSteps}: {STEPS[currentStep - 1]}</span>\n            <span className=\"text-sm text-muted-foreground\">{progressPercentage}% Complete</span>\n          </div>\n          <Progress value={progressPercentage} className=\"h-2\" />\n          \n          {/* Step indicators */}\n          <div className=\"flex justify-between mt-4\">\n            {STEPS.map((step, index) => (\n              <div\n                key={index}\n                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${\n                  index + 1 < currentStep\n                    ? 'bg-primary text-primary-foreground'\n                    : index + 1 === currentStep\n                    ? 'bg-primary text-primary-foreground'\n                    : 'bg-muted text-muted-foreground'\n                }`}\n              >\n                {index + 1}\n              </div>\n            ))}\n          </div>\n        </div>\n\n        {/* Main Content */}\n        <Card className=\"mb-8\">\n          <CardContent className=\"p-8\">\n            {renderStep()}\n          </CardContent>\n        </Card>\n\n        {/* Navigation */}\n        <div className=\"flex justify-between\">\n          <Button\n            onClick={prevStep}\n            disabled={currentStep === 1}\n            variant=\"outline\"\n            className=\"flex items-center gap-2\"\n          >\n            <ChevronLeft className=\"h-4 w-4\" />\n            Previous\n          </Button>\n          \n          <div className=\"text-center text-sm text-muted-foreground\">\n            Step {currentStep} of {totalSteps}\n          </div>\n          \n          <Button\n            onClick={nextStep}\n            disabled={currentStep === totalSteps}\n            className=\"flex items-center gap-2\"\n          >\n            Next\n            <ChevronRight className=\"h-4 w-4\" />\n          </Button>\n        </div>\n      </div>\n    </div>\n  );\n}\n\nexport default App;",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/App.jsx",
+        "start": 1,
+        "end": 761,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 761,
+          "column": 2,
+          "position": 7255
+        }
+      },
+      "secondFile": {
+        "name": "manus-working/app_temp.jsx",
+        "start": 1,
+        "end": 761,
+        "startLoc": {
+          "line": 1,
+          "column": 1,
+          "position": 0
+        },
+        "endLoc": {
+          "line": 761,
+          "column": 2,
+          "position": 7255
+        }
+      }
+    },
+    {
+      "format": "css",
+      "lines": 44,
+      "fragment": ";\n\n@custom-variant dark (&:is(.dark *));\n\n@theme inline {\n  --radius-sm: calc(var(--radius) - 4px);\n  --radius-md: calc(var(--radius) - 2px);\n  --radius-lg: var(--radius);\n  --radius-xl: calc(var(--radius) + 4px);\n  --color-background: var(--background);\n  --color-foreground: var(--foreground);\n  --color-card: var(--card);\n  --color-card-foreground: var(--card-foreground);\n  --color-popover: var(--popover);\n  --color-popover-foreground: var(--popover-foreground);\n  --color-primary: var(--primary);\n  --color-primary-foreground: var(--primary-foreground);\n  --color-secondary: var(--secondary);\n  --color-secondary-foreground: var(--secondary-foreground);\n  --color-muted: var(--muted);\n  --color-muted-foreground: var(--muted-foreground);\n  --color-accent: var(--accent);\n  --color-accent-foreground: var(--accent-foreground);\n  --color-destructive: var(--destructive);\n  --color-border: var(--border);\n  --color-input: var(--input);\n  --color-ring: var(--ring);\n  --color-chart-1: var(--chart-1);\n  --color-chart-2: var(--chart-2);\n  --color-chart-3: var(--chart-3);\n  --color-chart-4: var(--chart-4);\n  --color-chart-5: var(--chart-5);\n  --color-sidebar: var(--sidebar);\n  --color-sidebar-foreground: var(--sidebar-foreground);\n  --color-sidebar-primary: var(--sidebar-primary);\n  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);\n  --color-sidebar-accent: var(--sidebar-accent);\n  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);\n  --color-sidebar-border: var(--sidebar-border);\n  --color-sidebar-ring: var(--sidebar-ring);\n}\n\n:root {\n  --radius",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/App.css",
+        "start": 2,
+        "end": 45,
+        "startLoc": {
+          "line": 2,
+          "column": 17,
+          "position": 8
+        },
+        "endLoc": {
+          "line": 45,
+          "column": 9,
+          "position": 408
+        }
+      },
+      "secondFile": {
+        "name": "src/App.css",
+        "start": 3,
+        "end": 46,
+        "startLoc": {
+          "line": 3,
+          "column": 33,
+          "position": 13
+        },
+        "endLoc": {
+          "line": 46,
+          "column": 44,
+          "position": 413
+        }
+      }
+    },
+    {
+      "format": "css",
+      "lines": 14,
+      "fragment": ";\n}\n\n/* Enhanced card animations */\n.card-hover {\n  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);\n}\n\n.card-hover:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);\n}\n\n/* Floating animation for elements */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/App.css",
+        "start": 139,
+        "end": 152,
+        "startLoc": {
+          "line": 139,
+          "column": 2,
+          "position": 1081
+        },
+        "endLoc": {
+          "line": 152,
+          "column": 38,
+          "position": 1176
+        }
+      },
+      "secondFile": {
+        "name": "src/App.css",
+        "start": 153,
+        "end": 167,
+        "startLoc": {
+          "line": 153,
+          "column": 4,
+          "position": 1235
+        },
+        "endLoc": {
+          "line": 167,
+          "column": 55,
+          "position": 1331
+        }
+      }
+    },
+    {
+      "format": "css",
+      "lines": 33,
+      "fragment": ";\n}\n\n/* Tooltip styles */\n.tooltip {\n  position: relative;\n  display: inline-block;\n}\n\n.tooltip .tooltiptext {\n  visibility: hidden;\n  width: 200px;\n  background-color: rgba(0, 0, 0, 0.9);\n  color: #fff;\n  text-align: center;\n  border-radius: 6px;\n  padding: 8px;\n  position: absolute;\n  z-index: 1000;\n  bottom: 125%;\n  left: 50%;\n  margin-left: -100px;\n  opacity: 0;\n  transition: opacity 0.3s;\n  font-size: 12px;\n}\n\n.tooltip:hover .tooltiptext {\n  visibility: visible;\n  opacity: 1;\n}\n\n/* Enhanced scrollbar */",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/App.css",
+        "start": 295,
+        "end": 327,
+        "startLoc": {
+          "line": 295,
+          "column": 2,
+          "position": 2203
+        },
+        "endLoc": {
+          "line": 327,
+          "column": 25,
+          "position": 2375
+        }
+      },
+      "secondFile": {
+        "name": "src/App.css",
+        "start": 379,
+        "end": 411,
+        "startLoc": {
+          "line": 379,
+          "column": 9,
+          "position": 2593
+        },
+        "endLoc": {
+          "line": 411,
+          "column": 45,
+          "position": 2765
+        }
+      }
+    },
+    {
+      "format": "css",
+      "lines": 19,
+      "fragment": "); opacity: 1; }\n}\n\n@keyframes slideInFromRight {\n  0% { transform: translateX(100%); opacity: 0; }\n  100% { transform: translateX(0); opacity: 1; }\n}\n\n@keyframes slideInFromTop {\n  0% { transform: translateY(-100%); opacity: 0; }\n  100% { transform: translateY(0); opacity: 1; }\n}\n\n@keyframes slideInFromBottom {\n  0% { transform: translateY(100%); opacity: 0; }\n  100% { transform: translateY(0); opacity: 1; }\n}\n\n.slide-in-left",
+      "tokens": 0,
+      "firstFile": {
+        "name": "manus-working/App.css",
+        "start": 408,
+        "end": 426,
+        "startLoc": {
+          "line": 408,
+          "column": 2,
+          "position": 2927
+        },
+        "endLoc": {
+          "line": 426,
+          "column": 15,
+          "position": 3097
+        }
+      },
+      "secondFile": {
+        "name": "src/App.css",
+        "start": 469,
+        "end": 510,
+        "startLoc": {
+          "line": 469,
+          "column": 5,
+          "position": 3169
+        },
+        "endLoc": {
+          "line": 510,
+          "column": 33,
+          "position": 3362
+        }
+      }
+    },
+    {
+      "format": "markup",
+      "lines": 9,
+      "fragment": "\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Conflict Resolution Platform</title>\n  </head>\n  <body>\n    <div id=\"root\"></div>\n    <script type=\"module\" src=\"/src/main.jsx\"></script>\n  </body>\n</html>",
+      "tokens": 0,
+      "firstFile": {
+        "name": "index.html",
+        "start": 5,
+        "end": 13,
+        "startLoc": {
+          "line": 5,
+          "column": 24,
+          "position": 49
+        },
+        "endLoc": {
+          "line": 13,
+          "column": 2,
+          "position": 135
+        }
+      },
+      "secondFile": {
+        "name": "manus-working/index.html",
+        "start": 6,
+        "end": 16,
+        "startLoc": {
+          "line": 6,
+          "column": 13,
+          "position": 49
+        },
+        "endLoc": {
+          "line": 16,
+          "column": 2,
+          "position": 134
+        }
+      }
+    }
+  ],
+  "filename": "/home/ubuntu/.nvm/versions/node/v22.16.0/lib/node_modules/jscpd/node_modules/@jscpd/html-reporter/dist/templates/main.pug"
+}
