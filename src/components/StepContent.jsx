@@ -52,18 +52,32 @@ const CommunicationApproaches = ({ prefix, formData, updateFormData }) => (
   </div>
 );
 
-// * Individual Reflection component - moved outside to prevent recreation
-const IndividualReflection = ({ party, prefix, formData, updateFormData }) => (
+// * Individual Reflection component with optional overrides for required fields
+const IndividualReflection = ({
+  party,
+  prefix,
+  formData,
+  updateFormData,
+  thoughtsValue,
+  onThoughtsChange,
+  thoughtsError,
+  assertiveValue,
+  onAssertiveChange,
+  assertiveError,
+}) => (
   <div className="space-y-4 sm:space-y-6">
     <SectionSeparator title="Thoughts & Beliefs" />
     <FormField
       id={`${prefix}Thoughts`}
       label="I think..."
       placeholder="Explain what you think or believe to be true about the conflict..."
-      value={formData[`${prefix}Thoughts`]}
-      onChange={(value) => updateFormData(`${prefix}Thoughts`, value)}
+      value={typeof thoughtsValue === "string" ? thoughtsValue : formData[`${prefix}Thoughts`]}
+      onChange={(value) =>
+        onThoughtsChange ? onThoughtsChange(value) : updateFormData(`${prefix}Thoughts`, value)
+      }
       type="textarea"
       rows={4}
+      error={thoughtsError}
     />
 
     <SectionSeparator title="Emotions & Feelings" />
@@ -92,9 +106,26 @@ const IndividualReflection = ({ party, prefix, formData, updateFormData }) => (
       formData={formData}
       updateFormData={updateFormData}
     />
+
+    {/* Required field inline */}
+    <FormField
+      id={`${prefix}AssertiveApproach`}
+      label="Assertive Approach (Required)"
+      placeholder="What would you want to say if you were being assertive and respectful?"
+      value={typeof assertiveValue === "string" ? assertiveValue : formData[`${prefix}AssertiveApproach`]}
+      onChange={(value) =>
+        onAssertiveChange
+          ? onAssertiveChange(value)
+          : updateFormData(`${prefix}AssertiveApproach`, value)
+      }
+      type="textarea"
+      className="text-green-600"
+      error={assertiveError}
+    />
   </div>
 );
 
+// Schemas per step (required fields only)
 const Step1Schema = z.object({
   partyAName: z.string().min(1, "Required"),
   partyBName: z.string().min(1, "Required"),
@@ -102,6 +133,33 @@ const Step1Schema = z.object({
   dateOfIncident: z.string().optional(),
   dateOfMediation: z.string().optional(),
   locationOfConflict: z.string().optional(),
+});
+
+const Step2Schema = z.object({
+  partyAThoughts: z.string().min(1, "Required"),
+  partyAAssertiveApproach: z.string().min(1, "Required"),
+});
+
+const Step3Schema = z.object({
+  partyBThoughts: z.string().min(1, "Required"),
+  partyBAssertiveApproach: z.string().min(1, "Required"),
+});
+
+const Step4Schema = z.object({
+  activatingEvent: z.string().min(1, "Required"),
+  partyABeliefs: z.string().min(1, "Required"),
+  partyBBeliefs: z.string().min(1, "Required"),
+});
+
+const Step5Schema = z.object({
+  partyAMiracle: z.string().min(1, "Required"),
+  partyBMiracle: z.string().min(1, "Required"),
+  compromiseSolutions: z.string().min(1, "Required"),
+});
+
+const Step6Schema = z.object({
+  actionSteps: z.string().min(1, "Required"),
+  followUpDate: z.string().min(1, "Required"),
 });
 
 const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON }) => {
@@ -118,8 +176,60 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
       locationOfConflict: formData.locationOfConflict,
     },
   });
-
   const step1Errors = step1Form.formState.errors;
+
+  // react-hook-form for Steps 2-6 (only required fields)
+  const step2Form = useForm({
+    mode: "onChange",
+    resolver: zodResolver(Step2Schema),
+    defaultValues: {
+      partyAThoughts: formData.partyAThoughts,
+      partyAAssertiveApproach: formData.partyAAssertiveApproach,
+    },
+  });
+  const step2Errors = step2Form.formState.errors;
+
+  const step3Form = useForm({
+    mode: "onChange",
+    resolver: zodResolver(Step3Schema),
+    defaultValues: {
+      partyBThoughts: formData.partyBThoughts,
+      partyBAssertiveApproach: formData.partyBAssertiveApproach,
+    },
+  });
+  const step3Errors = step3Form.formState.errors;
+
+  const step4Form = useForm({
+    mode: "onChange",
+    resolver: zodResolver(Step4Schema),
+    defaultValues: {
+      activatingEvent: formData.activatingEvent,
+      partyABeliefs: formData.partyABeliefs,
+      partyBBeliefs: formData.partyBBeliefs,
+    },
+  });
+  const step4Errors = step4Form.formState.errors;
+
+  const step5Form = useForm({
+    mode: "onChange",
+    resolver: zodResolver(Step5Schema),
+    defaultValues: {
+      partyAMiracle: formData.partyAMiracle,
+      partyBMiracle: formData.partyBMiracle,
+      compromiseSolutions: formData.compromiseSolutions,
+    },
+  });
+  const step5Errors = step5Form.formState.errors;
+
+  const step6Form = useForm({
+    mode: "onChange",
+    resolver: zodResolver(Step6Schema),
+    defaultValues: {
+      actionSteps: formData.actionSteps,
+      followUpDate: formData.followUpDate,
+    },
+  });
+  const step6Errors = step6Form.formState.errors;
 
   const TwoColumnFields = ({ fields }) => (
     <div className="form-grid form-grid-2">
@@ -237,6 +347,18 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
           prefix="partyA"
           formData={formData}
           updateFormData={updateFormData}
+          thoughtsValue={step2Form.watch("partyAThoughts")}
+          onThoughtsChange={(value) => {
+            step2Form.setValue("partyAThoughts", value, { shouldValidate: true, shouldDirty: true });
+            updateFormData("partyAThoughts", value);
+          }}
+          thoughtsError={step2Errors.partyAThoughts?.message}
+          assertiveValue={step2Form.watch("partyAAssertiveApproach")}
+          onAssertiveChange={(value) => {
+            step2Form.setValue("partyAAssertiveApproach", value, { shouldValidate: true, shouldDirty: true });
+            updateFormData("partyAAssertiveApproach", value);
+          }}
+          assertiveError={step2Errors.partyAAssertiveApproach?.message}
         />
       );
 
@@ -247,6 +369,18 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
           prefix="partyB"
           formData={formData}
           updateFormData={updateFormData}
+          thoughtsValue={step3Form.watch("partyBThoughts")}
+          onThoughtsChange={(value) => {
+            step3Form.setValue("partyBThoughts", value, { shouldValidate: true, shouldDirty: true });
+            updateFormData("partyBThoughts", value);
+          }}
+          thoughtsError={step3Errors.partyBThoughts?.message}
+          assertiveValue={step3Form.watch("partyBAssertiveApproach")}
+          onAssertiveChange={(value) => {
+            step3Form.setValue("partyBAssertiveApproach", value, { shouldValidate: true, shouldDirty: true });
+            updateFormData("partyBAssertiveApproach", value);
+          }}
+          assertiveError={step3Errors.partyBAssertiveApproach?.message}
         />
       );
 
@@ -265,10 +399,14 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               label="A - Activating Event"
               description="What actually happened? Stick to observable facts."
               placeholder="Describe the factual events that triggered this conflict..."
-              value={formData.activatingEvent}
-              onChange={(value) => updateFormData("activatingEvent", value)}
+              value={step4Form.watch("activatingEvent")}
+              onChange={(value) => {
+                step4Form.setValue("activatingEvent", value, { shouldValidate: true, shouldDirty: true });
+                updateFormData("activatingEvent", value);
+              }}
               type="textarea"
               rows={3}
+              error={step4Errors.activatingEvent?.message}
             />
 
             <div className="form-grid form-grid-2">
@@ -277,20 +415,28 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 label={`B - ${formData.partyAName || "Party A"} Beliefs`}
                 description="What thoughts or beliefs do you have about this event?"
                 placeholder="Your thoughts and beliefs about what happened..."
-                value={formData.partyABeliefs}
-                onChange={(value) => updateFormData("partyABeliefs", value)}
+                value={step4Form.watch("partyABeliefs")}
+                onChange={(value) => {
+                  step4Form.setValue("partyABeliefs", value, { shouldValidate: true, shouldDirty: true });
+                  updateFormData("partyABeliefs", value);
+                }}
                 type="textarea"
                 rows={3}
+                error={step4Errors.partyABeliefs?.message}
               />
               <FormField
                 id="partyBBeliefs"
                 label={`B - ${formData.partyBName || "Party B"} Beliefs`}
                 description="What thoughts or beliefs do you have about this event?"
                 placeholder="Your thoughts and beliefs about what happened..."
-                value={formData.partyBBeliefs}
-                onChange={(value) => updateFormData("partyBBeliefs", value)}
+                value={step4Form.watch("partyBBeliefs")}
+                onChange={(value) => {
+                  step4Form.setValue("partyBBeliefs", value, { shouldValidate: true, shouldDirty: true });
+                  updateFormData("partyBBeliefs", value);
+                }}
                 type="textarea"
                 rows={3}
+                error={step4Errors.partyBBeliefs?.message}
               />
             </div>
 
@@ -377,20 +523,28 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 label={`${formData.partyAName || "Party A"} - Miracle Question`}
                 description="If you woke up tomorrow and this conflict was completely resolved, what would be different?"
                 placeholder="Describe your ideal resolution..."
-                value={formData.partyAMiracle}
-                onChange={(value) => updateFormData("partyAMiracle", value)}
+                value={step5Form.watch("partyAMiracle")}
+                onChange={(value) => {
+                  step5Form.setValue("partyAMiracle", value, { shouldValidate: true, shouldDirty: true });
+                  updateFormData("partyAMiracle", value);
+                }}
                 type="textarea"
                 rows={4}
+                error={step5Errors.partyAMiracle?.message}
               />
               <FormField
                 id="partyBMiracle"
                 label={`${formData.partyBName || "Party B"} - Miracle Question`}
                 description="If you woke up tomorrow and this conflict was completely resolved, what would be different?"
                 placeholder="Describe your ideal resolution..."
-                value={formData.partyBMiracle}
-                onChange={(value) => updateFormData("partyBMiracle", value)}
+                value={step5Form.watch("partyBMiracle")}
+                onChange={(value) => {
+                  step5Form.setValue("partyBMiracle", value, { shouldValidate: true, shouldDirty: true });
+                  updateFormData("partyBMiracle", value);
+                }}
                 type="textarea"
                 rows={4}
+                error={step5Errors.partyBMiracle?.message}
               />
             </div>
 
@@ -453,10 +607,14 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               label="Compromise Solutions"
               description="What solutions can you both agree on? What compromises are you willing to make?"
               placeholder="Describe the solutions you both can accept..."
-              value={formData.compromiseSolutions}
-              onChange={(value) => updateFormData("compromiseSolutions", value)}
+              value={step5Form.watch("compromiseSolutions")}
+              onChange={(value) => {
+                step5Form.setValue("compromiseSolutions", value, { shouldValidate: true, shouldDirty: true });
+                updateFormData("compromiseSolutions", value);
+              }}
               type="textarea"
               rows={4}
+              error={step5Errors.compromiseSolutions?.message}
             />
           </div>
         </div>
@@ -530,10 +688,14 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               label="Specific Action Steps"
               description="What specific actions will each person take? Include deadlines and accountability measures."
               placeholder="List specific, measurable action steps with deadlines..."
-              value={formData.actionSteps}
-              onChange={(value) => updateFormData("actionSteps", value)}
+              value={step6Form.watch("actionSteps")}
+              onChange={(value) => {
+                step6Form.setValue("actionSteps", value, { shouldValidate: true, shouldDirty: true });
+                updateFormData("actionSteps", value);
+              }}
               type="textarea"
               rows={5}
+              error={step6Errors.actionSteps?.message}
             />
 
             <div className="form-grid form-grid-2">
@@ -542,8 +704,12 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 label="Follow-up Date"
                 description="When should you check in on progress?"
                 type="date"
-                value={formData.followUpDate}
-                onChange={(value) => updateFormData("followUpDate", value)}
+                value={step6Form.watch("followUpDate")}
+                onChange={(value) => {
+                  step6Form.setValue("followUpDate", value, { shouldValidate: true, shouldDirty: true });
+                  updateFormData("followUpDate", value);
+                }}
+                error={step6Errors.followUpDate?.message}
               />
               <FormField
                 id="additionalSupport"
