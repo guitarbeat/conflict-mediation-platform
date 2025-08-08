@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DarkModeToggle from "./components/DarkModeToggle";
 import ParticleBackground from "./components/ParticleBackground";
 import ProgressHeader from "./components/ProgressHeader";
@@ -7,12 +7,13 @@ import CardStack from "./components/CardStack";
 import StepContent from "./components/StepContent";
 import { useFormData } from "./hooks/useFormData";
 import { useNavigation } from "./hooks/useNavigation";
+import { Toaster } from "./components/ui/sonner";
 import logo from "./assets/logo.png";
 import "./App.css";
 
 function App() {
   // Form data management
-  const { formData, updateFormData } = useFormData();
+  const { formData, updateFormData, updateMultipleFields, isStepComplete } = useFormData();
 
   // Navigation management
   const {
@@ -29,6 +30,34 @@ function App() {
     handleInputEnd,
     handleMouseLeave,
   } = useNavigation();
+
+  // Keyboard navigation: Left/Right arrows
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (isAnimating) return;
+      const target = e.target;
+      const isFormElement = target && (target.closest?.("input, textarea, select, [contenteditable=true]"));
+      if (isFormElement) return;
+      if (e.key === "ArrowRight") {
+        if (isStepComplete(currentStep)) navigateToStep("next");
+      } else if (e.key === "ArrowLeft") {
+        navigateToStep("prev");
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isAnimating, navigateToStep, isStepComplete, currentStep]);
+
+  const handleNavigate = (direction) => {
+    if (direction === "next") {
+      if (!isStepComplete(currentStep)) {
+        // Fallback notice; consider replacing with toast
+        alert("Please complete the required fields before continuing.");
+        return;
+      }
+    }
+    navigateToStep(direction);
+  };
 
   // Export functions
   const exportToJSON = () => {
@@ -50,6 +79,7 @@ function App() {
         step={step}
         formData={formData}
         updateFormData={updateFormData}
+        updateMultipleFields={updateMultipleFields}
         onExportJSON={exportToJSON}
       />
     );
@@ -57,6 +87,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Toaster richColors position="top-right" />
       <ParticleBackground />
       <DarkModeToggle />
 
@@ -103,7 +134,7 @@ function App() {
         <NavigationButtons
           currentStep={currentStep}
           totalSteps={TOTAL_STEPS}
-          onNavigate={navigateToStep}
+          onNavigate={handleNavigate}
           isAnimating={isAnimating}
         />
 

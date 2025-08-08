@@ -1,5 +1,5 @@
 import React from "react";
-import { Download, FileText } from "lucide-react";
+import { Download, FileText, Upload } from "lucide-react";
 import { Button } from "./ui/button";
 import FormField from "./FormField";
 import SectionSeparator from "./SectionSeparator";
@@ -89,7 +89,7 @@ const IndividualReflection = ({ party, prefix, formData, updateFormData }) => (
   </div>
 );
 
-const StepContent = ({ step, formData, updateFormData, onExportJSON }) => {
+const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON }) => {
   const TwoColumnFields = ({ fields }) => (
     <div className="form-grid form-grid-2">
       {fields.map((field) => (
@@ -97,6 +97,23 @@ const StepContent = ({ step, formData, updateFormData, onExportJSON }) => {
       ))}
     </div>
   );
+
+  const handleImportJSON = async (file) => {
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const allowedKeys = Object.keys(formData);
+      const sanitized = Object.fromEntries(
+        Object.entries(parsed).filter(([k]) => allowedKeys.includes(k))
+      );
+      updateMultipleFields(sanitized);
+      alert("Session imported successfully.");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to import JSON. Please check the file format.");
+    }
+  };
 
   switch (step) {
     case 1:
@@ -552,6 +569,27 @@ const StepContent = ({ step, formData, updateFormData, onExportJSON }) => {
                     for sharing or documentation.
                   </p>
                 </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="text-base font-semibold">Import Session</h4>
+              <div className="flex items-center gap-3">
+                <label className="inline-flex">
+                  <input
+                    type="file"
+                    accept="application/json"
+                    className="hidden"
+                    onChange={(e) => handleImportJSON(e.target.files?.[0])}
+                  />
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <Upload className="h-4 w-4" />
+                    Import from JSON
+                  </Button>
+                </label>
+                <p className="text-xs text-muted-foreground">
+                  Load a previously saved JSON file to restore your session.
+                </p>
               </div>
             </div>
 

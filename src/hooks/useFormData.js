@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 /**
  * Custom hook for managing conflict mediation form data
  * @returns {Object} Form data state and operations
  */
 export const useFormData = () => {
-    const [formData, setFormData] = useState({
+    const initialState = {
         partyAName: "",
         partyBName: "",
         dateOfIncident: "",
@@ -53,7 +53,27 @@ export const useFormData = () => {
         actionSteps: "",
         followUpDate: "",
         additionalSupport: "",
+    };
+
+    const STORAGE_KEY = "mediation_form_v1";
+
+    const [formData, setFormData] = useState(() => {
+        try {
+            const saved = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                return { ...initialState, ...parsed };
+            }
+        } catch (_) {}
+        return initialState;
     });
+
+    // Persist to localStorage on change (lightweight debounce via microtask not necessary here)
+    useEffect(() => {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+        } catch (_) {}
+    }, [formData]);
 
     /**
      * Update a single form field
@@ -73,53 +93,26 @@ export const useFormData = () => {
     };
 
     /**
-     * Reset form data to initial state
+     * Load form data from a plain object (e.g., imported JSON)
+     * Only known keys are applied.
+     */
+    const loadFromJSON = (dataObject) => {
+        if (!dataObject || typeof dataObject !== "object") return;
+        const allowedKeys = Object.keys(initialState);
+        const sanitized = Object.fromEntries(
+            Object.entries(dataObject).filter(([key]) => allowedKeys.includes(key))
+        );
+        setFormData((prev) => ({ ...prev, ...sanitized }));
+    };
+
+    /**
+     * Reset form data to initial state and clear saved storage
      */
     const resetFormData = () => {
-        setFormData({
-            partyAName: "",
-            partyBName: "",
-            dateOfIncident: "",
-            dateOfMediation: "",
-            locationOfConflict: "",
-            conflictDescription: "",
-            partyAThoughts: "",
-            partyASelectedEmotionWords: [],
-            partyAEmotionChartPosition: null,
-            partyAAggressiveApproach: "",
-            partyAPassiveApproach: "",
-            partyAAssertiveApproach: "",
-            partyAWhyBecause: "",
-            partyBThoughts: "",
-            partyBSelectedEmotionWords: [],
-            partyBEmotionChartPosition: null,
-            partyBAggressiveApproach: "",
-            partyBPassiveApproach: "",
-            partyBAssertiveApproach: "",
-            partyBWhyBecause: "",
-            activatingEvent: "",
-            partyABeliefs: "",
-            partyBBeliefs: "",
-            partyAConsequences: "",
-            partyBConsequences: "",
-            partyADisputations: "",
-            partyBDisputations: "",
-            effectsReflections: "",
-            partyAMiracle: "",
-            partyBMiracle: "",
-            partyATop3Solutions: "",
-            partyBTop3Solutions: "",
-            partyAPerspective: "",
-            partyBPerspective: "",
-            compromiseSolutions: "",
-            partyAUnmetNeeds: "",
-            partyBUnmetNeeds: "",
-            partyANeedsInPractice: "",
-            partyBNeedsInPractice: "",
-            actionSteps: "",
-            followUpDate: "",
-            additionalSupport: "",
-        });
+        setFormData(initialState);
+        try {
+            localStorage.removeItem(STORAGE_KEY);
+        } catch (_) {}
     };
 
     /**
@@ -247,6 +240,7 @@ export const useFormData = () => {
         formData,
         updateFormData,
         updateMultipleFields,
+        loadFromJSON,
         resetFormData,
         getStepData,
         isStepComplete,
