@@ -6,6 +6,9 @@ import SectionSeparator from "./SectionSeparator";
 // Lazy-load heavy component
 const EmojiGridMapper = React.lazy(() => import("./EmojiGridMapper"));
 import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 
 // * Communication Approaches component - moved outside to prevent recreation
 const CommunicationApproaches = ({ prefix, formData, updateFormData }) => (
@@ -102,22 +105,21 @@ const Step1Schema = z.object({
 });
 
 const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON }) => {
-  const step1Errors = useMemo(() => {
-    const result = Step1Schema.safeParse({
+  // react-hook-form for Step 1
+  const step1Form = useForm({
+    mode: "onChange",
+    resolver: zodResolver(Step1Schema),
+    defaultValues: {
       partyAName: formData.partyAName,
       partyBName: formData.partyBName,
       conflictDescription: formData.conflictDescription,
       dateOfIncident: formData.dateOfIncident,
       dateOfMediation: formData.dateOfMediation,
       locationOfConflict: formData.locationOfConflict,
-    });
-    if (result.success) return {};
-    const fieldErrors = {};
-    for (const issue of result.error.issues) {
-      if (issue.path?.[0]) fieldErrors[issue.path[0]] = issue.message;
-    }
-    return fieldErrors;
-  }, [formData.partyAName, formData.partyBName, formData.conflictDescription, formData.dateOfIncident, formData.dateOfMediation, formData.locationOfConflict]);
+    },
+  });
+
+  const step1Errors = step1Form.formState.errors;
 
   const TwoColumnFields = ({ fields }) => (
     <div className="form-grid form-grid-2">
@@ -137,14 +139,10 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
         Object.entries(parsed).filter(([k]) => allowedKeys.includes(k))
       );
       updateMultipleFields(sanitized);
-      // Using alert here is fine; toast is already available globally
-      // but StepContent doesn't import it
-      // eslint-disable-next-line no-alert
-      alert("Session imported successfully.");
+      toast.success("Session imported successfully.");
     } catch (err) {
       console.error(err);
-      // eslint-disable-next-line no-alert
-      alert("Failed to import JSON. Please check the file format.");
+      toast.error("Failed to import JSON. Please check the file format.");
     }
   };
 
@@ -162,17 +160,23 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               id="partyAName"
               label="Party A Name"
               placeholder="Enter first person's name"
-              value={formData.partyAName}
-              onChange={(value) => updateFormData("partyAName", value)}
-              error={step1Errors.partyAName}
+              value={step1Form.watch("partyAName")}
+              onChange={(value) => {
+                step1Form.setValue("partyAName", value, { shouldValidate: true, shouldDirty: true });
+                updateFormData("partyAName", value);
+              }}
+              error={step1Errors.partyAName?.message}
             />
             <FormField
               id="partyBName"
               label="Party B Name"
               placeholder="Enter second person's name"
-              value={formData.partyBName}
-              onChange={(value) => updateFormData("partyBName", value)}
-              error={step1Errors.partyBName}
+              value={step1Form.watch("partyBName")}
+              onChange={(value) => {
+                step1Form.setValue("partyBName", value, { shouldValidate: true, shouldDirty: true });
+                updateFormData("partyBName", value);
+              }}
+              error={step1Errors.partyBName?.message}
             />
           </div>
 
@@ -182,22 +186,31 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               id="dateOfIncident"
               label="Date of Incident"
               type="date"
-              value={formData.dateOfIncident}
-              onChange={(value) => updateFormData("dateOfIncident", value)}
+              value={step1Form.watch("dateOfIncident")}
+              onChange={(value) => {
+                step1Form.setValue("dateOfIncident", value, { shouldDirty: true });
+                updateFormData("dateOfIncident", value);
+              }}
             />
             <FormField
               id="dateOfMediation"
               label="Date of Mediation"
               type="date"
-              value={formData.dateOfMediation}
-              onChange={(value) => updateFormData("dateOfMediation", value)}
+              value={step1Form.watch("dateOfMediation")}
+              onChange={(value) => {
+                step1Form.setValue("dateOfMediation", value, { shouldDirty: true });
+                updateFormData("dateOfMediation", value);
+              }}
             />
             <FormField
               id="locationOfConflict"
               label="Location of Conflict"
               placeholder="Where did this happen?"
-              value={formData.locationOfConflict}
-              onChange={(value) => updateFormData("locationOfConflict", value)}
+              value={step1Form.watch("locationOfConflict")}
+              onChange={(value) => {
+                step1Form.setValue("locationOfConflict", value, { shouldDirty: true });
+                updateFormData("locationOfConflict", value);
+              }}
             />
           </div>
 
@@ -205,11 +218,14 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
             id="conflictDescription"
             label="Agreed Upon Description of Conflict"
             placeholder="Both parties should agree on this description of what happened..."
-            value={formData.conflictDescription}
-            onChange={(value) => updateFormData("conflictDescription", value)}
+            value={step1Form.watch("conflictDescription")}
+            onChange={(value) => {
+              step1Form.setValue("conflictDescription", value, { shouldValidate: true, shouldDirty: true });
+              updateFormData("conflictDescription", value);
+            }}
             type="textarea"
             rows={4}
-            error={step1Errors.conflictDescription}
+            error={step1Errors.conflictDescription?.message}
           />
         </div>
       );
