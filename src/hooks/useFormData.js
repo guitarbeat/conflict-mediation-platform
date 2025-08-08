@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 /**
  * Custom hook for managing conflict mediation form data
  * @returns {Object} Form data state and operations
  */
 export const useFormData = () => {
-    const [formData, setFormData] = useState({
+    const initialState = {
         partyAName: "",
         partyBName: "",
         dateOfIncident: "",
@@ -53,12 +53,32 @@ export const useFormData = () => {
         actionSteps: "",
         followUpDate: "",
         additionalSupport: "",
+    };
+
+    const STORAGE_KEY = "mediation_form_v1";
+
+    const [loadedFromStorage, setLoadedFromStorage] = useState(false);
+    const [formData, setFormData] = useState(() => {
+        try {
+            const saved = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                setLoadedFromStorage(true);
+                return { ...initialState, ...parsed };
+            }
+        } catch (_) {}
+        return initialState;
     });
+
+    // Persist to localStorage on change
+    useEffect(() => {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+        } catch (_) {}
+    }, [formData]);
 
     /**
      * Update a single form field
-     * @param {string} field - The field name to update
-     * @param {any} value - The new value for the field
      */
     const updateFormData = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -66,66 +86,36 @@ export const useFormData = () => {
 
     /**
      * Update multiple form fields at once
-     * @param {Object} updates - Object containing field-value pairs
      */
     const updateMultipleFields = (updates) => {
         setFormData((prev) => ({ ...prev, ...updates }));
     };
 
     /**
-     * Reset form data to initial state
+     * Load form data from a plain object (e.g., imported JSON)
+     */
+    const loadFromJSON = (dataObject) => {
+        if (!dataObject || typeof dataObject !== "object") return;
+        const allowedKeys = Object.keys(initialState);
+        const sanitized = Object.fromEntries(
+            Object.entries(dataObject).filter(([key]) => allowedKeys.includes(key))
+        );
+        setFormData((prev) => ({ ...prev, ...sanitized }));
+    };
+
+    /**
+     * Reset form data to initial state and clear saved storage
      */
     const resetFormData = () => {
-        setFormData({
-            partyAName: "",
-            partyBName: "",
-            dateOfIncident: "",
-            dateOfMediation: "",
-            locationOfConflict: "",
-            conflictDescription: "",
-            partyAThoughts: "",
-            partyASelectedEmotionWords: [],
-            partyAEmotionChartPosition: null,
-            partyAAggressiveApproach: "",
-            partyAPassiveApproach: "",
-            partyAAssertiveApproach: "",
-            partyAWhyBecause: "",
-            partyBThoughts: "",
-            partyBSelectedEmotionWords: [],
-            partyBEmotionChartPosition: null,
-            partyBAggressiveApproach: "",
-            partyBPassiveApproach: "",
-            partyBAssertiveApproach: "",
-            partyBWhyBecause: "",
-            activatingEvent: "",
-            partyABeliefs: "",
-            partyBBeliefs: "",
-            partyAConsequences: "",
-            partyBConsequences: "",
-            partyADisputations: "",
-            partyBDisputations: "",
-            effectsReflections: "",
-            partyAMiracle: "",
-            partyBMiracle: "",
-            partyATop3Solutions: "",
-            partyBTop3Solutions: "",
-            partyAPerspective: "",
-            partyBPerspective: "",
-            compromiseSolutions: "",
-            partyAUnmetNeeds: "",
-            partyBUnmetNeeds: "",
-            partyANeedsInPractice: "",
-            partyBNeedsInPractice: "",
-            actionSteps: "",
-            followUpDate: "",
-            additionalSupport: "",
-        });
+        setFormData(initialState);
+        setLoadedFromStorage(false);
+        try {
+            localStorage.removeItem(STORAGE_KEY);
+        } catch (_) {}
     };
 
     /**
      * Get form data for a specific step
-     * @param {number} step - The step number
-     * @returns {Object} Relevant form data for the step
      */
     const getStepData = (step) => {
         switch (step) {
@@ -190,10 +180,7 @@ export const useFormData = () => {
                     additionalSupport: formData.additionalSupport,
                 };
             case 7:
-                return {
-                    // Export step - no specific form data needed
-                    // All form data is available for export
-                };
+                return {};
             default:
                 return {};
         }
@@ -201,8 +188,6 @@ export const useFormData = () => {
 
     /**
      * Check if a step has required data filled
-     * @param {number} step - The step number
-     * @returns {boolean} Whether the step has required data
      */
     const isStepComplete = (step) => {
         const stepData = getStepData(step);
@@ -219,8 +204,6 @@ export const useFormData = () => {
 
     /**
      * Get required fields for a specific step
-     * @param {number} step - The step number
-     * @returns {string[]} Array of required field names
      */
     const getRequiredFieldsForStep = (step) => {
         switch (step) {
@@ -237,7 +220,7 @@ export const useFormData = () => {
             case 6:
                 return ["actionSteps", "followUpDate"];
             case 7:
-                return []; // Export step - no required fields
+                return [];
             default:
                 return [];
         }
@@ -247,9 +230,11 @@ export const useFormData = () => {
         formData,
         updateFormData,
         updateMultipleFields,
+        loadFromJSON,
         resetFormData,
         getStepData,
         isStepComplete,
         getRequiredFieldsForStep,
+        loadedFromStorage,
     };
 }; 

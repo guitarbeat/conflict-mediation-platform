@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DarkModeToggle from "./components/DarkModeToggle";
 import ParticleBackground from "./components/ParticleBackground";
 import ProgressHeader from "./components/ProgressHeader";
@@ -7,12 +7,14 @@ import CardStack from "./components/CardStack";
 import StepContent from "./components/StepContent";
 import { useFormData } from "./hooks/useFormData";
 import { useNavigation } from "./hooks/useNavigation";
+import { Toaster } from "./components/ui/sonner";
+import { toast } from "sonner";
 import logo from "./assets/logo.png";
 import "./App.css";
 
 function App() {
   // Form data management
-  const { formData, updateFormData } = useFormData();
+  const { formData, updateFormData, updateMultipleFields, isStepComplete, loadedFromStorage, resetFormData } = useFormData();
 
   // Navigation management
   const {
@@ -29,6 +31,34 @@ function App() {
     handleInputEnd,
     handleMouseLeave,
   } = useNavigation();
+
+  // Keyboard navigation: Left/Right arrows
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (isAnimating) return;
+      const target = e.target;
+      const isFormElement = target && (target.closest?.("input, textarea, select, [contenteditable=true]"));
+      if (isFormElement) return;
+      if (e.key === "ArrowRight") {
+        if (isStepComplete(currentStep)) navigateToStep("next");
+        else toast.error("Please complete the required fields before continuing.");
+      } else if (e.key === "ArrowLeft") {
+        navigateToStep("prev");
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [isAnimating, navigateToStep, isStepComplete, currentStep]);
+
+  const handleNavigate = (direction) => {
+    if (direction === "next") {
+      if (!isStepComplete(currentStep)) {
+        toast.error("Please complete the required fields before continuing.");
+        return;
+      }
+    }
+    navigateToStep(direction);
+  };
 
   // Export functions
   const exportToJSON = () => {
@@ -50,13 +80,17 @@ function App() {
         step={step}
         formData={formData}
         updateFormData={updateFormData}
+        updateMultipleFields={updateMultipleFields}
         onExportJSON={exportToJSON}
       />
     );
   };
 
+  const canGoNext = isStepComplete(currentStep);
+
   return (
     <div className="min-h-screen bg-background">
+      <Toaster richColors position="top-right" />
       <ParticleBackground />
       <DarkModeToggle />
 
@@ -77,6 +111,13 @@ function App() {
       </div>
 
       <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-4 max-w-4xl">
+        {loadedFromStorage && (
+          <div className="mb-3 px-3 py-2 rounded-md bg-muted/40 border border-border text-xs sm:text-sm flex items-center justify-between">
+            <span>Resumed a previously saved session from this device.</span>
+            <button onClick={resetFormData} className="underline text-primary">Reset</button>
+          </div>
+        )}
+
         {/* Progress Header */}
         <ProgressHeader
           currentStep={currentStep}
@@ -103,8 +144,9 @@ function App() {
         <NavigationButtons
           currentStep={currentStep}
           totalSteps={TOTAL_STEPS}
-          onNavigate={navigateToStep}
+          onNavigate={handleNavigate}
           isAnimating={isAnimating}
+          canGoNext={canGoNext}
         />
 
         {/* Navigation instructions */}

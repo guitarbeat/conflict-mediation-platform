@@ -1,10 +1,14 @@
-import React from "react";
-import { Download, FileText } from "lucide-react";
+import React, { Suspense, useMemo } from "react";
+import { Download, FileText, Upload } from "lucide-react";
 import { Button } from "./ui/button";
 import FormField from "./FormField";
 import SectionSeparator from "./SectionSeparator";
-import EmojiGridMapper from "./EmojiGridMapper";
-import { generateEnhancedPDF } from "../utils/pdfGenerator";
+// Lazy-load heavy component
+const EmojiGridMapper = React.lazy(() => import("./EmojiGridMapper"));
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 
 // * Communication Approaches component - moved outside to prevent recreation
 const CommunicationApproaches = ({ prefix, formData, updateFormData }) => (
@@ -67,16 +71,18 @@ const IndividualReflection = ({ party, prefix, formData, updateFormData }) => (
       <label className="form-label">
         I feel... (Use both methods to express your emotions)
       </label>
-      <EmojiGridMapper
-        onEmotionWordsChange={(words) =>
-          updateFormData(`${prefix}SelectedEmotionWords`, words)
-        }
-        onChartPositionChange={(position) =>
-          updateFormData(`${prefix}EmotionChartPosition`, position)
-        }
-        selectedEmotionWords={formData[`${prefix}SelectedEmotionWords`]}
-        chartPosition={formData[`${prefix}EmotionChartPosition`]}
-      />
+      <Suspense fallback={<div className="text-sm text-muted-foreground">Loading emotion mapper…</div>}>
+        <EmojiGridMapper
+          onEmotionWordsChange={(words) =>
+            updateFormData(`${prefix}SelectedEmotionWords`, words)
+          }
+          onChartPositionChange={(position) =>
+            updateFormData(`${prefix}EmotionChartPosition`, position)
+          }
+          selectedEmotionWords={formData[`${prefix}SelectedEmotionWords`]}
+          chartPosition={formData[`${prefix}EmotionChartPosition`]}
+        />
+      </Suspense>
     </div>
 
     <SectionSeparator title="Communication Approaches" />
@@ -89,7 +95,32 @@ const IndividualReflection = ({ party, prefix, formData, updateFormData }) => (
   </div>
 );
 
-const StepContent = ({ step, formData, updateFormData, onExportJSON }) => {
+const Step1Schema = z.object({
+  partyAName: z.string().min(1, "Required"),
+  partyBName: z.string().min(1, "Required"),
+  conflictDescription: z.string().min(1, "Required"),
+  dateOfIncident: z.string().optional(),
+  dateOfMediation: z.string().optional(),
+  locationOfConflict: z.string().optional(),
+});
+
+const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON }) => {
+  // react-hook-form for Step 1
+  const step1Form = useForm({
+    mode: "onChange",
+    resolver: zodResolver(Step1Schema),
+    defaultValues: {
+      partyAName: formData.partyAName,
+      partyBName: formData.partyBName,
+      conflictDescription: formData.conflictDescription,
+      dateOfIncident: formData.dateOfIncident,
+      dateOfMediation: formData.dateOfMediation,
+      locationOfConflict: formData.locationOfConflict,
+    },
+  });
+
+  const step1Errors = step1Form.formState.errors;
+
   const TwoColumnFields = ({ fields }) => (
     <div className="form-grid form-grid-2">
       {fields.map((field) => (
@@ -97,6 +128,23 @@ const StepContent = ({ step, formData, updateFormData, onExportJSON }) => {
       ))}
     </div>
   );
+
+  const handleImportJSON = async (file) => {
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const allowedKeys = Object.keys(formData);
+      const sanitized = Object.fromEntries(
+        Object.entries(parsed).filter(([k]) => allowedKeys.includes(k))
+      );
+      updateMultipleFields(sanitized);
+      toast.success("Session imported successfully.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to import JSON. Please check the file format.");
+    }
+  };
 
   switch (step) {
     case 1:
@@ -112,15 +160,23 @@ const StepContent = ({ step, formData, updateFormData, onExportJSON }) => {
               id="partyAName"
               label="Party A Name"
               placeholder="Enter first person's name"
-              value={formData.partyAName}
-              onChange={(value) => updateFormData("partyAName", value)}
+              value={step1Form.watch("partyAName")}
+              onChange={(value) => {
+                step1Form.setValue("partyAName", value, { shouldValidate: true, shouldDirty: true });
+                updateFormData("partyAName", value);
+              }}
+              error={step1Errors.partyAName?.message}
             />
             <FormField
               id="partyBName"
               label="Party B Name"
               placeholder="Enter second person's name"
-              value={formData.partyBName}
-              onChange={(value) => updateFormData("partyBName", value)}
+              value={step1Form.watch("partyBName")}
+              onChange={(value) => {
+                step1Form.setValue("partyBName", value, { shouldValidate: true, shouldDirty: true });
+                updateFormData("partyBName", value);
+              }}
+              error={step1Errors.partyBName?.message}
             />
           </div>
 
@@ -130,22 +186,31 @@ const StepContent = ({ step, formData, updateFormData, onExportJSON }) => {
               id="dateOfIncident"
               label="Date of Incident"
               type="date"
-              value={formData.dateOfIncident}
-              onChange={(value) => updateFormData("dateOfIncident", value)}
+              value={step1Form.watch("dateOfIncident")}
+              onChange={(value) => {
+                step1Form.setValue("dateOfIncident", value, { shouldDirty: true });
+                updateFormData("dateOfIncident", value);
+              }}
             />
             <FormField
               id="dateOfMediation"
               label="Date of Mediation"
               type="date"
-              value={formData.dateOfMediation}
-              onChange={(value) => updateFormData("dateOfMediation", value)}
+              value={step1Form.watch("dateOfMediation")}
+              onChange={(value) => {
+                step1Form.setValue("dateOfMediation", value, { shouldDirty: true });
+                updateFormData("dateOfMediation", value);
+              }}
             />
             <FormField
               id="locationOfConflict"
               label="Location of Conflict"
               placeholder="Where did this happen?"
-              value={formData.locationOfConflict}
-              onChange={(value) => updateFormData("locationOfConflict", value)}
+              value={step1Form.watch("locationOfConflict")}
+              onChange={(value) => {
+                step1Form.setValue("locationOfConflict", value, { shouldDirty: true });
+                updateFormData("locationOfConflict", value);
+              }}
             />
           </div>
 
@@ -153,10 +218,14 @@ const StepContent = ({ step, formData, updateFormData, onExportJSON }) => {
             id="conflictDescription"
             label="Agreed Upon Description of Conflict"
             placeholder="Both parties should agree on this description of what happened..."
-            value={formData.conflictDescription}
-            onChange={(value) => updateFormData("conflictDescription", value)}
+            value={step1Form.watch("conflictDescription")}
+            onChange={(value) => {
+              step1Form.setValue("conflictDescription", value, { shouldValidate: true, shouldDirty: true });
+              updateFormData("conflictDescription", value);
+            }}
             type="textarea"
             rows={4}
+            error={step1Errors.conflictDescription?.message}
           />
         </div>
       );
@@ -541,7 +610,10 @@ const StepContent = ({ step, formData, updateFormData, onExportJSON }) => {
                 <h4 className="text-base font-semibold">Generate Report</h4>
                 <div className="space-y-3">
                   <Button
-                    onClick={() => generateEnhancedPDF(formData)}
+                    onClick={async () => {
+                      const { generateEnhancedPDF } = await import("../utils/pdfGenerator");
+                      generateEnhancedPDF(formData);
+                    }}
                     className="w-full flex items-center justify-center gap-2 h-12"
                   >
                     <FileText className="h-4 w-4" />
@@ -552,6 +624,27 @@ const StepContent = ({ step, formData, updateFormData, onExportJSON }) => {
                     for sharing or documentation.
                   </p>
                 </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h4 className="text-base font-semibold">Import Session</h4>
+              <div className="flex items-center gap-3">
+                <label className="inline-flex">
+                  <input
+                    type="file"
+                    accept="application/json"
+                    className="hidden"
+                    onChange={(e) => handleImportJSON(e.target.files?.[0])}
+                  />
+                  <Button variant="outline" className="flex items-center gap-2">
+                    <Upload className="h-4 w-4" />
+                    Import from JSON
+                  </Button>
+                </label>
+                <p className="text-xs text-muted-foreground">
+                  Load a previously saved JSON file to restore your session.
+                </p>
               </div>
             </div>
 

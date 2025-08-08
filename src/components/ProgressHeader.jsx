@@ -8,6 +8,7 @@ const STEPS = [
   "Shared Discussion (ABCDE)",
   "Solution Development",
   "Agreement & Action Steps",
+  "Export & Save",
 ];
 
 const ProgressHeader = ({ currentStep, totalSteps, formData }) => {
@@ -29,6 +30,8 @@ const ProgressHeader = ({ currentStep, totalSteps, formData }) => {
         return "Both parties, please work together to develop solutions and explore possibilities.";
       case 6:
         return "Both parties, finalize your agreement and create actionable next steps.";
+      case 7:
+        return "Export a PDF or JSON, or import a previous session to continue.";
       default:
         return "";
     }
