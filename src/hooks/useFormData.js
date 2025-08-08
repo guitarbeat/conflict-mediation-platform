@@ -57,18 +57,20 @@ export const useFormData = () => {
 
     const STORAGE_KEY = "mediation_form_v1";
 
+    const [loadedFromStorage, setLoadedFromStorage] = useState(false);
     const [formData, setFormData] = useState(() => {
         try {
             const saved = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
             if (saved) {
                 const parsed = JSON.parse(saved);
+                setLoadedFromStorage(true);
                 return { ...initialState, ...parsed };
             }
         } catch (_) {}
         return initialState;
     });
 
-    // Persist to localStorage on change (lightweight debounce via microtask not necessary here)
+    // Persist to localStorage on change
     useEffect(() => {
         try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
@@ -77,8 +79,6 @@ export const useFormData = () => {
 
     /**
      * Update a single form field
-     * @param {string} field - The field name to update
-     * @param {any} value - The new value for the field
      */
     const updateFormData = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -86,7 +86,6 @@ export const useFormData = () => {
 
     /**
      * Update multiple form fields at once
-     * @param {Object} updates - Object containing field-value pairs
      */
     const updateMultipleFields = (updates) => {
         setFormData((prev) => ({ ...prev, ...updates }));
@@ -94,7 +93,6 @@ export const useFormData = () => {
 
     /**
      * Load form data from a plain object (e.g., imported JSON)
-     * Only known keys are applied.
      */
     const loadFromJSON = (dataObject) => {
         if (!dataObject || typeof dataObject !== "object") return;
@@ -110,6 +108,7 @@ export const useFormData = () => {
      */
     const resetFormData = () => {
         setFormData(initialState);
+        setLoadedFromStorage(false);
         try {
             localStorage.removeItem(STORAGE_KEY);
         } catch (_) {}
@@ -117,8 +116,6 @@ export const useFormData = () => {
 
     /**
      * Get form data for a specific step
-     * @param {number} step - The step number
-     * @returns {Object} Relevant form data for the step
      */
     const getStepData = (step) => {
         switch (step) {
@@ -183,10 +180,7 @@ export const useFormData = () => {
                     additionalSupport: formData.additionalSupport,
                 };
             case 7:
-                return {
-                    // Export step - no specific form data needed
-                    // All form data is available for export
-                };
+                return {};
             default:
                 return {};
         }
@@ -194,8 +188,6 @@ export const useFormData = () => {
 
     /**
      * Check if a step has required data filled
-     * @param {number} step - The step number
-     * @returns {boolean} Whether the step has required data
      */
     const isStepComplete = (step) => {
         const stepData = getStepData(step);
@@ -212,8 +204,6 @@ export const useFormData = () => {
 
     /**
      * Get required fields for a specific step
-     * @param {number} step - The step number
-     * @returns {string[]} Array of required field names
      */
     const getRequiredFieldsForStep = (step) => {
         switch (step) {
@@ -230,7 +220,7 @@ export const useFormData = () => {
             case 6:
                 return ["actionSteps", "followUpDate"];
             case 7:
-                return []; // Export step - no required fields
+                return [];
             default:
                 return [];
         }
@@ -245,5 +235,6 @@ export const useFormData = () => {
         getStepData,
         isStepComplete,
         getRequiredFieldsForStep,
+        loadedFromStorage,
     };
 }; 

@@ -8,12 +8,13 @@ import StepContent from "./components/StepContent";
 import { useFormData } from "./hooks/useFormData";
 import { useNavigation } from "./hooks/useNavigation";
 import { Toaster } from "./components/ui/sonner";
+import { toast } from "sonner";
 import logo from "./assets/logo.png";
 import "./App.css";
 
 function App() {
   // Form data management
-  const { formData, updateFormData, updateMultipleFields, isStepComplete } = useFormData();
+  const { formData, updateFormData, updateMultipleFields, isStepComplete, loadedFromStorage, resetFormData } = useFormData();
 
   // Navigation management
   const {
@@ -40,6 +41,7 @@ function App() {
       if (isFormElement) return;
       if (e.key === "ArrowRight") {
         if (isStepComplete(currentStep)) navigateToStep("next");
+        else toast.error("Please complete the required fields before continuing.");
       } else if (e.key === "ArrowLeft") {
         navigateToStep("prev");
       }
@@ -51,8 +53,7 @@ function App() {
   const handleNavigate = (direction) => {
     if (direction === "next") {
       if (!isStepComplete(currentStep)) {
-        // Fallback notice; consider replacing with toast
-        alert("Please complete the required fields before continuing.");
+        toast.error("Please complete the required fields before continuing.");
         return;
       }
     }
@@ -85,6 +86,8 @@ function App() {
     );
   };
 
+  const canGoNext = isStepComplete(currentStep);
+
   return (
     <div className="min-h-screen bg-background">
       <Toaster richColors position="top-right" />
@@ -108,6 +111,13 @@ function App() {
       </div>
 
       <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-4 max-w-4xl">
+        {loadedFromStorage && (
+          <div className="mb-3 px-3 py-2 rounded-md bg-muted/40 border border-border text-xs sm:text-sm flex items-center justify-between">
+            <span>Resumed a previously saved session from this device.</span>
+            <button onClick={resetFormData} className="underline text-primary">Reset</button>
+          </div>
+        )}
+
         {/* Progress Header */}
         <ProgressHeader
           currentStep={currentStep}
@@ -136,6 +146,7 @@ function App() {
           totalSteps={TOTAL_STEPS}
           onNavigate={handleNavigate}
           isAnimating={isAnimating}
+          canGoNext={canGoNext}
         />
 
         {/* Navigation instructions */}

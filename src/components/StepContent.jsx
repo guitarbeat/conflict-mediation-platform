@@ -1,10 +1,11 @@
-import React from "react";
+import React, { Suspense, useMemo } from "react";
 import { Download, FileText, Upload } from "lucide-react";
 import { Button } from "./ui/button";
 import FormField from "./FormField";
 import SectionSeparator from "./SectionSeparator";
-import EmojiGridMapper from "./EmojiGridMapper";
-import { generateEnhancedPDF } from "../utils/pdfGenerator";
+// Lazy-load heavy component
+const EmojiGridMapper = React.lazy(() => import("./EmojiGridMapper"));
+import { z } from "zod";
 
 // * Communication Approaches component - moved outside to prevent recreation
 const CommunicationApproaches = ({ prefix, formData, updateFormData }) => (
@@ -67,16 +68,18 @@ const IndividualReflection = ({ party, prefix, formData, updateFormData }) => (
       <label className="form-label">
         I feel... (Use both methods to express your emotions)
       </label>
-      <EmojiGridMapper
-        onEmotionWordsChange={(words) =>
-          updateFormData(`${prefix}SelectedEmotionWords`, words)
-        }
-        onChartPositionChange={(position) =>
-          updateFormData(`${prefix}EmotionChartPosition`, position)
-        }
-        selectedEmotionWords={formData[`${prefix}SelectedEmotionWords`]}
-        chartPosition={formData[`${prefix}EmotionChartPosition`]}
-      />
+      <Suspense fallback={<div className="text-sm text-muted-foreground">Loading emotion mapper…</div>}>
+        <EmojiGridMapper
+          onEmotionWordsChange={(words) =>
+            updateFormData(`${prefix}SelectedEmotionWords`, words)
+          }
+          onChartPositionChange={(position) =>
+            updateFormData(`${prefix}EmotionChartPosition`, position)
+          }
+          selectedEmotionWords={formData[`${prefix}SelectedEmotionWords`]}
+          chartPosition={formData[`${prefix}EmotionChartPosition`]}
+        />
+      </Suspense>
     </div>
 
     <SectionSeparator title="Communication Approaches" />
@@ -89,7 +92,33 @@ const IndividualReflection = ({ party, prefix, formData, updateFormData }) => (
   </div>
 );
 
+const Step1Schema = z.object({
+  partyAName: z.string().min(1, "Required"),
+  partyBName: z.string().min(1, "Required"),
+  conflictDescription: z.string().min(1, "Required"),
+  dateOfIncident: z.string().optional(),
+  dateOfMediation: z.string().optional(),
+  locationOfConflict: z.string().optional(),
+});
+
 const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON }) => {
+  const step1Errors = useMemo(() => {
+    const result = Step1Schema.safeParse({
+      partyAName: formData.partyAName,
+      partyBName: formData.partyBName,
+      conflictDescription: formData.conflictDescription,
+      dateOfIncident: formData.dateOfIncident,
+      dateOfMediation: formData.dateOfMediation,
+      locationOfConflict: formData.locationOfConflict,
+    });
+    if (result.success) return {};
+    const fieldErrors = {};
+    for (const issue of result.error.issues) {
+      if (issue.path?.[0]) fieldErrors[issue.path[0]] = issue.message;
+    }
+    return fieldErrors;
+  }, [formData.partyAName, formData.partyBName, formData.conflictDescription, formData.dateOfIncident, formData.dateOfMediation, formData.locationOfConflict]);
+
   const TwoColumnFields = ({ fields }) => (
     <div className="form-grid form-grid-2">
       {fields.map((field) => (
@@ -108,9 +137,13 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
         Object.entries(parsed).filter(([k]) => allowedKeys.includes(k))
       );
       updateMultipleFields(sanitized);
+      // Using alert here is fine; toast is already available globally
+      // but StepContent doesn't import it
+      // eslint-disable-next-line no-alert
       alert("Session imported successfully.");
     } catch (err) {
       console.error(err);
+      // eslint-disable-next-line no-alert
       alert("Failed to import JSON. Please check the file format.");
     }
   };
@@ -131,6 +164,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               placeholder="Enter first person's name"
               value={formData.partyAName}
               onChange={(value) => updateFormData("partyAName", value)}
+              error={step1Errors.partyAName}
             />
             <FormField
               id="partyBName"
@@ -138,6 +172,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               placeholder="Enter second person's name"
               value={formData.partyBName}
               onChange={(value) => updateFormData("partyBName", value)}
+              error={step1Errors.partyBName}
             />
           </div>
 
@@ -174,6 +209,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
             onChange={(value) => updateFormData("conflictDescription", value)}
             type="textarea"
             rows={4}
+            error={step1Errors.conflictDescription}
           />
         </div>
       );
@@ -558,7 +594,10 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 <h4 className="text-base font-semibold">Generate Report</h4>
                 <div className="space-y-3">
                   <Button
-                    onClick={() => generateEnhancedPDF(formData)}
+                    onClick={async () => {
+                      const { generateEnhancedPDF } = await import("../utils/pdfGenerator");
+                      generateEnhancedPDF(formData);
+                    }}
                     className="w-full flex items-center justify-center gap-2 h-12"
                   >
                     <FileText className="h-4 w-4" />

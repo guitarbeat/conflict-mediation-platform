@@ -23,6 +23,7 @@ const NavigationButtons = ({
   totalSteps,
   onNavigate,
   isAnimating,
+  canGoNext = true,
 }) => {
   const buttonConfig = {
     prev: {
@@ -31,25 +32,29 @@ const NavigationButtons = ({
       ariaLabel: "Previous step",
       svgPath: "M15 19l-7-7 7-7",
       condition: currentStep > 1,
+      disabled: isAnimating,
+      onClick: () => onNavigate("prev"),
     },
     next: {
-      direction: "right", 
+      direction: "right",
       className: "hidden sm:block fixed top-1/2 transform -translate-y-1/2 right-4 z-50",
       ariaLabel: "Next step",
       svgPath: "M9 5l7 7-7 7",
       condition: currentStep < totalSteps,
+      disabled: isAnimating || !canGoNext,
+      onClick: () => onNavigate("next"),
     },
   };
 
   return (
     <>
-      {Object.entries(buttonConfig).map(([direction, config]) => (
+      {Object.entries(buttonConfig).map(([key, config]) => (
         config.condition && (
-          <div key={direction} className={config.className}>
+          <div key={key} className={config.className}>
             <NavigationButton
               direction={config.direction}
-              onClick={() => onNavigate(direction)}
-              disabled={isAnimating}
+              onClick={config.onClick}
+              disabled={config.disabled}
               className=""
               ariaLabel={config.ariaLabel}
             >
