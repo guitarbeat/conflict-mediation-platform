@@ -66,7 +66,9 @@ export const useFormData = () => {
                 setLoadedFromStorage(true);
                 return { ...initialState, ...parsed };
             }
-        } catch (_) {}
+        } catch {
+            /* ignore storage read errors */
+        }
         return initialState;
     });
 
@@ -74,7 +76,9 @@ export const useFormData = () => {
     useEffect(() => {
         try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-        } catch (_) {}
+        } catch {
+            /* ignore storage write errors */
+        }
     }, [formData]);
 
     /**
@@ -111,7 +115,9 @@ export const useFormData = () => {
         setLoadedFromStorage(false);
         try {
             localStorage.removeItem(STORAGE_KEY);
-        } catch (_) {}
+        } catch {
+            /* ignore storage clear errors */
+        }
     };
 
     /**
