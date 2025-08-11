@@ -11,7 +11,6 @@ export const generateEnhancedPDF = (formData) => {
   const primaryColor = [59, 152, 26]; // #3B981A
   const secondaryColor = [129, 182, 34]; // #81B622
   const textColor = [61, 85, 12]; // #3D550C
-  const lightGray = [240, 240, 240];
 
   // Helper function to check if we need a new page
   const checkNewPage = (requiredSpace = 20) => {

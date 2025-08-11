@@ -1,7 +1,6 @@
 import React from "react";
 
 const NavigationButton = ({
-  direction,
   onClick,
   disabled,
   className,
@@ -51,8 +50,7 @@ const NavigationButtons = ({
       {Object.entries(buttonConfig).map(([key, config]) => (
         config.condition && (
           <div key={key} className={config.className}>
-            <NavigationButton
-              direction={config.direction}
+                          <NavigationButton
               onClick={config.onClick}
               disabled={config.disabled}
               className=""
