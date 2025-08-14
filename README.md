@@ -127,6 +127,10 @@ Based on ICC Austin's interpersonal conflict mediation process:
 
 This project is open source and available under the [MIT License](LICENSE).
 
+## 📑 Docs
+
+- Task list of enhancements: [docs/task-list.md](docs/task-list.md)
+
 ## 🙏 Acknowledgments
 
 - **ICC Austin** for the mediation framework and worksheets
