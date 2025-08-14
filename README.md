@@ -74,6 +74,9 @@ pnpm run dev          # Start development server
 pnpm run build        # Build for production
 pnpm run preview      # Preview production build
 pnpm run lint         # Run ESLint
+pnpm run test         # Run tests once
+pnpm run test:watch   # Run tests in watch mode
+pnpm run coverage     # Generate coverage report
 ```
 
 ## 🎯 Usage Guide
