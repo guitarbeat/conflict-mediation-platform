@@ -5,12 +5,15 @@ import ProgressHeader from "./components/ProgressHeader";
 import NavigationButtons from "./components/NavigationButtons";
 import CardStack from "./components/CardStack";
 import StepContent from "./components/StepContent";
+import PremiumUXPrototype from "./components/PremiumUXPrototype";
 import { useFormData } from "./hooks/useFormData";
 import { useNavigation } from "./hooks/useNavigation";
 import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
 import logo from "./assets/logo.png";
 import "./App.css";
+import "./styles/design-system.css";
+import "./styles/interactions.css";
 
 function App() {
   // Form data management
@@ -99,65 +102,62 @@ function App() {
           <div className="flex items-center justify-center gap-2 sm:gap-4 mb-2 sm:mb-4">
             <img src={logo} alt="Logo" className="h-8 w-8 sm:h-12 sm:w-12" />
             <div className="text-center">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">
-                Co-op Conflict Resolution Platform
+              <h1 className="text-heading-lg sm:text-display-xl font-bold">
+                Conflict Mediation
               </h1>
-              <p className="text-primary-foreground/80 mt-1 sm:mt-2 text-sm sm:text-base">
-                A structured approach to resolving interpersonal conflicts
+              <p className="text-body-sm sm:text-body-md opacity-90">
+                Professional conflict resolution services
               </p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-4 max-w-4xl">
-        {loadedFromStorage && (
-          <div className="mb-3 px-3 py-2 rounded-md bg-muted/40 border border-border text-xs sm:text-sm flex items-center justify-between">
-            <span>Resumed a previously saved session from this device.</span>
-            <button onClick={resetFormData} className="underline text-primary">Reset</button>
-          </div>
-        )}
-
-        {/* Progress Header */}
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <ProgressHeader
           currentStep={currentStep}
           totalSteps={TOTAL_STEPS}
-          formData={formData}
+          isStepComplete={isStepComplete}
         />
 
-        {/* Card Stack */}
         <CardStack
-          totalSteps={TOTAL_STEPS}
           currentStep={currentStep}
           dragOffset={dragOffset}
           animatingCard={animatingCard}
           animationType={animationType}
           isDragging={isDragging}
+          isAnimating={isAnimating}
           onInputStart={handleInputStart}
           onInputMove={handleInputMove}
           onInputEnd={handleInputEnd}
           onMouseLeave={handleMouseLeave}
-          renderStepContent={renderStepContent}
-        />
+        >
+          {renderStepContent(currentStep)}
+        </CardStack>
 
-        {/* Navigation Buttons */}
         <NavigationButtons
           currentStep={currentStep}
           totalSteps={TOTAL_STEPS}
+          canGoNext={canGoNext}
           onNavigate={handleNavigate}
           isAnimating={isAnimating}
-          canGoNext={canGoNext}
         />
+      </div>
 
-        {/* Navigation instructions */}
-        <div className="text-center text-xs text-muted-foreground mt-4 space-y-1">
-          <div className="hidden sm:block">
-            💡 Desktop: Use arrow keys ← →, click navigation buttons, or drag
-            cards to navigate
+      {/* Premium UX Prototype Section */}
+      <div className="border-t border-border mt-16 pt-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-display-xl text-primary-700 mb-4">
+              Enhanced User Experience
+            </h2>
+            <p className="text-body-lg text-muted-foreground max-w-3xl mx-auto">
+              Experience our premium design system with enhanced interactions, 
+              accessibility features, and optimized user flows.
+            </p>
           </div>
-          <div className="sm:hidden">
-            💡 Mobile: Swipe left/right to navigate
-          </div>
+          
+          <PremiumUXPrototype />
         </div>
       </div>
     </div>
