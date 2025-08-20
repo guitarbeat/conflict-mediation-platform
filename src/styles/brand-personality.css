@@ -1,0 +1,636 @@
+/* ========================================
+   BRAND PERSONALITY SYSTEM
+   ======================================== */
+
+/* ========================================
+   BRAND ILLUSTRATION STYLE
+   ======================================== */
+
+/* Custom SVG Icons with Brand Personality */
+.icon-brand {
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-brand-thin {
+  stroke-width: 1;
+}
+
+.icon-brand-bold {
+  stroke-width: 2;
+}
+
+/* Brand-Specific Icon Set */
+.icon-mediation {
+  width: 24px;
+  height: 24px;
+  color: var(--primary-600);
+}
+
+.icon-mediation::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b8e47' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2L2 7l10 5 10-5-10-5z'/%3E%3Cpath d='M2 17l10 5 10-5'/%3E%3Cpath d='M2 12l10 5 10-5'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.icon-resolution {
+  width: 24px;
+  height: 24px;
+  color: var(--accent-600);
+}
+
+.icon-resolution::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2314b8a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 12l2 2 4-4'/%3E%3Cpath d='M21 12c-1 0-2-1-2-2s1-2 2-2 2 1 2 2-1 2-2 2z'/%3E%3Cpath d='M3 12c1 0 2-1 2-2s-1-2-2-2-2 1-2 2 1 2 2 2z'/%3E%3Cpath d='M12 3c0 1-1 2-2 2s-2-1-2-2 1-2 2-2 2 1 2 2z'/%3E%3Cpath d='M12 21c0-1-1-2-2-2s-2 1-2 2 1 2 2 2 2-1 2-2z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.icon-communication {
+  width: 24px;
+  height: 24px;
+  color: var(--secondary-600);
+}
+
+.icon-communication::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2357534e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* ========================================
+   CUSTOM LOADING ANIMATIONS
+   ======================================== */
+
+/* Mediation-Specific Loading Spinner */
+.loader-mediation {
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+
+.loader-mediation::before,
+.loader-mediation::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  animation: loaderMediation 2s ease-in-out infinite;
+}
+
+.loader-mediation::before {
+  width: 100%;
+  height: 100%;
+  border: 3px solid var(--primary-200);
+  border-top-color: var(--primary-600);
+  animation-delay: 0s;
+}
+
+.loader-mediation::after {
+  width: 60%;
+  height: 60%;
+  top: 20%;
+  left: 20%;
+  border: 2px solid var(--accent-200);
+  border-top-color: var(--accent-600);
+  animation-delay: 0.5s;
+}
+
+@keyframes loaderMediation {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+}
+
+/* Peaceful Wave Loading */
+.loader-wave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.loader-wave span {
+  width: 4px;
+  height: 20px;
+  background: var(--primary-500);
+  border-radius: 2px;
+  animation: loaderWave 1.2s ease-in-out infinite;
+}
+
+.loader-wave span:nth-child(1) { animation-delay: 0s; }
+.loader-wave span:nth-child(2) { animation-delay: 0.1s; }
+.loader-wave span:nth-child(3) { animation-delay: 0.2s; }
+.loader-wave span:nth-child(4) { animation-delay: 0.3s; }
+.loader-wave span:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes loaderWave {
+  0%, 40%, 100% {
+    transform: scaleY(0.4);
+  }
+  20% {
+    transform: scaleY(1);
+  }
+}
+
+/* Harmony Loading */
+.loader-harmony {
+  width: 32px;
+  height: 32px;
+  position: relative;
+}
+
+.loader-harmony::before,
+.loader-harmony::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: var(--primary-500);
+  animation: loaderHarmony 1.5s linear infinite;
+}
+
+.loader-harmony::after {
+  width: 70%;
+  height: 70%;
+  top: 15%;
+  left: 15%;
+  border-top-color: var(--accent-500);
+  animation-direction: reverse;
+  animation-duration: 1s;
+}
+
+@keyframes loaderHarmony {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========================================
+   BRANDED EMPTY STATES
+   ======================================== */
+
+.empty-state-branded {
+  text-align: center;
+  padding: var(--space-16);
+  color: var(--muted-foreground);
+}
+
+.empty-state-illustration {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto var(--space-6);
+  opacity: 0.7;
+  animation: emptyStateFloat 4s ease-in-out infinite;
+}
+
+.empty-state-illustration.mediation {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'%3E%3Ccircle cx='60' cy='60' r='50' fill='%23f0f4ea' stroke='%236b8e47' stroke-width='2' opacity='0.3'/%3E%3Cpath d='M40 60 Q60 40 80 60 Q60 80 40 60' fill='%236b8e47' opacity='0.6'/%3E%3Ccircle cx='60' cy='60' r='8' fill='%236b8e47'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.empty-state-illustration.resolution {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'%3E%3Cpath d='M30 60 L50 80 L90 40' stroke='%2314b8a6' stroke-width='4' stroke-linecap='round' stroke-linejoin='round' opacity='0.6'/%3E%3Ccircle cx='60' cy='60' r='45' fill='%23f0fdfa' stroke='%2314b8a6' stroke-width='2' opacity='0.3'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.empty-state-illustration.communication {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120' fill='none'%3E%3Cpath d='M20 80 L40 60 L60 80 L80 60 L100 80' stroke='%2357534e' stroke-width='3' stroke-linecap='round' opacity='0.6'/%3E%3Ccircle cx='60' cy='60' r='40' fill='%23fafaf9' stroke='%2357534e' stroke-width='2' opacity='0.3'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+@keyframes emptyStateFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(2deg);
+  }
+}
+
+/* ========================================
+   BRAND VOICE & COPYWRITING
+   ======================================== */
+
+/* Typography with Brand Personality */
+.text-brand-voice {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  color: var(--foreground);
+}
+
+.text-brand-voice.heading {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.text-brand-voice.body {
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.text-brand-voice.caption {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+/* Brand Color Text Variations */
+.text-brand-primary { color: var(--primary-600); }
+.text-brand-secondary { color: var(--secondary-600); }
+.text-brand-accent { color: var(--accent-600); }
+
+.text-brand-muted { color: var(--muted-foreground); }
+.text-brand-emphasis { color: var(--foreground); }
+
+/* ========================================
+   BRANDED CELEBRATION MOMENTS
+   ======================================== */
+
+.celebration-branded {
+  position: relative;
+  overflow: hidden;
+}
+
+.celebration-branded::before,
+.celebration-branded::after {
+  content: '✨';
+  position: absolute;
+  animation: celebrationBranded 2s ease-out infinite;
+}
+
+.celebration-branded::before {
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.celebration-branded::after {
+  right: 15%;
+  animation-delay: 0.5s;
+}
+
+@keyframes celebrationBranded {
+  0% {
+    transform: translateY(100vh) scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) scale(1) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Success State with Brand Personality */
+.success-branded {
+  background: linear-gradient(135deg, var(--success-50), var(--success-100));
+  border: 1px solid var(--success-200);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  position: relative;
+  overflow: hidden;
+}
+
+.success-branded::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--success-400), var(--success-500), var(--success-400));
+  animation: successBrandedFlow 2s ease-in-out infinite;
+}
+
+@keyframes successBrandedFlow {
+  0%, 100% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+}
+
+/* ========================================
+   BRANDED NOTIFICATION STYLING
+   ======================================== */
+
+.notification-branded {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elevation-3);
+  padding: var(--space-4);
+  position: relative;
+  overflow: hidden;
+}
+
+.notification-branded::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--primary-500);
+}
+
+.notification-branded.success::before {
+  background: var(--success-500);
+}
+
+.notification-branded.warning::before {
+  background: var(--warning-500);
+}
+
+.notification-branded.error::before {
+  background: var(--error-500);
+}
+
+.notification-branded.info::before {
+  background: var(--accent-500);
+}
+
+/* ========================================
+   BRANDED ERROR PAGES
+   ======================================== */
+
+.error-page-branded {
+  text-align: center;
+  padding: var(--space-16);
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-illustration {
+  width: 200px;
+  height: 200px;
+  margin-bottom: var(--space-8);
+  opacity: 0.6;
+  animation: errorIllustrationFloat 3s ease-in-out infinite;
+}
+
+.error-illustration.404 {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none'%3E%3Ccircle cx='100' cy='100' r='80' fill='%23fef2f2' stroke='%23ef4444' stroke-width='2' opacity='0.3'/%3E%3Ctext x='100' y='110' text-anchor='middle' font-family='Arial' font-size='60' font-weight='bold' fill='%23ef4444'%3E404%3C/text%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.error-illustration.network {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none'%3E%3Cpath d='M50 100 L150 100 M100 50 L100 150' stroke='%23f59e0b' stroke-width='3' opacity='0.6'/%3E%3Ccircle cx='100' cy='100' r='70' fill='%23fffbeb' stroke='%23f59e0b' stroke-width='2' opacity='0.3'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+@keyframes errorIllustrationFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+}
+
+/* ========================================
+   BRANDED PROGRESS INDICATORS
+   ======================================== */
+
+.progress-branded {
+  background: var(--muted);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-branded-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-500), var(--accent-500));
+  border-radius: var(--radius-full);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.progress-branded-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: progressBrandedShine 2s ease-in-out infinite;
+}
+
+@keyframes progressBrandedShine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ========================================
+   BRANDED BUTTONS
+   ======================================== */
+
+.btn-branded {
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: var(--space-3) var(--space-6);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-branded::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.btn-branded:hover::before {
+  left: 100%;
+}
+
+.btn-branded:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevation-4);
+}
+
+.btn-branded:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-elevation-2);
+}
+
+/* ========================================
+   BRANDED CARDS
+   ======================================== */
+
+.card-branded {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card-subtle);
+  padding: var(--space-6);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-branded::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-400), var(--accent-400), var(--primary-400));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.card-branded:hover::before {
+  opacity: 1;
+}
+
+.card-branded:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-elevated);
+}
+
+/* ========================================
+   BRANDED FORMS
+   ======================================== */
+
+.form-branded {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-card-subtle);
+}
+
+.input-branded {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background);
+  color: var(--foreground);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: var(--font-size-sm);
+}
+
+.input-branded:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(107, 142, 71, 0.1);
+  transform: translateY(-1px);
+}
+
+.input-branded:hover {
+  border-color: var(--primary-300);
+}
+
+/* ========================================
+   RESPONSIVE BRAND ELEMENTS
+   ======================================== */
+
+@media (max-width: 768px) {
+  .empty-state-illustration {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .error-illustration {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .loader-mediation {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ========================================
+   DARK MODE BRAND ADAPTATIONS
+   ======================================== */
+
+.dark .empty-state-illustration.mediation {
+  filter: brightness(0.8) contrast(1.2);
+}
+
+.dark .empty-state-illustration.resolution {
+  filter: brightness(0.8) contrast(1.2);
+}
+
+.dark .empty-state-illustration.communication {
+  filter: brightness(0.8) contrast(1.2);
+}
+
+.dark .btn-branded {
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+}
+
+.dark .card-branded {
+  background: var(--card);
+  border-color: var(--border);
+}
+
+.dark .form-branded {
+  background: var(--card);
+  border-color: var(--border);
+}

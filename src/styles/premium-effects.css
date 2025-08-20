@@ -1,0 +1,530 @@
+/* ========================================
+   PREMIUM VISUAL EFFECTS SYSTEM
+   ======================================== */
+
+/* ========================================
+   SOPHISTICATED SHADOW SYSTEM
+   ======================================== */
+
+:root {
+  /* Elevation Levels - Multiple shadow layers for depth */
+  --shadow-elevation-1: 
+    0 1px 2px 0 rgba(0, 0, 0, 0.05),
+    0 1px 3px 1px rgba(0, 0, 0, 0.1);
+  
+  --shadow-elevation-2: 
+    0 1px 2px 0 rgba(0, 0, 0, 0.06),
+    0 1px 3px 1px rgba(0, 0, 0, 0.1),
+    0 2px 6px 2px rgba(0, 0, 0, 0.05);
+  
+  --shadow-elevation-3: 
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px 0 rgba(0, 0, 0, 0.06),
+    0 2px 8px 4px rgba(0, 0, 0, 0.08);
+  
+  --shadow-elevation-4: 
+    0 2px 4px 0 rgba(0, 0, 0, 0.06),
+    0 4px 8px 0 rgba(0, 0, 0, 0.08),
+    0 8px 16px 0 rgba(0, 0, 0, 0.1);
+  
+  --shadow-elevation-5: 
+    0 4px 6px 0 rgba(0, 0, 0, 0.07),
+    0 8px 16px 0 rgba(0, 0, 0, 0.1),
+    0 16px 32px 0 rgba(0, 0, 0, 0.12);
+  
+  --shadow-elevation-6: 
+    0 8px 8px 0 rgba(0, 0, 0, 0.08),
+    0 16px 24px 0 rgba(0, 0, 0, 0.12),
+    0 24px 48px 0 rgba(0, 0, 0, 0.15);
+
+  /* Premium Card Shadows */
+  --shadow-card-subtle: 
+    0 1px 3px rgba(0, 0, 0, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.04);
+  
+  --shadow-card-elevated: 
+    0 4px 6px rgba(0, 0, 0, 0.07),
+    0 1px 3px rgba(0, 0, 0, 0.06),
+    0 0 1px rgba(0, 0, 0, 0.1);
+  
+  --shadow-card-floating: 
+    0 10px 25px rgba(0, 0, 0, 0.1),
+    0 4px 10px rgba(0, 0, 0, 0.04),
+    0 0 1px rgba(0, 0, 0, 0.1);
+  
+  --shadow-card-hero: 
+    0 20px 40px rgba(0, 0, 0, 0.12),
+    0 8px 16px rgba(0, 0, 0, 0.06),
+    0 0 1px rgba(0, 0, 0, 0.1);
+
+  /* Interactive Shadows */
+  --shadow-interactive: 
+    0 0 0 0 rgba(107, 142, 71, 0),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  
+  --shadow-interactive-hover: 
+    0 0 0 0 rgba(107, 142, 71, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.12),
+    0 8px 16px rgba(0, 0, 0, 0.08);
+  
+  --shadow-interactive-active: 
+    0 0 0 0 rgba(107, 142, 71, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ========================================
+   GLASSMORPHISM EFFECTS
+   ======================================== */
+
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-elevation-3);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-elevation-3);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: var(--shadow-card-elevated);
+}
+
+.glass-modal {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-elevation-6);
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-elevation-2);
+}
+
+/* ========================================
+   GRADIENT OVERLAYS & TEXTURES
+   ======================================== */
+
+/* Brand Color Gradients */
+.gradient-overlay-primary {
+  background: linear-gradient(
+    135deg,
+    rgba(107, 142, 71, 0.1) 0%,
+    rgba(45, 157, 126, 0.1) 50%,
+    rgba(143, 181, 107, 0.1) 100%
+  );
+}
+
+.gradient-overlay-secondary {
+  background: linear-gradient(
+    135deg,
+    rgba(120, 113, 108, 0.1) 0%,
+    rgba(68, 64, 60, 0.1) 50%,
+    rgba(168, 162, 158, 0.1) 100%
+  );
+}
+
+.gradient-overlay-accent {
+  background: linear-gradient(
+    135deg,
+    rgba(20, 184, 166, 0.1) 0%,
+    rgba(15, 118, 110, 0.1) 50%,
+    rgba(45, 212, 191, 0.1) 100%
+  );
+}
+
+/* Subtle Texture Patterns */
+.texture-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+}
+
+.texture-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grainFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grainFilter)' opacity='0.015'/%3E%3C/svg%3E");
+}
+
+/* Premium Card Backgrounds */
+.card-premium {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.7) 100%
+  );
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-card-premium);
+}
+
+.card-premium-dark {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-card-premium);
+}
+
+/* ========================================
+   BACKDROP BLUR & LAYERING
+   ======================================== */
+
+.backdrop-blur-xs { backdrop-filter: blur(4px); }
+.backdrop-blur-sm { backdrop-filter: blur(8px); }
+.backdrop-blur-md { backdrop-filter: blur(12px); }
+.backdrop-blur-lg { backdrop-filter: blur(16px); }
+.backdrop-blur-xl { backdrop-filter: blur(24px); }
+.backdrop-blur-2xl { backdrop-filter: blur(40px); }
+.backdrop-blur-3xl { backdrop-filter: blur(64px); }
+
+/* Layer Management */
+.layer-1 { z-index: 10; }
+.layer-2 { z-index: 20; }
+.layer-3 { z-index: 30; }
+.layer-4 { z-index: 40; }
+.layer-5 { z-index: 50; }
+.layer-modal { z-index: 1000; }
+.layer-overlay { z-index: 2000; }
+.layer-tooltip { z-index: 3000; }
+
+/* ========================================
+   PARALLAX & SCROLLING EFFECTS
+   ======================================== */
+
+.parallax-container {
+  perspective: 1000px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.parallax-element {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.parallax-slow { transform: translateZ(-100px) scale(1.1); }
+.parallax-medium { transform: translateZ(-50px) scale(1.05); }
+.parallax-fast { transform: translateZ(-25px) scale(1.025); }
+
+/* Smooth Scrolling */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-300) var(--muted);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--muted);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--primary-300);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-400);
+}
+
+/* ========================================
+   ELEGANT DIVIDERS & SEPARATORS
+   ======================================== */
+
+.divider-gradient {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--primary-200) 25%,
+    var(--primary-400) 50%,
+    var(--primary-200) 75%,
+    transparent 100%
+  );
+  opacity: 0.6;
+}
+
+.divider-fade {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--border) 50%,
+    transparent 100%
+  );
+}
+
+.divider-dotted {
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--border) 0px,
+    var(--border) 2px,
+    transparent 2px,
+    transparent 8px
+  );
+}
+
+.divider-wave {
+  height: 2px;
+  background: url("data:image/svg+xml,%3Csvg width='100' height='2' viewBox='0 0 100 2' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 1 Q 25 0, 50 1 T 100 1' stroke='%236b8e47' stroke-width='1' fill='none' opacity='0.3'/%3E%3C/svg%3E") repeat-x;
+  background-size: 100px 2px;
+}
+
+/* ========================================
+   PREMIUM CARD STYLING
+   ======================================== */
+
+.card-premium-elevated {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card-elevated);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-premium-elevated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--primary-200) 50%,
+    transparent 100%
+  );
+  opacity: 0.6;
+}
+
+.card-premium-elevated:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-floating);
+}
+
+.card-premium-elevated:active {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-elevated);
+}
+
+/* Premium Card Variants */
+.card-premium-hero {
+  background: linear-gradient(
+    135deg,
+    var(--background) 0%,
+    rgba(107, 142, 71, 0.02) 100%
+  );
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-card-hero);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-premium-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(107, 142, 71, 0.03) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* ========================================
+   ADVANCED HOVER EFFECTS
+   ======================================== */
+
+.hover-elevate {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-elevate:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-elevation-5);
+}
+
+.hover-glow-premium {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-glow-premium:hover {
+  box-shadow: 
+    0 0 20px rgba(107, 142, 71, 0.2),
+    0 0 40px rgba(107, 142, 71, 0.1),
+    0 0 60px rgba(107, 142, 71, 0.05);
+}
+
+.hover-scale-premium {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale-premium:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-elevation-4);
+}
+
+/* ========================================
+   PREMIUM ANIMATIONS
+   ======================================== */
+
+@keyframes premiumFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes premiumSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes premiumPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+@keyframes premiumFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Premium Animation Classes */
+.animate-premium-fade-in {
+  animation: premiumFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-premium-slide-in {
+  animation: premiumSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-premium-pulse {
+  animation: premiumPulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-premium-float {
+  animation: premiumFloat 3s ease-in-out infinite;
+}
+
+/* ========================================
+   RESPONSIVE EFFECTS
+   ======================================== */
+
+@media (max-width: 768px) {
+  .glass {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  
+  .glass-modal {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  
+  .card-premium-elevated:hover {
+    transform: translateY(-2px);
+  }
+  
+  .hover-elevate:hover {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parallax-element,
+  .hover-elevate,
+  .hover-glow-premium,
+  .hover-scale-premium {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ========================================
+   DARK MODE ADAPTATIONS
+   ======================================== */
+
+.dark .glass {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .glass-card {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .card-premium {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .divider-gradient {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--primary-600) 25%,
+    var(--primary-400) 50%,
+    var(--primary-600) 75%,
+    transparent 100%
+  );
+}

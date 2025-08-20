@@ -6,6 +6,7 @@ import NavigationButtons from "./components/NavigationButtons";
 import CardStack from "./components/CardStack";
 import StepContent from "./components/StepContent";
 import PremiumUXPrototype from "./components/PremiumUXPrototype";
+import CuttingEdgeFeaturesShowcase from "./components/CuttingEdgeFeaturesShowcase";
 import { useFormData } from "./hooks/useFormData";
 import { useNavigation } from "./hooks/useNavigation";
 import { Toaster } from "./components/ui/sonner";
@@ -158,6 +159,13 @@ function App() {
           </div>
           
           <PremiumUXPrototype />
+        </div>
+      </div>
+
+      {/* Cutting-Edge Features Section */}
+      <div className="border-t border-border mt-16 pt-16">
+        <div className="container mx-auto px-4">
+          <CuttingEdgeFeaturesShowcase />
         </div>
       </div>
     </div>
