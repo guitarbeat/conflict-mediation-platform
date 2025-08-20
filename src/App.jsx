@@ -13,8 +13,6 @@ import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
 import logo from "./assets/logo.png";
 import "./App.css";
-import "./styles/design-system.css";
-import "./styles/interactions.css";
 
 function App() {
   // Form data management
