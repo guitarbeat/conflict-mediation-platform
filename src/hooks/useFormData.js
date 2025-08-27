@@ -209,6 +209,21 @@ export const useFormData = () => {
     };
 
     /**
+     * Get list of missing required fields for a step
+     */
+    const getMissingFieldsForStep = (step) => {
+        const stepData = getStepData(step);
+        const requiredFields = getRequiredFieldsForStep(step);
+        return requiredFields.filter(field => {
+            const value = stepData[field];
+            if (Array.isArray(value)) {
+                return value.length === 0;
+            }
+            return !value || value.toString().trim() === "";
+        });
+    };
+
+    /**
      * Get required fields for a specific step
      */
     const getRequiredFieldsForStep = (step) => {
@@ -240,7 +255,8 @@ export const useFormData = () => {
         resetFormData,
         getStepData,
         isStepComplete,
+        getMissingFieldsForStep,
         getRequiredFieldsForStep,
         loadedFromStorage,
     };
-}; 
+};
