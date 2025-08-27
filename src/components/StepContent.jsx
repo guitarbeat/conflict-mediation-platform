@@ -1,7 +1,8 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Download, FileText, Upload } from "lucide-react";
 import { Button } from "./ui/button";
 import FormField from "./FormField";
+import DatePickerField from "./DatePickerField";
 import SectionSeparator from "./SectionSeparator";
 // Lazy-load heavy component
 const EmojiGridMapper = React.lazy(() => import("./EmojiGridMapper"));
@@ -11,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
 // * Communication Approaches component - moved outside to prevent recreation
-const CommunicationApproaches = ({ prefix, formData, updateFormData }) => (
+const CommunicationApproaches = ({ prefix, formData, updateFormData, isFieldMissing }) => (
   <div className="space-y-4 sm:space-y-6">
     <label className="form-label">I want... (Communication Approaches)</label>
     <FormField
@@ -40,6 +41,7 @@ const CommunicationApproaches = ({ prefix, formData, updateFormData }) => (
       onChange={(value) => updateFormData(`${prefix}AssertiveApproach`, value)}
       type="textarea"
       className="text-green-600"
+      error={isFieldMissing(`${prefix}AssertiveApproach`) ? "Required" : ""}
     />
     <FormField
       id={`${prefix}WhyBecause`}
@@ -53,7 +55,7 @@ const CommunicationApproaches = ({ prefix, formData, updateFormData }) => (
 );
 
 // * Individual Reflection component - moved outside to prevent recreation
-const IndividualReflection = ({ party, prefix, formData, updateFormData }) => (
+const IndividualReflection = ({ party, prefix, formData, updateFormData, isFieldMissing }) => (
   <div className="space-y-4 sm:space-y-6">
     <SectionSeparator title="Thoughts & Beliefs" />
     <FormField
@@ -64,6 +66,7 @@ const IndividualReflection = ({ party, prefix, formData, updateFormData }) => (
       onChange={(value) => updateFormData(`${prefix}Thoughts`, value)}
       type="textarea"
       rows={4}
+      error={isFieldMissing(`${prefix}Thoughts`) ? "Required" : ""}
     />
 
     <SectionSeparator title="Emotions & Feelings" />
@@ -91,6 +94,7 @@ const IndividualReflection = ({ party, prefix, formData, updateFormData }) => (
       prefix={prefix}
       formData={formData}
       updateFormData={updateFormData}
+      isFieldMissing={isFieldMissing}
     />
   </div>
 );
@@ -104,7 +108,7 @@ const Step1Schema = z.object({
   locationOfConflict: z.string().optional(),
 });
 
-const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON }) => {
+const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON, showErrors, getRequiredFieldsForStep }) => {
   // react-hook-form for Step 1
   const step1Form = useForm({
     mode: "onChange",
@@ -120,6 +124,20 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   });
 
   const step1Errors = step1Form.formState.errors;
+
+  useEffect(() => {
+    if (showErrors && step === 1) {
+      step1Form.trigger();
+    }
+  }, [showErrors, step, step1Form]);
+
+  const requiredFields = getRequiredFieldsForStep(step);
+  const isFieldMissing = (field) => {
+    if (!showErrors || !requiredFields.includes(field)) return false;
+    const value = formData[field];
+    if (Array.isArray(value)) return value.length === 0;
+    return !value || value.toString().trim() === "";
+  };
 
   const TwoColumnFields = ({ fields }) => (
     <div className="form-grid form-grid-2">
@@ -182,20 +200,18 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
 
           <SectionSeparator title="Conflict Details" />
           <div className="form-grid form-grid-3">
-            <FormField
+            <DatePickerField
               id="dateOfIncident"
               label="Date of Incident"
-              type="date"
               value={step1Form.watch("dateOfIncident")}
               onChange={(value) => {
                 step1Form.setValue("dateOfIncident", value, { shouldDirty: true });
                 updateFormData("dateOfIncident", value);
               }}
             />
-            <FormField
+            <DatePickerField
               id="dateOfMediation"
               label="Date of Mediation"
-              type="date"
               value={step1Form.watch("dateOfMediation")}
               onChange={(value) => {
                 step1Form.setValue("dateOfMediation", value, { shouldDirty: true });
@@ -237,6 +253,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
           prefix="partyA"
           formData={formData}
           updateFormData={updateFormData}
+          isFieldMissing={isFieldMissing}
         />
       );
 
@@ -247,6 +264,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
           prefix="partyB"
           formData={formData}
           updateFormData={updateFormData}
+          isFieldMissing={isFieldMissing}
         />
       );
 

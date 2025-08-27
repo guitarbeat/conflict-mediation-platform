@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import DarkModeToggle from "./components/DarkModeToggle";
 import ParticleBackground from "./components/ParticleBackground";
 import ProgressHeader from "./components/ProgressHeader";
@@ -14,7 +14,9 @@ import "./App.css";
 
 function App() {
   // Form data management
-  const { formData, updateFormData, updateMultipleFields, isStepComplete, loadedFromStorage, resetFormData } = useFormData();
+  const { formData, updateFormData, updateMultipleFields, isStepComplete, loadedFromStorage, resetFormData, getRequiredFieldsForStep } = useFormData();
+
+  const [showStepErrors, setShowStepErrors] = useState(false);
 
   // Navigation management
   const {
@@ -40,8 +42,13 @@ function App() {
       const isFormElement = target && (target.closest?.("input, textarea, select, [contenteditable=true]"));
       if (isFormElement) return;
       if (e.key === "ArrowRight") {
-        if (isStepComplete(currentStep)) navigateToStep("next");
-        else toast.error("Please complete the required fields before continuing.");
+        if (isStepComplete(currentStep)) {
+          setShowStepErrors(false);
+          navigateToStep("next");
+        } else {
+          setShowStepErrors(true);
+          toast.error("Please complete the required fields before continuing.");
+        }
       } else if (e.key === "ArrowLeft") {
         navigateToStep("prev");
       }
@@ -53,10 +60,12 @@ function App() {
   const handleNavigate = (direction) => {
     if (direction === "next") {
       if (!isStepComplete(currentStep)) {
+        setShowStepErrors(true);
         toast.error("Please complete the required fields before continuing.");
         return;
       }
     }
+    setShowStepErrors(false);
     navigateToStep(direction);
   };
 
@@ -82,6 +91,8 @@ function App() {
         updateFormData={updateFormData}
         updateMultipleFields={updateMultipleFields}
         onExportJSON={exportToJSON}
+        showErrors={showStepErrors}
+        getRequiredFieldsForStep={getRequiredFieldsForStep}
       />
     );
   };

@@ -274,8 +274,13 @@
 }
 
 .form-input::placeholder {
-  color: var(--muted-foreground);
-  opacity: 0.7;
+  color: var(--foreground);
+  opacity: 0.6;
+}
+
+.form-input.aria-invalid {
+  border-color: var(--destructive);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
 
 .form-textarea {
