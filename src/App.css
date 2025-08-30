@@ -593,3 +593,87 @@
     @apply bg-[var(--background)] text-[var(--foreground)];
   }
 }
+
+/* Enhanced Date Picker Styles */
+.date-picker-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.date-picker-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(107, 142, 71, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.date-picker-button:hover::before {
+  left: 100%;
+}
+
+/* Calendar day hover effects */
+.calendar-day {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.calendar-day:hover {
+  transform: scale(1.05);
+}
+
+.calendar-day:active {
+  transform: scale(0.95);
+}
+
+/* Enhanced popover animations */
+.popover-enter {
+  animation: popoverEnter 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.popover-exit {
+  animation: popoverExit 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes popoverEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes popoverExit {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(-8px);
+  }
+}
+
+/* Focus ring improvements for date picker */
+.date-picker-button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(107, 142, 71, 0.3);
+}
+
+/* Calendar navigation button improvements */
+.calendar-nav-button {
+  transition: all 0.2s ease;
+}
+
+.calendar-nav-button:hover {
+  background-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.calendar-nav-button:active {
+  transform: translateY(0);
+}
