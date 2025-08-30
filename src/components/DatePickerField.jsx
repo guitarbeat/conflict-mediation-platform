@@ -31,8 +31,8 @@ const DatePickerField = ({ id, label, value, onChange, error, description }) => 
             {selected ? format(selected, 'PPP') : 'Select date'}
           </Button>
         </PopoverTrigger>
-        <PopoverContent 
-          className="p-0 w-auto border-2 border-border shadow-xl backdrop-blur-sm" 
+        <PopoverContent
+          className="p-0 w-72 border-2 border-border shadow-xl backdrop-blur-sm"
           align="start"
           sideOffset={4}
         >
@@ -41,7 +41,7 @@ const DatePickerField = ({ id, label, value, onChange, error, description }) => 
             selected={selected}
             onSelect={(date) => onChange(date ? format(date, 'yyyy-MM-dd') : '')}
             initialFocus
-            className="rounded-lg"
+            className="rounded-lg w-full"
           />
         </PopoverContent>
       </Popover>
