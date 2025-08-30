@@ -11,15 +11,24 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }) {
+  const currentYear = new Date().getFullYear();
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      captionLayout="dropdown"
+      fromYear={currentYear - 100}
+      toYear={currentYear + 10}
       className={cn("p-3", className)}
       classNames={{
         months: "flex flex-col sm:flex-row gap-2",
         month: "flex flex-col gap-4",
         caption: "flex justify-center pt-1 relative items-center w-full",
         caption_label: "text-sm font-medium",
+        caption_dropdowns: "flex items-center gap-2",
+        dropdown:
+          "rounded-md border border-input bg-background py-1 px-2 text-sm font-medium shadow-sm focus-visible:outline-none",
+        dropdown_month: "capitalize",
+        dropdown_year: "",
         nav: "flex items-center gap-1",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
