@@ -99,6 +99,25 @@ function App() {
 
   const canGoNext = isStepComplete(currentStep);
 
+  // Calculate field completion statistics
+  const getCompletedFieldsCount = () => {
+    const allFields = Object.keys(formData);
+    return allFields.filter(field => {
+      const value = formData[field];
+      if (Array.isArray(value)) {
+        return value.length > 0 && value.every(item => 
+          typeof item === 'string' ? item.trim() !== '' : 
+          typeof item === 'object' ? item.text && item.text.trim() !== '' : false
+        );
+      }
+      return value && value.toString().trim() !== "";
+    }).length;
+  };
+
+  const getTotalFieldsCount = () => {
+    return Object.keys(formData).length;
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Toaster richColors position="top-right" />
@@ -134,6 +153,8 @@ function App() {
           currentStep={currentStep}
           totalSteps={TOTAL_STEPS}
           formData={formData}
+          completedFields={getCompletedFieldsCount()}
+          totalFields={getTotalFieldsCount()}
         />
 
         {/* Card Stack */}

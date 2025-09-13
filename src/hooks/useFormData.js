@@ -40,8 +40,8 @@ export const useFormData = () => {
         // Solution Development
         partyAMiracle: "",
         partyBMiracle: "",
-        partyATop3Solutions: "",
-        partyBTop3Solutions: "",
+        partyATop3Solutions: [],
+        partyBTop3Solutions: [],
         partyAPerspective: "",
         partyBPerspective: "",
         compromiseSolutions: "",
@@ -50,7 +50,7 @@ export const useFormData = () => {
         partyBUnmetNeeds: "",
         partyANeedsInPractice: "",
         partyBNeedsInPractice: "",
-        actionSteps: "",
+        actionSteps: [],
         followUpDate: "",
         additionalSupport: "",
     };
@@ -202,7 +202,10 @@ export const useFormData = () => {
         return requiredFields.every(field => {
             const value = stepData[field];
             if (Array.isArray(value)) {
-                return value.length > 0;
+                return value.length > 0 && value.every(item => 
+                    typeof item === 'string' ? item.trim() !== '' : 
+                    typeof item === 'object' ? item.text && item.text.trim() !== '' : false
+                );
             }
             return value && value.toString().trim() !== "";
         });
@@ -237,7 +240,7 @@ export const useFormData = () => {
             case 4:
                 return ["activatingEvent", "partyABeliefs", "partyBBeliefs"];
             case 5:
-                return ["partyAMiracle", "partyBMiracle", "compromiseSolutions"];
+                return ["partyAMiracle", "partyBMiracle", "compromiseSolutions", "partyATop3Solutions", "partyBTop3Solutions"];
             case 6:
                 return ["actionSteps", "followUpDate"];
             case 7:
