@@ -139,12 +139,12 @@ const EnhancedFormField = ({
     disabled,
     readOnly,
     "aria-invalid": !!error || validationState === "invalid",
-    "aria-describedby": cn(
+    "aria-describedby": [
       error && `${id}-error`,
       description && `${id}-description`,
       helpText && `${id}-help`,
       showCharacterCount && `${id}-count`
-    ).filter(Boolean).join(" "),
+    ].filter(Boolean).join(" "),
     maxLength,
     minLength,
     pattern,

@@ -12,7 +12,6 @@ export const MultiSelectInput = ({
   options = [],
   maxSelections,
   allowCustom = false,
-  className = "",
   error = "",
   required = false,
   description = "",
@@ -187,7 +186,6 @@ export const RatingInput = ({
   max = 5,
   type = "star", // star, heart, thumbs, number
   size = "md",
-  className = "",
   error = "",
   required = false,
   description = "",
@@ -288,14 +286,11 @@ export const StructuredListInput = ({
   label,
   value = [],
   onChange,
-  placeholder = "Add item...",
   itemPlaceholder = "Enter item...",
   maxItems,
-  className = "",
   error = "",
   required = false,
   description = "",
-  allowReorder = true,
   itemType = "text", // text, textarea
 }) => {
   const [newItem, setNewItem] = useState("");
@@ -339,12 +334,12 @@ export const StructuredListInput = ({
     onChange(updated);
   };
 
-  const handleReorder = (fromIndex, toIndex) => {
-    const updated = [...value];
-    const [movedItem] = updated.splice(fromIndex, 1);
-    updated.splice(toIndex, 0, movedItem);
-    onChange(updated);
-  };
+  // const handleReorder = (fromIndex, toIndex) => {
+  //   const updated = [...value];
+  //   const [movedItem] = updated.splice(fromIndex, 1);
+  //   updated.splice(toIndex, 0, movedItem);
+  //   onChange(updated);
+  // };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -506,7 +501,6 @@ export const PriorityInput = ({
   label,
   value = "medium",
   onChange,
-  className = "",
   error = "",
   required = false,
   description = "",

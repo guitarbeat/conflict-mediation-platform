@@ -215,11 +215,9 @@ export const SmartSuggestions = ({
 // Context-aware help text
 export const ContextualHelp = ({
   fieldType,
-  step,
-  context = {},
   className = "",
 }) => {
-  const getHelpText = (type, step, ctx) => {
+  const getHelpText = (type) => {
     const helpTexts = {
       conflictDescription: {
         title: "Describing the Conflict",
@@ -276,7 +274,7 @@ export const ContextualHelp = ({
     return helpTexts[type] || null;
   };
 
-  const helpInfo = getHelpText(fieldType, step, context);
+  const helpInfo = getHelpText(fieldType);
 
   if (!helpInfo) return null;
 

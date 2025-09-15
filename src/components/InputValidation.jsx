@@ -17,44 +17,44 @@ const InputValidation = ({
     warnings: [],
   });
 
-  const validateValue = async (val) => {
-    setValidationState(prev => ({ ...prev, isChecking: true }));
+  useEffect(() => {
+    const validateValue = async (val) => {
+      setValidationState(prev => ({ ...prev, isChecking: true }));
 
-    const errors = [];
-    const warnings = [];
+      const errors = [];
+      const warnings = [];
 
-    for (const rule of rules) {
-      try {
-        const result = await rule.validate(val);
-        if (!result.isValid) {
-          if (rule.severity === 'warning') {
-            warnings.push(result.message);
-          } else {
-            errors.push(result.message);
+      for (const rule of rules) {
+        try {
+          const result = await rule.validate(val);
+          if (!result.isValid) {
+            if (rule.severity === 'warning') {
+              warnings.push(result.message);
+            } else {
+              errors.push(result.message);
+            }
           }
+        } catch (error) {
+          console.error('Validation error:', error);
+          errors.push('Validation error occurred');
         }
-      } catch (error) {
-        console.error('Validation error:', error);
-        errors.push('Validation error occurred');
       }
-    }
 
-    const newState = {
-      isValid: errors.length === 0,
-      isChecking: false,
-      errors,
-      warnings,
+      const newState = {
+        isValid: errors.length === 0,
+        isChecking: false,
+        errors,
+        warnings,
+      };
+
+      setValidationState(newState);
+      onValidationChange?.(newState);
     };
 
-    setValidationState(newState);
-    onValidationChange?.(newState);
-  };
-
-  useEffect(() => {
     if (value !== undefined && value !== null) {
       validateValue(value);
     }
-  }, [value, rules]);
+  }, [value, rules, onValidationChange]);
 
   const getValidationIcon = () => {
     if (!showIcon) return null;
@@ -159,9 +159,9 @@ export const validationRules = {
   phone: (message = "Please enter a valid phone number") => ({
     validate: (value) => {
       if (!value) return { isValid: true, message: "" };
-      const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+      const phoneRegex = /^[+]?[1-9][\d]{0,15}$/;
       return {
-        isValid: phoneRegex.test(value.replace(/[\s\-\(\)]/g, '')),
+        isValid: phoneRegex.test(value.replace(/[\s\-()]/g, '')),
         message,
       };
     },
@@ -189,7 +189,7 @@ export const validationRules = {
     severity: 'error',
   }),
 
-  custom: (validator, message) => ({
+  custom: (validator) => ({
     validate: validator,
     severity: 'error',
   }),
