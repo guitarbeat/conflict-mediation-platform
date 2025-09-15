@@ -41,6 +41,84 @@ const EMOTION_WORDS = [
   "curious",
 ];
 
+// * Emotion recommendation system based on valence-arousal position
+const getEmotionRecommendations = (valence, arousal) => {
+  const recommendations = {
+    // High valence, high arousal (pleasant-energetic)
+    "pleasant-energetic": [
+      "happy", "excited", "enthusiastic", "joyful", "confident", "proud"
+    ],
+    // High valence, low arousal (pleasant-calm)
+    "pleasant-calm": [
+      "content", "calm", "peaceful", "satisfied", "grateful", "relieved"
+    ],
+    // Low valence, high arousal (unpleasant-energetic)
+    "unpleasant-energetic": [
+      "angry", "frustrated", "irritated", "stressed", "anxious", "overwhelmed"
+    ],
+    // Low valence, low arousal (unpleasant-calm)
+    "unpleasant-calm": [
+      "sad", "disappointed", "lonely", "bored", "guilty", "worried"
+    ],
+    // Neutral position
+    "neutral": [
+      "confused", "curious", "surprised", "hopeful", "nervous", "embarrassed"
+    ]
+  };
+
+  // Determine quadrant based on valence and arousal
+  let quadrant = "neutral";
+  if (valence > 0.2 && arousal > 0.2) quadrant = "pleasant-energetic";
+  else if (valence > 0.2 && arousal < -0.2) quadrant = "pleasant-calm";
+  else if (valence < -0.2 && arousal > 0.2) quadrant = "unpleasant-energetic";
+  else if (valence < -0.2 && arousal < -0.2) quadrant = "unpleasant-calm";
+
+  return {
+    quadrant,
+    recommended: recommendations[quadrant] || recommendations.neutral,
+    intensity: Math.sqrt(valence * valence + arousal * arousal) // Distance from center
+  };
+};
+
+// * Color schemes for different emotion quadrants
+const EMOTION_COLORS = {
+  "pleasant-energetic": {
+    primary: "from-yellow-400 to-orange-500",
+    secondary: "from-yellow-100 to-orange-100",
+    accent: "bg-yellow-500",
+    text: "text-yellow-800",
+    border: "border-yellow-300"
+  },
+  "pleasant-calm": {
+    primary: "from-green-400 to-emerald-500",
+    secondary: "from-green-100 to-emerald-100",
+    accent: "bg-green-500",
+    text: "text-green-800",
+    border: "border-green-300"
+  },
+  "unpleasant-energetic": {
+    primary: "from-red-400 to-rose-500",
+    secondary: "from-red-100 to-rose-100",
+    accent: "bg-red-500",
+    text: "text-red-800",
+    border: "border-red-300"
+  },
+  "unpleasant-calm": {
+    primary: "from-blue-400 to-indigo-500",
+    secondary: "from-blue-100 to-indigo-100",
+    accent: "bg-blue-500",
+    text: "text-blue-800",
+    border: "border-blue-300"
+  },
+  "neutral": {
+    primary: "from-gray-400 to-slate-500",
+    secondary: "from-gray-100 to-slate-100",
+    accent: "bg-gray-500",
+    text: "text-gray-800",
+    border: "border-gray-300"
+  }
+};
+
 const EMOJI_RADIUS = 24; // * Radius of the draggable emoji in pixels
 const DEFAULT_CONTAINER_SIZE = 500;
 
@@ -224,10 +302,17 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
   };
 };
 
-// * Component for the draggable emoji
+// * Component for the draggable emoji with dynamic styling
 const DraggableEmoji = React.memo(
   ({ position, containerSize, isDragging, emotionData, onStart }) => {
     const emojiRef = useRef(null);
+    
+    const recommendations = useMemo(() => 
+      getEmotionRecommendations(emotionData.valence, emotionData.arousal),
+      [emotionData.valence, emotionData.arousal]
+    );
+    
+    const colors = EMOTION_COLORS[recommendations.quadrant];
 
     useEffect(() => {
       const emojiElement = emojiRef.current;
@@ -256,17 +341,20 @@ const DraggableEmoji = React.memo(
     return (
       <div
         ref={emojiRef}
-        className="absolute w-12 h-12 flex items-center justify-center text-2xl rounded-full backdrop-blur-md border border-white/30"
+        className={`absolute w-12 h-12 flex items-center justify-center text-2xl rounded-full backdrop-blur-md border-2 transition-all duration-300 ${
+          isDragging ? 'shadow-2xl animate-pulse' : 'shadow-lg'
+        }`}
         style={{
           left: `${(position.x / containerSize) * 100}%`,
           top: `${(position.y / containerSize) * 100}%`,
           transform: `translate(-50%, -50%) scale(${
             emotionData.scaleFactor * (isDragging ? 1.1 : 1)
           })`,
-          background:
-            "linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))",
-          boxShadow:
-            "0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 0 rgba(255,255,255,0.3)",
+          background: `linear-gradient(135deg, ${getGradientColors(colors.primary)}, rgba(255,255,255,0.1))`,
+          borderColor: getBorderColor(colors.border),
+          boxShadow: isDragging 
+            ? `0 12px 40px 0 ${getShadowColor(colors.primary)}, inset 0 1px 0 rgba(255,255,255,0.4), 0 0 20px ${getShadowColor(colors.primary)}`
+            : `0 8px 32px 0 ${getShadowColor(colors.primary)}, inset 0 1px 0 rgba(255,255,255,0.3), 0 0 10px ${getShadowColor(colors.primary)}`,
           cursor: isDragging ? "grabbing" : "grab",
         }}
         role="button"
@@ -278,6 +366,40 @@ const DraggableEmoji = React.memo(
     );
   }
 );
+
+// * Helper functions for color conversion
+const getGradientColors = (gradientClass) => {
+  const colorMap = {
+    'from-yellow-400 to-orange-500': 'rgba(250, 204, 21, 0.3), rgba(249, 115, 22, 0.3)',
+    'from-green-400 to-emerald-500': 'rgba(74, 222, 128, 0.3), rgba(16, 185, 129, 0.3)',
+    'from-red-400 to-rose-500': 'rgba(248, 113, 113, 0.3), rgba(244, 63, 94, 0.3)',
+    'from-blue-400 to-indigo-500': 'rgba(96, 165, 250, 0.3), rgba(99, 102, 241, 0.3)',
+    'from-gray-400 to-slate-500': 'rgba(156, 163, 175, 0.3), rgba(100, 116, 139, 0.3)'
+  };
+  return colorMap[gradientClass] || 'rgba(255,255,255,0.25), rgba(255,255,255,0.1)';
+};
+
+const getBorderColor = (borderClass) => {
+  const colorMap = {
+    'border-yellow-300': 'rgba(253, 224, 71, 0.6)',
+    'border-green-300': 'rgba(134, 239, 172, 0.6)',
+    'border-red-300': 'rgba(252, 165, 165, 0.6)',
+    'border-blue-300': 'rgba(147, 197, 253, 0.6)',
+    'border-gray-300': 'rgba(209, 213, 219, 0.6)'
+  };
+  return colorMap[borderClass] || 'rgba(255,255,255,0.3)';
+};
+
+const getShadowColor = (primaryClass) => {
+  const colorMap = {
+    'from-yellow-400 to-orange-500': 'rgba(250, 204, 21, 0.2)',
+    'from-green-400 to-emerald-500': 'rgba(74, 222, 128, 0.2)',
+    'from-red-400 to-rose-500': 'rgba(248, 113, 113, 0.2)',
+    'from-blue-400 to-indigo-500': 'rgba(96, 165, 250, 0.2)',
+    'from-gray-400 to-slate-500': 'rgba(156, 163, 175, 0.2)'
+  };
+  return colorMap[primaryClass] || 'rgba(31, 38, 135, 0.37)';
+};
 
 // * Component for axis labels
 const AxisLabels = React.memo(() => (
@@ -297,9 +419,16 @@ const AxisLabels = React.memo(() => (
   </>
 ));
 
-// * Component for emotion words selection
+// * Component for emotion words selection with dynamic styling
 const EmotionWordsSelector = React.memo(
-  ({ emotionWords, selectedEmotionWords, onEmotionWordsChange }) => {
+  ({ emotionWords, selectedEmotionWords, onEmotionWordsChange, currentEmotionData }) => {
+    const recommendations = useMemo(() => 
+      getEmotionRecommendations(currentEmotionData.valence, currentEmotionData.arousal),
+      [currentEmotionData.valence, currentEmotionData.arousal]
+    );
+
+    const colors = EMOTION_COLORS[recommendations.quadrant];
+
     const toggleEmotionWord = useCallback(
       (word) => {
         const newWords = selectedEmotionWords.includes(word)
@@ -310,36 +439,91 @@ const EmotionWordsSelector = React.memo(
       [selectedEmotionWords, onEmotionWordsChange]
     );
 
+    const getWordStyling = (word) => {
+      const isRecommended = recommendations.recommended.includes(word);
+      const isSelected = selectedEmotionWords.includes(word);
+      const intensity = recommendations.intensity;
+
+      if (isSelected) {
+        return `bg-gradient-to-r ${colors.primary} text-white border-0 shadow-lg transform scale-105 animate-pulse`;
+      } else if (isRecommended) {
+        return `bg-gradient-to-r ${colors.secondary} ${colors.text} ${colors.border} border-2 hover:shadow-md hover:scale-105 transition-all duration-300 animate-pulse`;
+      } else {
+        return `bg-muted text-muted-foreground border border-border hover:bg-muted/80 transition-all duration-200`;
+      }
+    };
+
     return (
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold">
-          Or select emotion words that describe how you feel:
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {emotionWords.map((word) => (
-            <Badge
-              key={word}
-              variant={
-                selectedEmotionWords.includes(word) ? "default" : "outline"
-              }
-              className={`cursor-pointer transition-all duration-200 hover:scale-105 ${
-                selectedEmotionWords.includes(word)
-                  ? "bg-primary text-primary-foreground"
-                  : "hover:bg-primary/10"
-              }`}
-              onClick={() => toggleEmotionWord(word)}
-            >
-              {word}
-            </Badge>
-          ))}
+        <div className="text-center">
+          <h3 className="text-lg font-semibold mb-2">
+            Select emotion words that describe how you feel:
+          </h3>
+          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r ${colors.secondary} ${colors.border} border-2`}>
+            <span className="text-2xl">{currentEmotionData.emoji}</span>
+            <div className="text-sm">
+              <div className={`font-medium ${colors.text}`}>
+                {currentEmotionData.label} • {recommendations.quadrant.replace('-', ' ').toUpperCase()}
+              </div>
+              <div className="text-muted-foreground">
+                Intensity: {Math.round(recommendations.intensity * 100)}%
+              </div>
+            </div>
+          </div>
         </div>
 
+        {/* Recommended emotions section */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className={`w-3 h-3 rounded-full ${colors.accent}`}></div>
+            <h4 className="font-medium text-sm">Recommended for your current position:</h4>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {recommendations.recommended.map((word) => (
+              <Badge
+                key={word}
+                className={`cursor-pointer transition-all duration-300 hover:scale-105 ${getWordStyling(word)}`}
+                onClick={() => toggleEmotionWord(word)}
+              >
+                {word}
+              </Badge>
+            ))}
+          </div>
+        </div>
+
+        {/* All emotions section */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-full bg-muted-foreground"></div>
+            <h4 className="font-medium text-sm">All emotions:</h4>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {emotionWords
+              .filter(word => !recommendations.recommended.includes(word))
+              .map((word) => (
+                <Badge
+                  key={word}
+                  className={`cursor-pointer transition-all duration-200 hover:scale-105 ${getWordStyling(word)}`}
+                  onClick={() => toggleEmotionWord(word)}
+                >
+                  {word}
+                </Badge>
+              ))}
+          </div>
+        </div>
+
+        {/* Selected emotions display */}
         {selectedEmotionWords.length > 0 && (
-          <div className="mt-4 p-3 bg-muted rounded-lg">
-            <div className="text-sm font-medium mb-2">Selected emotions:</div>
-            <div className="flex flex-wrap gap-1">
+          <div className={`mt-4 p-4 rounded-lg bg-gradient-to-r ${colors.secondary} ${colors.border} border-2`}>
+            <div className={`text-sm font-medium mb-2 ${colors.text}`}>
+              Your selected emotions ({selectedEmotionWords.length}):
+            </div>
+            <div className="flex flex-wrap gap-2">
               {selectedEmotionWords.map((word) => (
-                <Badge key={word} variant="secondary" className="text-xs">
+                <Badge 
+                  key={word} 
+                  className={`bg-gradient-to-r ${colors.primary} text-white border-0 shadow-md`}
+                >
                   {word}
                 </Badge>
               ))}
@@ -412,13 +596,24 @@ const EmojiGridMapper = ({
         <div className="overflow-x-auto pb-4">
           <div
             ref={containerRef}
-            className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] mx-auto rounded-full flex-shrink-0 backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl"
+            className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] mx-auto rounded-full flex-shrink-0 backdrop-blur-xl border-2 shadow-2xl transition-all duration-500"
             style={{
               userSelect: "none",
-              background:
-                "linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))",
-              boxShadow:
-                "0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 0 rgba(255,255,255,0.2)",
+              background: (() => {
+                const recommendations = getEmotionRecommendations(currentEmotionData.valence, currentEmotionData.arousal);
+                const colors = EMOTION_COLORS[recommendations.quadrant];
+                return `linear-gradient(135deg, ${getGradientColors(colors.primary)}, rgba(255,255,255,0.05))`;
+              })(),
+              borderColor: (() => {
+                const recommendations = getEmotionRecommendations(currentEmotionData.valence, currentEmotionData.arousal);
+                const colors = EMOTION_COLORS[recommendations.quadrant];
+                return getBorderColor(colors.border);
+              })(),
+              boxShadow: (() => {
+                const recommendations = getEmotionRecommendations(currentEmotionData.valence, currentEmotionData.arousal);
+                const colors = EMOTION_COLORS[recommendations.quadrant];
+                return `0 8px 32px 0 ${getShadowColor(colors.primary)}, inset 0 1px 0 rgba(255,255,255,0.2)`;
+              })(),
               cursor: "pointer",
             }}
           >
@@ -438,28 +633,39 @@ const EmojiGridMapper = ({
           </div>
         </div>
 
-        {/* * Current position display */}
+        {/* * Current position display with dynamic styling */}
         <div className="mt-4 text-center">
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg backdrop-blur-md border border-white/20"
-            style={{
-              background:
-                "linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05))",
-              boxShadow:
-                "0 4px 16px 0 rgba(31, 38, 135, 0.2), inset 0 1px 0 rgba(255,255,255,0.2)",
-            }}
-          >
-            <span className="text-2xl">{currentEmotionData.emoji}</span>
-            <div className="text-sm">
-              <div className="font-medium">{currentEmotionData.label}</div>
-              <div className="text-muted-foreground">
-                Valence: {currentEmotionData.valence > 0 ? "+" : ""}
-                {currentEmotionData.valence} | Arousal:{" "}
-                {currentEmotionData.arousal > 0 ? "+" : ""}
-                {currentEmotionData.arousal}
+          {(() => {
+            const recommendations = getEmotionRecommendations(currentEmotionData.valence, currentEmotionData.arousal);
+            const colors = EMOTION_COLORS[recommendations.quadrant];
+            
+            return (
+              <div
+                className={`inline-flex items-center gap-3 px-6 py-3 rounded-xl backdrop-blur-md border-2 transition-all duration-300 ${colors.border}`}
+                style={{
+                  background: `linear-gradient(135deg, ${getGradientColors(colors.primary)}, rgba(255,255,255,0.1))`,
+                  boxShadow: `0 6px 20px 0 ${getShadowColor(colors.primary)}, inset 0 1px 0 rgba(255,255,255,0.3)`,
+                }}
+              >
+                <span className="text-3xl">{currentEmotionData.emoji}</span>
+                <div className="text-sm">
+                  <div className={`font-semibold ${colors.text}`}>
+                    {currentEmotionData.label}
+                  </div>
+                  <div className="text-muted-foreground">
+                    {recommendations.quadrant.replace('-', ' ').toUpperCase()} • 
+                    Intensity: {Math.round(recommendations.intensity * 100)}%
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    Valence: {currentEmotionData.valence > 0 ? "+" : ""}
+                    {currentEmotionData.valence} | Arousal:{" "}
+                    {currentEmotionData.arousal > 0 ? "+" : ""}
+                    {currentEmotionData.arousal}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            );
+          })()}
         </div>
       </div>
 
@@ -467,6 +673,7 @@ const EmojiGridMapper = ({
         emotionWords={EMOTION_WORDS}
         selectedEmotionWords={selectedEmotionWords}
         onEmotionWordsChange={onEmotionWordsChange}
+        currentEmotionData={currentEmotionData}
       />
     </div>
   );
