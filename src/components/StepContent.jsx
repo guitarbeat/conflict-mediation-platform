@@ -2,8 +2,10 @@ import React, { Suspense, useEffect } from "react";
 import { Download, FileText, Upload } from "lucide-react";
 import { Button } from "./ui/button";
 import FormField from "./FormField";
+import EnhancedFormField from "./EnhancedFormField";
 import DatePickerField from "./DatePickerField";
 import SectionSeparator from "./SectionSeparator";
+import { MultiSelectInput, RatingInput, StructuredListInput, PriorityInput } from "./AdvancedInputs";
 // Lazy-load heavy component
 const EmojiGridMapper = React.lazy(() => import("./EmojiGridMapper"));
 import { z } from "zod";
@@ -12,10 +14,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
 // * Communication Approaches component - moved outside to prevent recreation
-const CommunicationApproaches = ({ prefix, formData, updateFormData, isFieldMissing }) => (
+const CommunicationApproaches = ({ prefix, formData, updateFormData, isFieldMissing, context }) => (
   <div className="space-y-4 sm:space-y-6">
     <label className="form-label">I want... (Communication Approaches)</label>
-    <FormField
+    <EnhancedFormField
       id={`${prefix}AggressiveApproach`}
       label="Aggressive Approach (Not Recommended)"
       placeholder="What would you want to say if you were being aggressive?"
@@ -23,8 +25,11 @@ const CommunicationApproaches = ({ prefix, formData, updateFormData, isFieldMiss
       onChange={(value) => updateFormData(`${prefix}AggressiveApproach`, value)}
       type="textarea"
       className="text-red-600"
+      description="This approach is not recommended as it can escalate conflict"
+      showCharacterCount={true}
+      maxLength={500}
     />
-    <FormField
+    <EnhancedFormField
       id={`${prefix}PassiveApproach`}
       label="Passive Approach"
       placeholder="What would you want if you were being passive?"
@@ -32,8 +37,11 @@ const CommunicationApproaches = ({ prefix, formData, updateFormData, isFieldMiss
       onChange={(value) => updateFormData(`${prefix}PassiveApproach`, value)}
       type="textarea"
       className="text-blue-600"
+      description="This approach avoids conflict but may not address underlying issues"
+      showCharacterCount={true}
+      maxLength={500}
     />
-    <FormField
+    <EnhancedFormField
       id={`${prefix}AssertiveApproach`}
       label="Assertive Approach (Recommended)"
       placeholder="What would you want to say if you were being assertive and respectful?"
@@ -42,23 +50,33 @@ const CommunicationApproaches = ({ prefix, formData, updateFormData, isFieldMiss
       type="textarea"
       className="text-green-600"
       error={isFieldMissing(`${prefix}AssertiveApproach`) ? "Required" : ""}
+      description="This approach is recommended for healthy conflict resolution"
+      showCharacterCount={true}
+      maxLength={500}
+      smartSuggestions={true}
+      fieldType="assertiveApproach"
+      context={context}
+      showContextualHelp={true}
     />
-    <FormField
+    <EnhancedFormField
       id={`${prefix}WhyBecause`}
       label="Why/Because..."
       placeholder="Explain your reasoning..."
       value={formData[`${prefix}WhyBecause`]}
       onChange={(value) => updateFormData(`${prefix}WhyBecause`, value)}
       type="textarea"
+      description="Explain the reasoning behind your assertive approach"
+      showCharacterCount={true}
+      maxLength={300}
     />
   </div>
 );
 
 // * Individual Reflection component - moved outside to prevent recreation
-const IndividualReflection = ({ party, prefix, formData, updateFormData, isFieldMissing }) => (
+const IndividualReflection = ({ party, prefix, formData, updateFormData, isFieldMissing, context }) => (
   <div className="space-y-4 sm:space-y-6">
     <SectionSeparator title="Thoughts & Beliefs" />
-    <FormField
+    <EnhancedFormField
       id={`${prefix}Thoughts`}
       label="I think..."
       placeholder="Explain what you think or believe to be true about the conflict..."
@@ -67,6 +85,13 @@ const IndividualReflection = ({ party, prefix, formData, updateFormData, isField
       type="textarea"
       rows={4}
       error={isFieldMissing(`${prefix}Thoughts`) ? "Required" : ""}
+      description="Be honest about your beliefs and assumptions about the situation"
+      showCharacterCount={true}
+      maxLength={1000}
+      smartSuggestions={true}
+      fieldType="thoughts"
+      context={context}
+      showContextualHelp={true}
     />
 
     <SectionSeparator title="Emotions & Feelings" />
@@ -95,6 +120,7 @@ const IndividualReflection = ({ party, prefix, formData, updateFormData, isField
       formData={formData}
       updateFormData={updateFormData}
       isFieldMissing={isFieldMissing}
+      context={context}
     />
   </div>
 );
@@ -109,6 +135,12 @@ const Step1Schema = z.object({
 });
 
 const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON, showErrors, getRequiredFieldsForStep }) => {
+  // Create context for smart suggestions
+  const context = {
+    partyAName: formData.partyAName,
+    partyBName: formData.partyBName,
+    currentStep: step,
+  };
   // react-hook-form for Step 1
   const step1Form = useForm({
     mode: "onChange",
@@ -174,7 +206,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
             and the parties involved.
           </p>
           <div className="form-grid form-grid-2">
-            <FormField
+            <EnhancedFormField
               id="partyAName"
               label="Party A Name"
               placeholder="Enter first person's name"
@@ -184,8 +216,11 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 updateFormData("partyAName", value);
               }}
               error={step1Errors.partyAName?.message}
+              required={true}
+              description="The first person involved in the conflict"
+              autoSave={true}
             />
-            <FormField
+            <EnhancedFormField
               id="partyBName"
               label="Party B Name"
               placeholder="Enter second person's name"
@@ -195,6 +230,9 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 updateFormData("partyBName", value);
               }}
               error={step1Errors.partyBName?.message}
+              required={true}
+              description="The second person involved in the conflict"
+              autoSave={true}
             />
           </div>
 
@@ -230,7 +268,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
             />
           </div>
 
-          <FormField
+          <EnhancedFormField
             id="conflictDescription"
             label="Agreed Upon Description of Conflict"
             placeholder="Both parties should agree on this description of what happened..."
@@ -242,6 +280,15 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
             type="textarea"
             rows={4}
             error={step1Errors.conflictDescription?.message}
+            required={true}
+            description="Both parties should agree on this factual description of the conflict"
+            showCharacterCount={true}
+            maxLength={2000}
+            smartSuggestions={true}
+            fieldType="conflictDescription"
+            context={context}
+            showContextualHelp={true}
+            autoSave={true}
           />
         </div>
       );
@@ -254,6 +301,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
           formData={formData}
           updateFormData={updateFormData}
           isFieldMissing={isFieldMissing}
+          context={context}
         />
       );
 
@@ -265,6 +313,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
           formData={formData}
           updateFormData={updateFormData}
           isFieldMissing={isFieldMissing}
+          context={context}
         />
       );
 
@@ -278,7 +327,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
           </p>
 
           <div className="space-y-4 sm:space-y-6">
-            <FormField
+            <EnhancedFormField
               id="activatingEvent"
               label="A - Activating Event"
               description="What actually happened? Stick to observable facts."
@@ -287,10 +336,17 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               onChange={(value) => updateFormData("activatingEvent", value)}
               type="textarea"
               rows={3}
+              required={true}
+              showCharacterCount={true}
+              maxLength={1000}
+              smartSuggestions={true}
+              fieldType="activatingEvent"
+              context={context}
+              showContextualHelp={true}
             />
 
             <div className="form-grid form-grid-2">
-              <FormField
+              <EnhancedFormField
                 id="partyABeliefs"
                 label={`B - ${formData.partyAName || "Party A"} Beliefs`}
                 description="What thoughts or beliefs do you have about this event?"
@@ -299,8 +355,14 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 onChange={(value) => updateFormData("partyABeliefs", value)}
                 type="textarea"
                 rows={3}
+                required={true}
+                showCharacterCount={true}
+                maxLength={800}
+                smartSuggestions={true}
+                fieldType="thoughts"
+                context={context}
               />
-              <FormField
+              <EnhancedFormField
                 id="partyBBeliefs"
                 label={`B - ${formData.partyBName || "Party B"} Beliefs`}
                 description="What thoughts or beliefs do you have about this event?"
@@ -309,11 +371,17 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 onChange={(value) => updateFormData("partyBBeliefs", value)}
                 type="textarea"
                 rows={3}
+                required={true}
+                showCharacterCount={true}
+                maxLength={800}
+                smartSuggestions={true}
+                fieldType="thoughts"
+                context={context}
               />
             </div>
 
             <div className="form-grid form-grid-2">
-              <FormField
+              <EnhancedFormField
                 id="partyAConsequences"
                 label={`C - ${formData.partyAName || "Party A"} Consequences`}
                 description="How did your beliefs make you feel and behave?"
@@ -324,8 +392,10 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 }
                 type="textarea"
                 rows={3}
+                showCharacterCount={true}
+                maxLength={600}
               />
-              <FormField
+              <EnhancedFormField
                 id="partyBConsequences"
                 label={`C - ${formData.partyBName || "Party B"} Consequences`}
                 description="How did your beliefs make you feel and behave?"
@@ -336,11 +406,13 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 }
                 type="textarea"
                 rows={3}
+                showCharacterCount={true}
+                maxLength={600}
               />
             </div>
 
             <div className="form-grid form-grid-2">
-              <FormField
+              <EnhancedFormField
                 id="partyADisputations"
                 label={`D - ${formData.partyAName || "Party A"} Disputations`}
                 description="Challenge your beliefs. Are they helpful? Accurate? Realistic?"
@@ -351,8 +423,10 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 }
                 type="textarea"
                 rows={3}
+                showCharacterCount={true}
+                maxLength={600}
               />
-              <FormField
+              <EnhancedFormField
                 id="partyBDisputations"
                 label={`D - ${formData.partyBName || "Party B"} Disputations`}
                 description="Challenge your beliefs. Are they helpful? Accurate? Realistic?"
@@ -363,10 +437,12 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 }
                 type="textarea"
                 rows={3}
+                showCharacterCount={true}
+                maxLength={600}
               />
             </div>
 
-            <FormField
+            <EnhancedFormField
               id="effectsReflections"
               label="E - Effects & Reflections"
               description="What new insights have emerged? How do you both feel now?"
@@ -375,6 +451,8 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               onChange={(value) => updateFormData("effectsReflections", value)}
               type="textarea"
               rows={4}
+              showCharacterCount={true}
+              maxLength={1000}
             />
           </div>
         </div>
@@ -390,7 +468,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
 
           <div className="space-y-4 sm:space-y-6">
             <div className="form-grid form-grid-2">
-              <FormField
+              <EnhancedFormField
                 id="partyAMiracle"
                 label={`${formData.partyAName || "Party A"} - Miracle Question`}
                 description="If you woke up tomorrow and this conflict was completely resolved, what would be different?"
@@ -399,8 +477,15 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 onChange={(value) => updateFormData("partyAMiracle", value)}
                 type="textarea"
                 rows={4}
+                required={true}
+                showCharacterCount={true}
+                maxLength={1000}
+                smartSuggestions={true}
+                fieldType="miracleQuestion"
+                context={context}
+                showContextualHelp={true}
               />
-              <FormField
+              <EnhancedFormField
                 id="partyBMiracle"
                 label={`${formData.partyBName || "Party B"} - Miracle Question`}
                 description="If you woke up tomorrow and this conflict was completely resolved, what would be different?"
@@ -409,38 +494,45 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 onChange={(value) => updateFormData("partyBMiracle", value)}
                 type="textarea"
                 rows={4}
+                required={true}
+                showCharacterCount={true}
+                maxLength={1000}
+                smartSuggestions={true}
+                fieldType="miracleQuestion"
+                context={context}
+                showContextualHelp={true}
               />
             </div>
 
             <div className="form-grid form-grid-2">
-              <FormField
+              <StructuredListInput
                 id="partyATop3Solutions"
                 label={`${formData.partyAName || "Party A"} - Top 3 Solutions`}
-                placeholder="List your top 3 preferred solutions..."
-                value={formData.partyATop3Solutions}
-                onChange={(value) =>
-                  updateFormData("partyATop3Solutions", value)
-                }
-                type="textarea"
-                rows={4}
+                placeholder="Add solution..."
+                itemPlaceholder="Enter a solution..."
+                value={formData.partyATop3Solutions || []}
+                onChange={(value) => updateFormData("partyATop3Solutions", value)}
+                maxItems={3}
+                itemType="text"
+                description="List your top 3 preferred solutions for resolving this conflict"
               />
-              <FormField
+              <StructuredListInput
                 id="partyBTop3Solutions"
                 label={`${formData.partyBName || "Party B"} - Top 3 Solutions`}
-                placeholder="List your top 3 preferred solutions..."
-                value={formData.partyBTop3Solutions}
-                onChange={(value) =>
-                  updateFormData("partyBTop3Solutions", value)
-                }
-                type="textarea"
-                rows={4}
+                placeholder="Add solution..."
+                itemPlaceholder="Enter a solution..."
+                value={formData.partyBTop3Solutions || []}
+                onChange={(value) => updateFormData("partyBTop3Solutions", value)}
+                maxItems={3}
+                itemType="text"
+                description="List your top 3 preferred solutions for resolving this conflict"
               />
             </div>
 
             <SectionSeparator title="Understanding Each Other" />
 
             <div className="form-grid form-grid-2">
-              <FormField
+              <EnhancedFormField
                 id="partyAPerspective"
                 label={`${
                   formData.partyAName || "Party A"
@@ -451,8 +543,10 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 onChange={(value) => updateFormData("partyAPerspective", value)}
                 type="textarea"
                 rows={3}
+                showCharacterCount={true}
+                maxLength={600}
               />
-              <FormField
+              <EnhancedFormField
                 id="partyBPerspective"
                 label={`${
                   formData.partyBName || "Party B"
@@ -463,10 +557,12 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 onChange={(value) => updateFormData("partyBPerspective", value)}
                 type="textarea"
                 rows={3}
+                showCharacterCount={true}
+                maxLength={600}
               />
             </div>
 
-            <FormField
+            <EnhancedFormField
               id="compromiseSolutions"
               label="Compromise Solutions"
               description="What solutions can you both agree on? What compromises are you willing to make?"
@@ -475,6 +571,13 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               onChange={(value) => updateFormData("compromiseSolutions", value)}
               type="textarea"
               rows={4}
+              required={true}
+              showCharacterCount={true}
+              maxLength={1000}
+              smartSuggestions={true}
+              fieldType="solutions"
+              context={context}
+              showContextualHelp={true}
             />
           </div>
         </div>
@@ -543,27 +646,29 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               />
             </div>
 
-            <FormField
+            <StructuredListInput
               id="actionSteps"
               label="Specific Action Steps"
               description="What specific actions will each person take? Include deadlines and accountability measures."
-              placeholder="List specific, measurable action steps with deadlines..."
-              value={formData.actionSteps}
+              placeholder="Add action step..."
+              itemPlaceholder="Enter action step with deadline..."
+              value={formData.actionSteps || []}
               onChange={(value) => updateFormData("actionSteps", value)}
-              type="textarea"
-              rows={5}
+              itemType="textarea"
+              allowReorder={true}
             />
 
             <div className="form-grid form-grid-2">
-              <FormField
+              <EnhancedFormField
                 id="followUpDate"
                 label="Follow-up Date"
                 description="When should you check in on progress?"
                 type="date"
                 value={formData.followUpDate}
                 onChange={(value) => updateFormData("followUpDate", value)}
+                required={true}
               />
-              <FormField
+              <EnhancedFormField
                 id="additionalSupport"
                 label="Additional Support Needed"
                 description="What additional resources or support might be helpful?"
@@ -572,6 +677,8 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 onChange={(value) => updateFormData("additionalSupport", value)}
                 type="textarea"
                 rows={3}
+                showCharacterCount={true}
+                maxLength={500}
               />
             </div>
           </div>

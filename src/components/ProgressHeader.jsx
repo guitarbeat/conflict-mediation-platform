@@ -1,5 +1,6 @@
 import React from "react";
 import { Users } from "lucide-react";
+import FormProgressIndicator from "./FormProgressIndicator";
 
 const STEPS = [
   "Setup",
@@ -11,7 +12,7 @@ const STEPS = [
   "Export & Save",
 ];
 
-const ProgressHeader = ({ currentStep, totalSteps, formData }) => {
+const ProgressHeader = ({ currentStep, totalSteps, formData, completedFields = 0, totalFields = 0 }) => {
   const getStepDescription = (step) => {
     switch (step) {
       case 1:
@@ -72,34 +73,15 @@ const ProgressHeader = ({ currentStep, totalSteps, formData }) => {
         </div>
       )}
 
-      {/* Elegant Progress Bar */}
-      <div className="relative mt-3">
-        <div className="flex items-center">
-          {STEPS.map((step, index) => (
-            <div key={index} className="flex items-center flex-1">
-              <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 ${
-                  index + 1 <= currentStep
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-muted text-muted-foreground"
-                }`}
-              >
-                {index + 1}
-              </div>
-              {index < STEPS.length - 1 && (
-                <div className="flex-1 mx-2 relative">
-                  <div className="h-1 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className={`h-full bg-primary rounded-full transition-all duration-700 ease-out ${
-                        index + 1 < currentStep ? "w-full" : "w-0"
-                      }`}
-                    ></div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+      {/* Enhanced Progress Indicator */}
+      <div className="mt-4">
+        <FormProgressIndicator
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          completedFields={completedFields}
+          totalFields={totalFields}
+          showFieldProgress={true}
+        />
       </div>
     </div>
   );
