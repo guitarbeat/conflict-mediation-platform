@@ -410,16 +410,16 @@ const DraggableEmoji = React.memo(
 // * Component for axis labels
 const AxisLabels = React.memo(() => (
   <>
-    <div className="absolute top-2 left-1/2 transform -translate-x-1/2 text-sm font-medium text-muted-foreground">
+    <div className="absolute top-2 left-1/2 transform -translate-x-1/2 text-sm font-medium text-gray-500">
       High Energy
     </div>
-    <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-sm font-medium text-muted-foreground">
+    <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 text-sm font-medium text-gray-500">
       Low Energy
     </div>
-    <div className="absolute left-2 top-1/2 transform -translate-y-1/2 -rotate-90 text-sm font-medium text-muted-foreground">
+    <div className="absolute left-2 top-1/2 transform -translate-y-1/2 -rotate-90 text-sm font-medium text-gray-500">
       Unpleasant
     </div>
-    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 rotate-90 text-sm font-medium text-muted-foreground">
+    <div className="absolute right-2 top-1/2 transform -translate-y-1/2 rotate-90 text-sm font-medium text-gray-500">
       Pleasant
     </div>
   </>
@@ -463,7 +463,7 @@ const EmotionWordsSelector = React.memo(
       } else if (isRecommended) {
         return `bg-gradient-to-r ${colors.secondary} ${colors.text} ${colors.border} border-2 hover:shadow-md hover:scale-105 transition-all duration-300 animate-pulse`;
       } else {
-        return `bg-muted text-muted-foreground border border-border hover:bg-muted/80 transition-all duration-200`;
+        return `bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200 transition-all duration-200`;
       }
     };
 
@@ -479,7 +479,7 @@ const EmotionWordsSelector = React.memo(
               <div className={`font-medium ${colors.text}`}>
                 {currentEmotionData.label} • {quadrant.replace('-', ' ').toUpperCase()}
               </div>
-              <div className="text-muted-foreground">
+              <div className="text-gray-500">
                 Intensity: {Math.round(intensity * 100)}%
               </div>
             </div>
@@ -508,7 +508,7 @@ const EmotionWordsSelector = React.memo(
         {/* All emotions section */}
         <div className="space-y-3">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-muted-foreground"></div>
+            <div className="w-3 h-3 rounded-full bg-gray-400"></div>
             <h4 className="font-medium text-sm">All emotions:</h4>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -637,8 +637,8 @@ const EmojiGridMapper = ({
             <AxisLabels />
 
             {/* * Center lines */}
-            <div className="absolute top-1/2 left-0 right-0 h-px bg-border opacity-30"></div>
-            <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border opacity-30"></div>
+            <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-300 opacity-30"></div>
+            <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-300 opacity-30"></div>
 
             <DraggableEmoji
               position={position}
@@ -664,11 +664,11 @@ const EmojiGridMapper = ({
               <div className={`font-semibold ${mainColors.text}`}>
                 {currentEmotionData.label}
               </div>
-              <div className="text-muted-foreground">
+              <div className="text-gray-500">
                 {mainQuadrant.replace('-', ' ').toUpperCase()} • 
                 Intensity: {Math.round(mainIntensity * 100)}%
               </div>
-              <div className="text-xs text-muted-foreground mt-1">
+              <div className="text-xs text-gray-500 mt-1">
                 Valence: {currentEmotionData.valence > 0 ? "+" : ""}
                 {currentEmotionData.valence} | Arousal:{" "}
                 {currentEmotionData.arousal > 0 ? "+" : ""}
