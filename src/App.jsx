@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import DarkModeToggle from "./components/DarkModeToggle";
 import ParticleBackground from "./components/ParticleBackground";
 import ProgressHeader from "./components/ProgressHeader";
+import CategoryNavigation from "./components/CategoryNavigation";
 import NavigationButtons from "./components/NavigationButtons";
 import CardStack from "./components/CardStack";
 import StepContent from "./components/StepContent";
@@ -147,6 +148,17 @@ function App() {
             <button onClick={resetFormData} className="underline text-primary">Reset</button>
           </div>
         )}
+
+        {/* Category Navigation */}
+        <CategoryNavigation
+          formData={formData}
+          currentStep={currentStep}
+          onNavigateToStep={(step) => {
+            if (step <= currentStep + 1) {
+              navigateToStep(step);
+            }
+          }}
+        />
 
         {/* Progress Header */}
         <ProgressHeader
