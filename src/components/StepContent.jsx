@@ -12,6 +12,26 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { getCategoryByStep } from "../config/surveyCategories";
+
+// * Category Header component
+const CategoryHeader = ({ step }) => {
+  const category = getCategoryByStep(step);
+  
+  if (!category) return null;
+  
+  return (
+    <div className="mb-6 p-4 bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20 rounded-lg">
+      <div className="flex items-center gap-3">
+        <span className="text-2xl">{category.icon}</span>
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">{category.name}</h2>
+          <p className="text-sm text-muted-foreground">{category.description}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // * Communication Approaches component - moved outside to prevent recreation
 const CommunicationApproaches = ({ prefix, formData, updateFormData, isFieldMissing, context }) => (
@@ -200,6 +220,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
     case 1:
       return (
         <div className="space-y-2 sm:space-y-3">
+          <CategoryHeader step={step} />
           <SectionSeparator title="Party Information" />
           <p className="text-center text-muted-foreground mb-1 sm:mb-2 text-sm sm:text-base">
             Let's start by gathering some basic information about the conflict
@@ -295,31 +316,38 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
 
     case 2:
       return (
-        <IndividualReflection
-          party="A"
-          prefix="partyA"
-          formData={formData}
-          updateFormData={updateFormData}
-          isFieldMissing={isFieldMissing}
-          context={context}
-        />
+        <div className="space-y-4 sm:space-y-6">
+          <CategoryHeader step={step} />
+          <IndividualReflection
+            party="A"
+            prefix="partyA"
+            formData={formData}
+            updateFormData={updateFormData}
+            isFieldMissing={isFieldMissing}
+            context={context}
+          />
+        </div>
       );
 
     case 3:
       return (
-        <IndividualReflection
-          party="B"
-          prefix="partyB"
-          formData={formData}
-          updateFormData={updateFormData}
-          isFieldMissing={isFieldMissing}
-          context={context}
-        />
+        <div className="space-y-4 sm:space-y-6">
+          <CategoryHeader step={step} />
+          <IndividualReflection
+            party="B"
+            prefix="partyB"
+            formData={formData}
+            updateFormData={updateFormData}
+            isFieldMissing={isFieldMissing}
+            context={context}
+          />
+        </div>
       );
 
     case 4:
       return (
         <div className="space-y-4 sm:space-y-6">
+          <CategoryHeader step={step} />
           <SectionSeparator title="ABCDE Model Discussion" />
           <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
             Work through this cognitive behavioral model together to understand
@@ -461,6 +489,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
     case 5:
       return (
         <div className="space-y-4 sm:space-y-6">
+          <CategoryHeader step={step} />
           <SectionSeparator title="Solution Development" />
           <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
             Now let's explore possibilities and develop solutions together.
@@ -586,6 +615,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
     case 6:
       return (
         <div className="space-y-4 sm:space-y-6">
+          <CategoryHeader step={step} />
           <SectionSeparator title="Agreement & Action Steps" />
           <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
             Finalize your agreement and create actionable next steps.
@@ -688,6 +718,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
     case 7:
       return (
         <div className="space-y-4 sm:space-y-6">
+          <CategoryHeader step={step} />
           <SectionSeparator title="Export Your Session" />
           <p className="text-center text-muted-foreground mb-4 sm:mb-6 text-sm sm:text-base">
             Congratulations! You've completed the conflict mediation process.

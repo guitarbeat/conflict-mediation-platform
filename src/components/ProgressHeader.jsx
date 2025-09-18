@@ -1,6 +1,7 @@
 import React from "react";
 import { Users } from "lucide-react";
 import FormProgressIndicator from "./FormProgressIndicator";
+import { SURVEY_CATEGORIES, getCategoryByStep, getCategoryProgress, getOverallProgress } from "../config/surveyCategories";
 
 const STEPS = [
   "Setup",
@@ -13,6 +14,9 @@ const STEPS = [
 ];
 
 const ProgressHeader = ({ currentStep, totalSteps, formData, completedFields = 0, totalFields = 0 }) => {
+  const currentCategory = getCategoryByStep(currentStep);
+  const overallProgress = getOverallProgress(formData);
+  
   const getStepDescription = (step) => {
     switch (step) {
       case 1:
@@ -42,6 +46,34 @@ const ProgressHeader = ({ currentStep, totalSteps, formData, completedFields = 0
 
   return (
     <div className="mb-3">
+      {/* Category Progress Bar */}
+      <div className="mb-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">{currentCategory?.icon}</span>
+            <div>
+              <h3 className="text-sm font-medium text-foreground">
+                {currentCategory?.name}
+              </h3>
+              <p className="text-xs text-muted-foreground">
+                {currentCategory?.description}
+              </p>
+            </div>
+          </div>
+          <div className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground">
+            {overallProgress.completed} of {overallProgress.total} steps
+          </div>
+        </div>
+        
+        {/* Overall Progress Bar */}
+        <div className="w-full bg-muted rounded-full h-2">
+          <div 
+            className="bg-primary h-2 rounded-full transition-all duration-300"
+            style={{ width: `${overallProgress.percentage}%` }}
+          />
+        </div>
+      </div>
+
       {/* Main Header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
