@@ -1,11 +1,35 @@
 import jsPDF from 'jspdf';
+import { createPDFError, logError, ERROR_TYPES } from './errorMessages';
 
 export const generateEnhancedPDF = (formData) => {
-  const pdf = new jsPDF('p', 'mm', 'a4');
-  const pageWidth = pdf.internal.pageSize.getWidth();
-  const pageHeight = pdf.internal.pageSize.getHeight();
-  const margin = 20;
-  let yPosition = margin;
+  try {
+    // Validate input data
+    if (!formData || typeof formData !== 'object') {
+      throw createPDFError('INSUFFICIENT_DATA', { 
+        details: 'No form data provided for PDF generation' 
+      });
+    }
+
+    // Check if we have minimum required data
+    const hasMinimumData = formData.partyAName || formData.partyBName || formData.conflictDescription;
+    if (!hasMinimumData) {
+      throw createPDFError('INSUFFICIENT_DATA', { 
+        details: 'Insufficient data to generate meaningful PDF' 
+      });
+    }
+
+    // Check browser support
+    if (typeof window === 'undefined' || !window.Blob) {
+      throw createPDFError('BROWSER_NOT_SUPPORTED', { 
+        details: 'PDF generation not supported in this environment' 
+      });
+    }
+
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 20;
+    let yPosition = margin;
 
   // Colors
   const primaryColor = [59, 152, 26]; // #3B981A
@@ -222,8 +246,57 @@ export const generateEnhancedPDF = (formData) => {
     pdf.text(`Conflict Resolution Platform - Page ${i} of ${totalPages}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
   }
 
-  // Save the PDF
-  const fileName = `conflict-mediation-${formData.partyAName || 'PartyA'}-${formData.partyBName || 'PartyB'}-${new Date().toISOString().split('T')[0]}.pdf`;
-  pdf.save(fileName);
+    // Save the PDF
+    const fileName = `conflict-mediation-${formData.partyAName || 'PartyA'}-${formData.partyBName || 'PartyB'}-${new Date().toISOString().split('T')[0]}.pdf`;
+    
+    try {
+      pdf.save(fileName);
+    } catch (saveError) {
+      throw createPDFError('GENERATION_FAILED', { 
+        details: 'Failed to save PDF file',
+        originalError: saveError.message 
+      });
+    }
+
+  } catch (error) {
+    // Log the error for debugging
+    logError(error, { 
+      formData: {
+        partyAName: formData?.partyAName,
+        partyBName: formData?.partyBName,
+        hasConflictDescription: !!formData?.conflictDescription
+      }
+    });
+
+    // Re-throw the error so it can be handled by the calling component
+    throw error;
+  }
+};
+
+// Enhanced PDF generation with retry mechanism
+export const generateEnhancedPDFWithRetry = async (formData, maxRetries = 2) => {
+  let lastError;
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return generateEnhancedPDF(formData);
+    } catch (error) {
+      lastError = error;
+      
+      // Don't retry for certain types of errors
+      if (error.type === ERROR_TYPES.PDF_GENERATION && 
+          (error.key === 'BROWSER_NOT_SUPPORTED' || error.key === 'INSUFFICIENT_DATA')) {
+        throw error;
+      }
+      
+      // Wait before retrying (exponential backoff)
+      if (attempt < maxRetries) {
+        const delay = Math.pow(2, attempt) * 1000; // 2s, 4s, 8s...
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  
+  throw lastError;
 };
 

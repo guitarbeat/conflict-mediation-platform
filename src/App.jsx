@@ -10,6 +10,7 @@ import { useFormData } from "./hooks/useFormData";
 import { useNavigation } from "./hooks/useNavigation";
 import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
+import { ERROR_MESSAGES, createValidationError, logError } from "./utils/errorMessages";
 import logo from "./assets/logo.png";
 import "./App.css";
 
@@ -48,7 +49,11 @@ function App() {
           navigateToStep("next");
         } else {
           setShowStepErrors(true);
-          toast.error("Please complete the required fields before continuing.");
+          const missingFields = getMissingFieldsForStep(currentStep);
+          const errorMessage = missingFields.length > 0 
+            ? `Please complete the following required fields: ${missingFields.join(', ')}`
+            : ERROR_MESSAGES.VALIDATION.STEP_INCOMPLETE(currentStep);
+          toast.error(errorMessage);
         }
       } else if (e.key === "ArrowLeft") {
         navigateToStep("prev");
@@ -62,7 +67,11 @@ function App() {
     if (direction === "next") {
       if (!isStepComplete(currentStep)) {
         setShowStepErrors(true);
-        toast.error("Please complete the required fields before continuing.");
+        const missingFields = getMissingFieldsForStep(currentStep);
+        const errorMessage = missingFields.length > 0 
+          ? `Please complete the following required fields: ${missingFields.join(', ')}`
+          : ERROR_MESSAGES.VALIDATION.STEP_INCOMPLETE(currentStep);
+        toast.error(errorMessage);
         return;
       }
     }

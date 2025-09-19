@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { Download, FileText, Upload } from "lucide-react";
+import { Download, FileText, Upload, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import FormField from "./FormField";
 import EnhancedFormField from "./EnhancedFormField";
@@ -13,6 +13,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { getCategoryByStep } from "../config/surveyCategories";
+import { useErrorHandler } from "../hooks/useErrorHandler";
+import { PDFLoadingState, FileLoadingState } from "./LoadingState";
 
 // * Category Header component
 const CategoryHeader = ({ step }) => {
@@ -155,6 +157,18 @@ const Step1Schema = z.object({
 });
 
 const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON, showErrors, getRequiredFieldsForStep }) => {
+  // Error handling
+  const { executeFileOperation, executeAsync, isRetrying } = useErrorHandler({
+    showToast: true,
+    logErrors: true
+  });
+
+  // Loading states
+  const [isGeneratingPDF, setIsGeneratingPDF] = React.useState(false);
+  const [isImportingFile, setIsImportingFile] = React.useState(false);
+  const [pdfError, setPdfError] = React.useState(null);
+  const [importError, setImportError] = React.useState(null);
+
   // Create context for smart suggestions
   const context = {
     partyAName: formData.partyAName,
@@ -201,18 +215,53 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
 
   const handleImportJSON = async (file) => {
     if (!file) return;
-    try {
+    
+    setIsImportingFile(true);
+    setImportError(null);
+    
+    const result = await executeFileOperation(async () => {
+      // Validate file type
+      if (!file.name.toLowerCase().endsWith('.json')) {
+        throw new Error("Please select a valid JSON file");
+      }
+      
+      // Check file size (max 10MB)
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      if (file.size > maxSize) {
+        throw new Error("File is too large. Please select a file smaller than 10MB");
+      }
+      
       const text = await file.text();
+      
+      if (!text.trim()) {
+        throw new Error("The selected file is empty");
+      }
+      
       const parsed = JSON.parse(text);
+      
+      if (typeof parsed !== 'object' || parsed === null) {
+        throw new Error("Invalid JSON format. The file must contain a valid JSON object");
+      }
+      
       const allowedKeys = Object.keys(formData);
       const sanitized = Object.fromEntries(
         Object.entries(parsed).filter(([k]) => allowedKeys.includes(k))
       );
+      
+      if (Object.keys(sanitized).length === 0) {
+        throw new Error("No valid mediation data found in the file");
+      }
+      
       updateMultipleFields(sanitized);
-      toast.success("Session imported successfully.");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to import JSON. Please check the file format.");
+      return sanitized;
+    }, { fileName: file.name, operation: 'import' });
+    
+    setIsImportingFile(false);
+    
+    if (result.success) {
+      toast.success(`Session imported successfully! ${Object.keys(result.data).length} fields loaded.`);
+    } else {
+      setImportError(result.error);
     }
   };
 
@@ -767,18 +816,60 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 <div className="space-y-3">
                   <Button
                     onClick={async () => {
-                      const { generateEnhancedPDF } = await import("../utils/pdfGenerator");
-                      generateEnhancedPDF(formData);
+                      setIsGeneratingPDF(true);
+                      setPdfError(null);
+                      
+                      const result = await executeAsync(async () => {
+                        const { generateEnhancedPDFWithRetry } = await import("../utils/pdfGenerator");
+                        return await generateEnhancedPDFWithRetry(formData);
+                      }, { operation: 'pdf_generation' });
+                      
+                      setIsGeneratingPDF(false);
+                      
+                      if (result.success) {
+                        toast.success("PDF generated successfully!");
+                      } else {
+                        setPdfError(result.error);
+                      }
                     }}
+                    disabled={isGeneratingPDF}
                     className="w-full flex items-center justify-center gap-2 h-12"
                   >
-                    <FileText className="h-4 w-4" />
-                    Export as PDF
+                    {isGeneratingPDF ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Generating PDF...
+                      </>
+                    ) : (
+                      <>
+                        <FileText className="h-4 w-4" />
+                        Export as PDF
+                      </>
+                    )}
                   </Button>
                   <p className="text-xs text-muted-foreground">
                     Create a professional PDF report of your mediation session
                     for sharing or documentation.
                   </p>
+                  
+                  {/* PDF Loading/Error State */}
+                  {isGeneratingPDF && (
+                    <PDFLoadingState
+                      isLoading={true}
+                      message="Generating PDF report..."
+                    />
+                  )}
+                  
+                  {pdfError && (
+                    <PDFLoadingState
+                      isLoading={false}
+                      error={pdfError}
+                      onRetry={() => {
+                        setPdfError(null);
+                        // Retry logic would be handled by the button click
+                      }}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -792,16 +883,49 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                     accept="application/json"
                     className="hidden"
                     onChange={(e) => handleImportJSON(e.target.files?.[0])}
+                    disabled={isImportingFile}
                   />
-                  <Button variant="outline" className="flex items-center gap-2">
-                    <Upload className="h-4 w-4" />
-                    Import from JSON
+                  <Button 
+                    variant="outline" 
+                    className="flex items-center gap-2"
+                    disabled={isImportingFile}
+                  >
+                    {isImportingFile ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Importing...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="h-4 w-4" />
+                        Import from JSON
+                      </>
+                    )}
                   </Button>
                 </label>
                 <p className="text-xs text-muted-foreground">
                   Load a previously saved JSON file to restore your session.
                 </p>
               </div>
+              
+              {/* File Import Loading/Error State */}
+              {isImportingFile && (
+                <FileLoadingState
+                  isLoading={true}
+                  message="Processing file..."
+                />
+              )}
+              
+              {importError && (
+                <FileLoadingState
+                  isLoading={false}
+                  error={importError}
+                  onRetry={() => {
+                    setImportError(null);
+                    // Retry would be handled by selecting a new file
+                  }}
+                />
+              )}
             </div>
 
             <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-border">

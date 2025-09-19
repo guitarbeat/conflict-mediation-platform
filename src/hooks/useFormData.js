@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { createStorageError, logError, ERROR_TYPES } from "../utils/errorMessages";
+import { toast } from "sonner";
 
 /**
  * Custom hook for managing conflict mediation form data
@@ -66,8 +68,13 @@ export const useFormData = () => {
                 setLoadedFromStorage(true);
                 return { ...initialState, ...parsed };
             }
-        } catch {
-            /* ignore storage read errors */
+        } catch (error) {
+            // Log storage read errors for debugging
+            const storageError = createStorageError('read', 'LOAD_FAILED');
+            logError(storageError, { originalError: error.message });
+            
+            // Show user-friendly message
+            toast.error("Failed to load saved data. Starting with a fresh session.");
         }
         return initialState;
     });
@@ -76,8 +83,13 @@ export const useFormData = () => {
     useEffect(() => {
         try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-        } catch {
-            /* ignore storage write errors */
+        } catch (error) {
+            // Log storage write errors for debugging
+            const storageError = createStorageError('write', 'SAVE_FAILED');
+            logError(storageError, { originalError: error.message });
+            
+            // Show user-friendly message
+            toast.error("Failed to save your progress. Please try again.");
         }
     }, [formData]);
 
@@ -115,8 +127,14 @@ export const useFormData = () => {
         setLoadedFromStorage(false);
         try {
             localStorage.removeItem(STORAGE_KEY);
-        } catch {
-            /* ignore storage clear errors */
+            toast.success("Form data reset successfully");
+        } catch (error) {
+            // Log storage clear errors for debugging
+            const storageError = createStorageError('clear', 'CLEAR_FAILED');
+            logError(storageError, { originalError: error.message });
+            
+            // Show user-friendly message
+            toast.error("Failed to clear saved data. Please try again.");
         }
     };
 
