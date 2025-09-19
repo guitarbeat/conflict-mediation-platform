@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { AlertCircle, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle, XCircle, Loader2, Info } from "lucide-react";
 import { cn } from "../lib/utils";
+import { ERROR_MESSAGES, ERROR_TYPES, ERROR_SEVERITY, createValidationError } from "../utils/errorMessages";
 
 const InputValidation = ({
   value,
@@ -83,12 +84,24 @@ const InputValidation = ({
 
     if (validationState.errors.length > 0) {
       return (
-        <div className="space-y-1">
+        <div className="space-y-2">
           {validationState.errors.map((error, index) => (
-            <p key={index} className="text-red-600 text-xs flex items-center gap-1">
-              <XCircle className="h-3 w-3" />
-              {error}
-            </p>
+            <div key={index} className="space-y-1">
+              <p className="text-red-600 text-xs flex items-center gap-1">
+                <XCircle className="h-3 w-3" />
+                {error}
+              </p>
+              {error.suggestions && error.suggestions.length > 0 && (
+                <div className="ml-4 space-y-1">
+                  {error.suggestions.map((suggestion, suggestionIndex) => (
+                    <p key={suggestionIndex} className="text-xs text-muted-foreground flex items-start gap-1">
+                      <span className="text-blue-500 mt-0.5">•</span>
+                      {suggestion}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
         </div>
       );
@@ -96,12 +109,24 @@ const InputValidation = ({
 
     if (validationState.warnings.length > 0) {
       return (
-        <div className="space-y-1">
+        <div className="space-y-2">
           {validationState.warnings.map((warning, index) => (
-            <p key={index} className="text-yellow-600 text-xs flex items-center gap-1">
-              <AlertCircle className="h-3 w-3" />
-              {warning}
-            </p>
+            <div key={index} className="space-y-1">
+              <p className="text-yellow-600 text-xs flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                {warning}
+              </p>
+              {warning.suggestions && warning.suggestions.length > 0 && (
+                <div className="ml-4 space-y-1">
+                  {warning.suggestions.map((suggestion, suggestionIndex) => (
+                    <p key={suggestionIndex} className="text-xs text-muted-foreground flex items-start gap-1">
+                      <span className="text-blue-500 mt-0.5">•</span>
+                      {suggestion}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
         </div>
       );
@@ -201,7 +226,13 @@ export const validationRules = {
       const wordCount = value.trim().split(/\s+/).length;
       return {
         isValid: wordCount >= 10,
-        message: wordCount < 10 ? "Please provide a more detailed description (at least 10 words)" : "",
+        message: wordCount < 10 ? ERROR_MESSAGES.VALIDATION.CONFLICT_DESCRIPTION_TOO_SHORT : "",
+        suggestions: wordCount < 10 ? [
+          "Include specific details about what happened",
+          "Describe the sequence of events",
+          "Mention the people involved and their actions",
+          "Add context about when and where it occurred"
+        ] : []
       };
     },
     severity: 'warning',
@@ -216,14 +247,26 @@ export const validationRules = {
       if (!hasIStatement) {
         return {
           isValid: false,
-          message: "Try using 'I' statements to express your needs respectfully",
+          message: ERROR_MESSAGES.VALIDATION.ASSERTIVE_APPROACH_MISSING_I_STATEMENT,
+          suggestions: [
+            "Start with 'I think...' or 'I feel...'",
+            "Express your own perspective, not assumptions about others",
+            "Focus on your needs and feelings",
+            "Example: 'I feel frustrated when...' instead of 'You always...'"
+          ]
         };
       }
       
       if (!hasRespectfulTone) {
         return {
           isValid: false,
-          message: "Please use respectful language and avoid blaming statements",
+          message: ERROR_MESSAGES.VALIDATION.ASSERTIVE_APPROACH_DISRESPECTFUL,
+          suggestions: [
+            "Avoid words like 'always', 'never', 'should', 'must'",
+            "Don't use blaming or judgmental language",
+            "Focus on the behavior, not the person",
+            "Use neutral, descriptive language"
+          ]
         };
       }
       
@@ -241,17 +284,95 @@ export const validationRules = {
       if (!isSpecific) {
         return {
           isValid: false,
-          message: "Please be more specific about the action to be taken",
+          message: ERROR_MESSAGES.VALIDATION.ACTION_STEP_TOO_VAGUE,
+          suggestions: [
+            "Specify exactly what needs to be done",
+            "Include who is responsible for the action",
+            "Describe the expected outcome",
+            "Example: 'John will send the report to Sarah by Friday'"
+          ]
         };
       }
       
       if (!hasDeadline) {
         return {
           isValid: false,
-          message: "Consider adding a deadline or timeline for this action",
+          message: ERROR_MESSAGES.VALIDATION.ACTION_STEP_MISSING_DEADLINE,
+          suggestions: [
+            "Add a specific date or time frame",
+            "Use phrases like 'by Friday' or 'within one week'",
+            "Consider using calendar dates",
+            "Make sure the deadline is realistic"
+          ]
         };
       }
       
+      return { isValid: true, message: "" };
+    },
+    severity: 'warning',
+  }),
+
+  // Enhanced validation rules with better error messages
+  partyName: () => ({
+    validate: (value) => {
+      if (!value) return { isValid: true, message: "" };
+      const trimmed = value.trim();
+      if (trimmed.length < 2) {
+        return {
+          isValid: false,
+          message: "Please enter a valid name (at least 2 characters)",
+          suggestions: ["Use the person's first name or preferred name", "Avoid nicknames or abbreviations"]
+        };
+      }
+      if (!/^[a-zA-Z\s\-'\.]+$/.test(trimmed)) {
+        return {
+          isValid: false,
+          message: "Name contains invalid characters",
+          suggestions: ["Use only letters, spaces, hyphens, apostrophes, and periods", "Avoid numbers and special symbols"]
+        };
+      }
+      return { isValid: true, message: "" };
+    },
+    severity: 'error',
+  }),
+
+  thoughts: () => ({
+    validate: (value) => {
+      if (!value) return { isValid: true, message: "" };
+      const wordCount = value.trim().split(/\s+/).length;
+      if (wordCount < 5) {
+        return {
+          isValid: false,
+          message: "Please provide more detailed thoughts (at least 5 words)",
+          suggestions: [
+            "Explain what you think happened",
+            "Describe your perspective on the situation",
+            "Include your assumptions or beliefs",
+            "Be honest about your feelings and thoughts"
+          ]
+        };
+      }
+      return { isValid: true, message: "" };
+    },
+    severity: 'warning',
+  }),
+
+  miracleQuestion: () => ({
+    validate: (value) => {
+      if (!value) return { isValid: true, message: "" };
+      const wordCount = value.trim().split(/\s+/).length;
+      if (wordCount < 10) {
+        return {
+          isValid: false,
+          message: "Please provide a more detailed response (at least 10 words)",
+          suggestions: [
+            "Describe what would be different in your ideal resolution",
+            "Include specific changes you would notice",
+            "Think about how both parties would feel",
+            "Consider practical improvements to the situation"
+          ]
+        };
+      }
       return { isValid: true, message: "" };
     },
     severity: 'warning',
