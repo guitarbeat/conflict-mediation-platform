@@ -46,34 +46,14 @@ An interactive web application designed to help co-op members work through inter
 - **Build Tool**: Vite for fast development and optimized builds
 - **Package Manager**: pnpm for efficient dependency management
 
-## 📋 Installation & Setup
+## 🚀 Quick Start
 
-### Prerequisites
-- Node.js 18+ 
-- pnpm (recommended) or npm
-
-### Quick Start
 ```bash
-# Clone the repository
-git clone https://github.com/guitarbeat/conflict-mediation-platform.git
-cd conflict-mediation-platform
-
 # Install dependencies
 pnpm install
 
 # Start development server
 pnpm run dev
-
-# Build for production
-pnpm run build
-```
-
-### Development Commands
-```bash
-pnpm run dev          # Start development server
-pnpm run build        # Build for production
-pnpm run preview      # Preview production build
-pnpm run lint         # Run ESLint
 ```
 
 ## 🎯 Usage Guide
@@ -92,19 +72,6 @@ pnpm run lint         # Run ESLint
 - Focus on "I" statements and personal experiences
 - Be open to understanding the other person's perspective
 
-## 🔧 Configuration
-
-### Environment Variables
-```bash
-# Optional: Custom branding
-VITE_COOP_NAME="Your Co-op Name"
-VITE_LOGO_URL="/path/to/your/logo.png"
-```
-
-### Customization
-- **Colors**: Update `src/App.css` CSS variables
-- **Logo**: Replace `src/assets/logo.png`
-- **Content**: Modify guidance text in `src/components/GuidanceAlert.jsx`
 
 ## 📚 Mediation Framework
 
@@ -127,9 +94,6 @@ Based on ICC Austin's interpersonal conflict mediation process:
 
 This project is open source and available under the [MIT License](LICENSE).
 
-## 📑 Docs
-
-- Task list of enhancements: [docs/task-list.md](docs/task-list.md)
 
 ## 🙏 Acknowledgments
 
