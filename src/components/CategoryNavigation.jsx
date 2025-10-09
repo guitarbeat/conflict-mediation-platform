@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight, CheckCircle, Circle } from "lucide-react";
+import { ChevronDown, ChevronRight, CheckCircle, Circle, ChevronUp } from "lucide-react";
 import { SURVEY_CATEGORIES, getCategoryProgress } from "../config/surveyCategories";
 
 const CategoryNavigation = ({ formData, currentStep, onNavigateToStep }) => {
   const [expandedCategory, setExpandedCategory] = useState(null);
+  const [isOverviewCollapsed, setIsOverviewCollapsed] = useState(false);
 
   const toggleCategory = (categoryId) => {
     setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
+  };
+
+  const toggleOverview = () => {
+    setIsOverviewCollapsed(!isOverviewCollapsed);
   };
 
   const getStepInCategory = (category, step) => {
@@ -29,12 +34,23 @@ const CategoryNavigation = ({ formData, currentStep, onNavigateToStep }) => {
 
   return (
     <div className="bg-card border border-border rounded-lg p-4 mb-6">
-      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-        <span>📊</span>
-        Survey Progress Overview
-      </h3>
+      <button
+        onClick={toggleOverview}
+        className="w-full text-left mb-4 flex items-center justify-between hover:bg-muted/50 rounded-lg p-2 -m-2 transition-colors"
+      >
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <span>📊</span>
+          Survey Progress Overview
+        </h3>
+        {isOverviewCollapsed ? (
+          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+        ) : (
+          <ChevronUp className="h-5 w-5 text-muted-foreground" />
+        )}
+      </button>
       
-      <div className="space-y-2">
+      {!isOverviewCollapsed && (
+        <div className="space-y-2">
         {Object.values(SURVEY_CATEGORIES).map((category) => {
           const progress = getCategoryProgress(formData, category);
           const isExpanded = expandedCategory === category.id;
@@ -125,7 +141,8 @@ const CategoryNavigation = ({ formData, currentStep, onNavigateToStep }) => {
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
