@@ -15,7 +15,7 @@ import "./App.css";
 
 function App() {
   // Form data management
-  const { formData, updateFormData, updateMultipleFields, isStepComplete, loadedFromStorage, resetFormData, getRequiredFieldsForStep } = useFormData();
+  const { formData, updateFormData, updateMultipleFields, isStepComplete, loadedFromStorage, resetFormData, getRequiredFieldsForStep, getMissingFieldsForStep } = useFormData();
 
   const [showStepErrors, setShowStepErrors] = useState(false);
 
@@ -60,7 +60,7 @@ function App() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isAnimating, navigateToStep, isStepComplete, currentStep]);
+  }, [isAnimating, navigateToStep, isStepComplete, currentStep, getMissingFieldsForStep]);
 
   const handleNavigate = (direction) => {
     if (direction === "next") {
