@@ -9,6 +9,8 @@ import { useNavigation } from "./hooks/useNavigation";
 import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
 import { ERROR_MESSAGES, createValidationError, logError } from "./utils/errorMessages";
+import { Analytics } from "@vercel/analytics/react";
+import logo from "./assets/logo.png";
 import "./App.css";
 
 function App() {
@@ -158,6 +160,7 @@ function App() {
         />
 
       </div>
+      <Analytics />
     </div>
   );
 }
