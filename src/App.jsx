@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import DarkModeToggle from "./components/DarkModeToggle";
-import ParticleBackground from "./components/ParticleBackground";
-import ProgressHeader from "./components/ProgressHeader";
 import CategoryNavigation from "./components/CategoryNavigation";
 import NavigationButtons from "./components/NavigationButtons";
 import CardStack from "./components/CardStack";
@@ -110,46 +108,12 @@ function App() {
 
   const canGoNext = isStepComplete(currentStep);
 
-  // Calculate field completion statistics
-  const getCompletedFieldsCount = () => {
-    const allFields = Object.keys(formData);
-    return allFields.filter(field => {
-      const value = formData[field];
-      if (Array.isArray(value)) {
-        return value.length > 0 && value.every(item => 
-          typeof item === 'string' ? item.trim() !== '' : 
-          typeof item === 'object' ? item.text && item.text.trim() !== '' : false
-        );
-      }
-      return value && value.toString().trim() !== "";
-    }).length;
-  };
-
-  const getTotalFieldsCount = () => {
-    return Object.keys(formData).length;
-  };
 
   return (
     <div className="min-h-screen bg-background">
       <Toaster richColors position="top-right" />
-      <ParticleBackground />
       <DarkModeToggle />
 
-      <div className="bg-gradient-to-r from-primary to-secondary text-primary-foreground py-4 sm:py-8">
-        <div className="container mx-auto px-2 sm:px-4">
-          <div className="flex items-center justify-center gap-2 sm:gap-4 mb-2 sm:mb-4">
-            <img src={logo} alt="Logo" className="h-8 w-8 sm:h-12 sm:w-12" />
-            <div className="text-center">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">
-                Co-op Conflict Resolution Platform
-              </h1>
-              <p className="text-primary-foreground/80 mt-1 sm:mt-2 text-sm sm:text-base">
-                A structured approach to resolving interpersonal conflicts
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-4 max-w-4xl">
         {loadedFromStorage && (
@@ -170,14 +134,6 @@ function App() {
           }}
         />
 
-        {/* Progress Header */}
-        <ProgressHeader
-          currentStep={currentStep}
-          totalSteps={TOTAL_STEPS}
-          formData={formData}
-          completedFields={getCompletedFieldsCount()}
-          totalFields={getTotalFieldsCount()}
-        />
 
         {/* Card Stack */}
         <CardStack
@@ -203,16 +159,6 @@ function App() {
           canGoNext={canGoNext}
         />
 
-        {/* Navigation instructions */}
-        <div className="text-center text-xs text-muted-foreground mt-4 space-y-1">
-          <div className="hidden sm:block">
-            💡 Desktop: Use arrow keys ← →, click navigation buttons, or drag
-            cards to navigate
-          </div>
-          <div className="sm:hidden">
-            💡 Mobile: Swipe left/right to navigate
-          </div>
-        </div>
       </div>
       <Analytics />
     </div>
