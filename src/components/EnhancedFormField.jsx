@@ -32,6 +32,9 @@ const EnhancedFormField = ({
   context = {},
   showContextualHelp = false,
   step = 1,
+  variant = "enhanced",
+  labelClassName = "",
+  containerClassName = "",
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -197,37 +200,69 @@ const EnhancedFormField = ({
   };
 
   return (
-    <div className="form-field space-y-2">
-      <div className="flex items-center justify-between">
-        <label htmlFor={id} className={cn("form-label", required && "after:content-['*'] after:text-red-500 after:ml-1")}>
+    <div
+      className={cn(
+        "form-field",
+        variant === "enhanced" ? "space-y-2" : "space-y-1",
+        containerClassName
+      )}
+    >
+      {variant === "enhanced" ? (
+        <div className="flex items-center justify-between">
+          <label
+            htmlFor={id}
+            className={cn(
+              "form-label",
+              required && "after:content-['*'] after:text-red-500 after:ml-1",
+              labelClassName
+            )}
+          >
+            {label}
+          </label>
+          <div className="flex items-center gap-2">
+            {renderValidationIcon()}
+            {renderAutoSaveStatus()}
+            {helpText && (
+              <button
+                type="button"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                title={helpText}
+              >
+                <HelpCircle className="h-4 w-4" />
+              </button>
+            )}
+            {smartSuggestions && (
+              <button
+                type="button"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                title="Smart suggestions available"
+              >
+                <Lightbulb className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      ) : (
+        <label
+          htmlFor={id}
+          className={cn(
+            "form-label",
+            required && "after:content-['*'] after:text-red-500 after:ml-1",
+            labelClassName
+          )}
+        >
           {label}
         </label>
-        <div className="flex items-center gap-2">
-          {renderValidationIcon()}
-          {renderAutoSaveStatus()}
-          {helpText && (
-            <button
-              type="button"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              title={helpText}
-            >
-              <HelpCircle className="h-4 w-4" />
-            </button>
-          )}
-          {smartSuggestions && (
-            <button
-              type="button"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-              title="Smart suggestions available"
-            >
-              <Lightbulb className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-      </div>
+      )}
 
       {description && (
-        <p id={`${id}-description`} className="form-description text-sm text-muted-foreground">
+        <p
+          id={`${id}-description`}
+          className={cn(
+            "form-description text-sm text-muted-foreground",
+            variant === "simple" && "text-xs"
+          )}
+        >
           {description}
         </p>
       )}
@@ -280,35 +315,62 @@ const EnhancedFormField = ({
         />
       )}
 
-      <div className="flex items-center justify-between text-xs">
-        <div className="flex items-center gap-4">
+      {variant === "enhanced" ? (
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-4">
+            {error && (
+              <p id={`${id}-error`} className="text-red-600 flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                {error}
+              </p>
+            )}
+            {validationMessage && validationState === "invalid" && (
+              <p className="text-red-600 flex items-center gap-1">
+                <AlertCircle className="h-3 w-3" />
+                {validationMessage}
+              </p>
+            )}
+          </div>
+
+          {showCharacterCount && maxLength && (
+            <span
+              id={`${id}-count`}
+              className={cn(
+                "text-muted-foreground",
+                value && value.length > maxLength * 0.9 && "text-orange-500",
+                value && value.length >= maxLength && "text-red-500"
+              )}
+            >
+              {value?.length || 0}/{maxLength}
+            </span>
+          )}
+        </div>
+      ) : (
+        <>
           {error && (
-            <p id={`${id}-error`} className="text-red-600 flex items-center gap-1">
-              <AlertCircle className="h-3 w-3" />
+            <p id={`${id}-error`} className="text-red-600 mt-1 text-xs">
               {error}
             </p>
           )}
           {validationMessage && validationState === "invalid" && (
-            <p className="text-red-600 flex items-center gap-1">
-              <AlertCircle className="h-3 w-3" />
+            <p className="text-red-600 mt-1 text-xs">
               {validationMessage}
             </p>
           )}
-        </div>
-        
-        {showCharacterCount && maxLength && (
-          <span
-            id={`${id}-count`}
-            className={cn(
-              "text-muted-foreground",
-              value && value.length > maxLength * 0.9 && "text-orange-500",
-              value && value.length >= maxLength && "text-red-500"
-            )}
-          >
-            {value?.length || 0}/{maxLength}
-          </span>
-        )}
-      </div>
+          {showCharacterCount && maxLength && (
+            <span
+              id={`${id}-count`}
+              className={cn(
+                "block text-right text-muted-foreground text-xs",
+                value && value.length > maxLength * 0.9 && "text-orange-500",
+                value && value.length >= maxLength && "text-red-500"
+              )}
+            >
+              {value?.length || 0}/{maxLength}
+            </span>
+          )}
+        </>
+      )}
 
       {helpText && (
         <p id={`${id}-help`} className="text-xs text-muted-foreground">
