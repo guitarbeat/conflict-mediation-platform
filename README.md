@@ -6,7 +6,14 @@ An interactive web application designed to help co-op members work through inter
 
 ### Core Functionality
 
-- **6-Step Guided Process**: Based on ICC Austin's proven conflict mediation framework
+- **7-Step Guided Process**: Based on ICC Austin's proven conflict mediation framework, including export-ready summaries
+  - **Step 1**: Setup & Information Gathering
+  - **Step 2**: Party A Individual Reflection
+  - **Step 3**: Party B Individual Reflection
+  - **Step 4**: Shared Discussion using the ABCDE model
+  - **Step 5**: Solution Development & Possibility Exploration
+  - **Step 6**: Agreement & Follow-Up Planning
+  - **Step 7**: Export & Session Documentation
 - **Individual Reflection**: Private spaces for each party to process thoughts and emotions
 - **Shared Discussion**: ABCDE cognitive behavioral model for structured conversation
 - **Solution Development**: Miracle question technique and compromise building
@@ -59,12 +66,13 @@ pnpm run dev
 ## 🎯 Usage Guide
 
 ### For Mediators
-1. **Setup**: Enter party names and conflict details
-2. **Individual Reflection**: Guide each party through private reflection
-3. **Shared Discussion**: Facilitate ABCDE model conversation
-4. **Solution Development**: Help parties explore possibilities
-5. **Agreement**: Document action steps and follow-up plans
-6. **Export**: Generate PDF records for co-op files
+1. **Setup & Information Gathering**: Enter party names and conflict details
+2. **Party A Reflection**: Guide Party A through private reflection
+3. **Party B Reflection**: Support Party B's individual processing
+4. **Shared Discussion (ABCDE)**: Facilitate the joint cognitive behavioral conversation
+5. **Solution Development**: Help parties explore possibilities and narrow options
+6. **Agreement & Follow-Up**: Document commitments, timelines, and support needs
+7. **Export & Summary**: Generate PDF or JSON records for co-op files and next steps
 
 ### For Participants
 - Use both emotion expression methods for complete emotional mapping
