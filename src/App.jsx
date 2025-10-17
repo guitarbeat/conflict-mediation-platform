@@ -114,6 +114,23 @@ function App() {
       <Toaster richColors position="top-right" />
       <DarkModeToggle />
 
+      <header className="border-b border-border bg-card/60 backdrop-blur">
+        <div className="container mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-3 px-3 sm:px-6 py-4 max-w-4xl">
+          <img
+            src={logo}
+            alt="Co-op logo"
+            className="h-12 w-12 rounded-md border border-border bg-background object-contain"
+          />
+          <div>
+            <h1 className="text-xl sm:text-2xl font-semibold text-foreground">
+              Co-op Conflict Resolution Platform
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Guide teams through mediation steps and capture agreements with confidence.
+            </p>
+          </div>
+        </div>
+      </header>
 
       <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-4 max-w-4xl">
         {loadedFromStorage && (
