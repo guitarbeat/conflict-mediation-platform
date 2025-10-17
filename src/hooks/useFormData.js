@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createStorageError, logError, ERROR_TYPES } from "../utils/errorMessages";
 import { toast } from "sonner";
 
@@ -59,13 +59,13 @@ export const useFormData = () => {
 
     const STORAGE_KEY = "mediation_form_v1";
 
-    const [loadedFromStorage, setLoadedFromStorage] = useState(false);
+    const savedPayloadAppliedRef = useRef(false);
     const [formData, setFormData] = useState(() => {
         try {
             const saved = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
             if (saved) {
                 const parsed = JSON.parse(saved);
-                setLoadedFromStorage(true);
+                savedPayloadAppliedRef.current = true;
                 return { ...initialState, ...parsed };
             }
         } catch (error) {
@@ -78,6 +78,14 @@ export const useFormData = () => {
         }
         return initialState;
     });
+    const [loadedFromStorage, setLoadedFromStorage] = useState(false);
+
+    useEffect(() => {
+        if (savedPayloadAppliedRef.current) {
+            setLoadedFromStorage(true);
+            savedPayloadAppliedRef.current = false;
+        }
+    }, []);
 
     // Persist to localStorage on change
     useEffect(() => {
