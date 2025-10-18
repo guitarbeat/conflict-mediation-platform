@@ -34,7 +34,6 @@ export const useErrorHandler = (options = {}) => {
   // Handle error with retry logic
   const handleError = useCallback((error, context = {}) => {
     const errorId = error.errorId || `error_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const currentRetryCount = retryCountRef.current[errorId] || 0;
 
     // Log error if enabled
     if (logErrors) {

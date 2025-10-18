@@ -158,7 +158,7 @@ const Step1Schema = z.object({
 
 const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON, showErrors, getRequiredFieldsForStep }) => {
   // Error handling
-  const { executeFileOperation, executeAsync, isRetrying } = useErrorHandler({
+    const { executeFileOperation, executeAsync } = useErrorHandler({
     showToast: true,
     logErrors: true
   });
