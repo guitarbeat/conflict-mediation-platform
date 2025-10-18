@@ -202,7 +202,7 @@ export const LoadingError = ({ onRetry, message = "Failed to load data" }) => {
 // Validation error component
 export const ValidationError = ({ fieldName, message, suggestions = [] }) => {
   const error = {
-    message,
+    message: fieldName ? `${fieldName}: ${message}` : message,
     type: "validation",
     severity: "medium",
     suggestions

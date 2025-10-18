@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AlertCircle, CheckCircle, XCircle, Loader2, Info } from "lucide-react";
 import { cn } from "../lib/utils";
-import { ERROR_MESSAGES, ERROR_TYPES, ERROR_SEVERITY, createValidationError } from "../utils/errorMessages";
+import { ERROR_MESSAGES } from "../utils/errorMessages";
 
 const InputValidation = ({
   value,
@@ -324,7 +324,7 @@ export const validationRules = {
           suggestions: ["Use the person's first name or preferred name", "Avoid nicknames or abbreviations"]
         };
       }
-      if (!/^[a-zA-Z\s\-'\.]+$/.test(trimmed)) {
+      if (!/^[a-zA-Z\s\-'.]+$/.test(trimmed)) {
         return {
           isValid: false,
           message: "Name contains invalid characters",

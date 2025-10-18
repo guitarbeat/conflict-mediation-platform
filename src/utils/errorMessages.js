@@ -224,7 +224,7 @@ export const logError = (error, context = {}) => {
   };
   
   // In development, log to console
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     console.error('Error logged:', errorData);
   }
   

@@ -79,7 +79,8 @@ class ErrorBoundary extends React.Component {
       this.setState({ copied: true });
       toast.success("Error details copied to clipboard");
       setTimeout(() => this.setState({ copied: false }), 2000);
-    } catch (err) {
+    } catch (error) {
+      console.error("Failed to copy error details:", error);
       toast.error("Failed to copy error details");
     }
   };
@@ -186,7 +187,7 @@ class ErrorBoundary extends React.Component {
             </div>
 
             {/* Debug Info (only in development) */}
-            {process.env.NODE_ENV === 'development' && error?.stack && (
+            {import.meta.env.DEV && error?.stack && (
               <details className="bg-muted/30 border border-border rounded-lg p-4">
                 <summary className="cursor-pointer font-medium text-sm mb-2 flex items-center gap-2">
                   <Bug className="h-4 w-4" />

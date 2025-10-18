@@ -1,7 +1,7 @@
 import React from "react";
 import { Users } from "lucide-react";
 import FormProgressIndicator from "./FormProgressIndicator";
-import { SURVEY_CATEGORIES, getCategoryByStep, getCategoryProgress, getOverallProgress } from "../config/surveyCategories";
+import { SURVEY_CATEGORIES, getCategoryByStep, getOverallProgress } from "../config/surveyCategories";
 
 const STEPS = [
   "Setup",
