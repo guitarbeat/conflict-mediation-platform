@@ -80,6 +80,10 @@ function App() {
     );
   };
 
+  const canGoNext = true;
+  const maxAccessibleStep = TOTAL_STEPS;
+
+
   return (
     <div className="min-h-screen bg-background">
       <Toaster richColors position="top-right" />
