@@ -119,11 +119,8 @@ function App() {
         <CategoryNavigation
           formData={formData}
           currentStep={currentStep}
-          maxAccessibleStep={maxAccessibleStep}
           onNavigateToStep={(step) => {
-            if (step <= maxAccessibleStep) {
-              navigateToStep(step);
-            }
+            navigateToStep(step);
           }}
         />
 
@@ -149,7 +146,6 @@ function App() {
           totalSteps={TOTAL_STEPS}
           onNavigate={handleNavigate}
           isAnimating={isAnimating}
-          canGoNext={canGoNext}
         />
 
       </div>
