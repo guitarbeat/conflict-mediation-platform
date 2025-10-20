@@ -1,16 +1,24 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Constants
-const TOTAL_STEPS = 7;
 const MIN_SWIPE_DISTANCE = 50;
 const MAX_DRAG_OFFSET = 200;
-const ANIMATION_DURATION = 400;
 
 /**
  * Custom hook for managing step navigation and card animations
+ * @param {Object} options
+ * @param {(params: { currentStep: number, targetStep: number, direction: "forward"|"backward"|"none", type: "direct"|"step" }) => boolean} [options.canNavigateToStep]
+ * Callback invoked before navigation. Return false to prevent the transition.
+ * @param {number} [options.totalSteps=7] - Total number of steps available in the flow.
+ * @param {number} [options.animationDuration=400] - Duration of card transition animations in milliseconds.
  * @returns {Object} Navigation state and functions
  */
-export const useNavigation = () => {
+export const useNavigation = (options = {}) => {
+    const {
+        canNavigateToStep,
+        totalSteps = 7,
+        animationDuration = 400,
+    } = options;
     const [currentStep, setCurrentStep] = useState(1);
     const [touchStart, setTouchStart] = useState(null);
     const [touchEnd, setTouchEnd] = useState(null);
@@ -18,49 +26,123 @@ export const useNavigation = () => {
     const [animatingCard, setAnimatingCard] = useState(null);
     const [animationType, setAnimationType] = useState("");
     const [isDragging, setIsDragging] = useState(false);
+    const animationTimeoutRef = useRef(null);
+
+    useEffect(() => {
+        return () => {
+            if (animationTimeoutRef.current) {
+                clearTimeout(animationTimeoutRef.current);
+                animationTimeoutRef.current = null;
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        setCurrentStep((prev) => {
+            if (!Number.isFinite(totalSteps) || totalSteps <= 0) {
+                return Math.max(1, prev);
+            }
+            return Math.max(1, Math.min(totalSteps, prev));
+        });
+    }, [totalSteps]);
 
     // Computed values
     const isAnimating = animatingCard !== null;
 
+    const shouldNavigate = (targetStep, meta = {}) => {
+        if (typeof canNavigateToStep === "function") {
+            return canNavigateToStep({
+                currentStep,
+                targetStep,
+                ...meta,
+            });
+        }
+        return true;
+    };
+
+    const resetAnimationState = () => {
+        if (animationTimeoutRef.current) {
+            clearTimeout(animationTimeoutRef.current);
+            animationTimeoutRef.current = null;
+        }
+        setAnimatingCard(null);
+        setAnimationType("");
+        setDragOffset(0);
+    };
+
     /**
      * Navigate to the next or previous step
-     * @param {string} direction - 'next' or 'prev'
+     * @param {string|number} target - 'next', 'prev', or a direct step number
      */
     const navigateToStep = (target) => {
         if (isAnimating) return;
 
         if (typeof target === "number") {
-            const clampedTarget = Math.max(1, Math.min(TOTAL_STEPS, target));
+            const clampedTarget = Math.max(1, Math.min(totalSteps, target));
 
             if (clampedTarget === currentStep) {
                 return;
             }
 
+            const direction =
+                clampedTarget > currentStep
+                    ? "forward"
+                    : clampedTarget < currentStep
+                    ? "backward"
+                    : "none";
+
+            if (!shouldNavigate(clampedTarget, { type: "direct", direction })) {
+                setDragOffset(0);
+                return;
+            }
+
+            resetAnimationState();
             setCurrentStep(clampedTarget);
-            setAnimatingCard(null);
-            setAnimationType("");
-            setDragOffset(0);
             return;
         }
 
-        if (target === "next" && currentStep < TOTAL_STEPS) {
+        if (target === "next" && currentStep < totalSteps) {
+            const targetStep = currentStep + 1;
+            if (
+                !shouldNavigate(targetStep, {
+                    type: "step",
+                    direction: "forward",
+                })
+            ) {
+                setDragOffset(0);
+                return;
+            }
+
             setAnimatingCard(currentStep);
             setAnimationType("flyOut");
-            setTimeout(() => {
-                setCurrentStep((prev) => prev + 1);
-                setAnimatingCard(null);
-                setAnimationType("");
-                setDragOffset(0);
-            }, ANIMATION_DURATION);
+            if (animationTimeoutRef.current) {
+                clearTimeout(animationTimeoutRef.current);
+            }
+            animationTimeoutRef.current = setTimeout(() => {
+                setCurrentStep((prev) => Math.min(totalSteps, prev + 1));
+                resetAnimationState();
+            }, animationDuration);
         } else if (target === "prev" && currentStep > 1) {
+            const targetStep = currentStep - 1;
+            if (
+                !shouldNavigate(targetStep, {
+                    type: "step",
+                    direction: "backward",
+                })
+            ) {
+                setDragOffset(0);
+                return;
+            }
+
             setAnimatingCard(currentStep - 1);
             setAnimationType("slideIn");
-            setTimeout(() => {
-                setCurrentStep((prev) => prev - 1);
-                setAnimatingCard(null);
-                setAnimationType("");
-                setDragOffset(0);
-            }, ANIMATION_DURATION);
+            if (animationTimeoutRef.current) {
+                clearTimeout(animationTimeoutRef.current);
+            }
+            animationTimeoutRef.current = setTimeout(() => {
+                setCurrentStep((prev) => Math.max(1, prev - 1));
+                resetAnimationState();
+            }, animationDuration);
         }
     };
 
@@ -179,9 +261,9 @@ export const useNavigation = () => {
         isDragging,
         isAnimating,
 
-        // Constants
-        TOTAL_STEPS,
-        ANIMATION_DURATION,
+        // Configuration
+        totalSteps,
+        animationDuration,
 
         // Functions
         navigateToStep,
@@ -190,4 +272,4 @@ export const useNavigation = () => {
         handleInputEnd,
         handleMouseLeave,
     };
-}; 
+};

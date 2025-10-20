@@ -63,6 +63,31 @@ pnpm install
 pnpm run dev
 ```
 
+## ⚙️ npm Proxy Warning
+
+If you run npm scripts (for example `npm test -- --run`) and see the warning
+`npm warn Unknown env config "http-proxy"`, npm is detecting the deprecated
+`npm_config_http_proxy` environment variable. Set the supported proxy variables
+instead to silence the warning:
+
+```bash
+# macOS/Linux shells
+unset npm_config_http_proxy npm_config_https_proxy
+export npm_config_proxy="$HTTP_PROXY"
+export npm_config_https_proxy="$HTTPS_PROXY"
+```
+
+```powershell
+# Windows PowerShell
+Remove-Item Env:npm_config_http_proxy -ErrorAction SilentlyContinue
+Remove-Item Env:npm_config_https_proxy -ErrorAction SilentlyContinue
+$Env:npm_config_proxy = $Env:HTTP_PROXY
+$Env:npm_config_https_proxy = $Env:HTTPS_PROXY
+```
+
+The application already prefers `pnpm` (see the quick start section), so you can
+also run `pnpm test --run` or `pnpm run lint` to avoid invoking npm entirely.
+
 ## 🎯 Usage Guide
 
 ### For Mediators

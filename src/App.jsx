@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DarkModeToggle from "./components/DarkModeToggle";
 import CategoryNavigation from "./components/CategoryNavigation";
 import NavigationButtons from "./components/NavigationButtons";
@@ -8,12 +8,77 @@ import { useFormData } from "./hooks/useFormData";
 import { useNavigation } from "./hooks/useNavigation";
 import { Toaster } from "./components/ui/sonner";
 import { Analytics } from "@vercel/analytics/react";
+import { toast } from "sonner";
 import logo from "./assets/logo.png";
+import { SURVEY_CATEGORIES } from "./config/surveyCategories";
 import "./App.css";
+
+const TOTAL_SURVEY_STEPS =
+  Object.values(SURVEY_CATEGORIES)
+    .flatMap((category) => category.steps)
+    .reduce((highest, step) => Math.max(highest, step), 0) || 1;
+
+const FIELD_LABELS = {
+  partyAName: "Party A Name",
+  partyBName: "Party B Name",
+  conflictDescription: "Conflict Description",
+  partyAThoughts: "Party A - Thoughts",
+  partyAAssertiveApproach: "Party A - Assertive Approach",
+  partyBThoughts: "Party B - Thoughts",
+  partyBAssertiveApproach: "Party B - Assertive Approach",
+  activatingEvent: "Activating Event",
+  partyABeliefs: "Party A - Beliefs",
+  partyBBeliefs: "Party B - Beliefs",
+  partyAMiracle: "Party A - Miracle Response",
+  partyBMiracle: "Party B - Miracle Response",
+  compromiseSolutions: "Compromise Solutions",
+  partyATop3Solutions: "Party A - Top Solutions",
+  partyBTop3Solutions: "Party B - Top Solutions",
+  actionSteps: "Action Steps",
+  followUpDate: "Follow-up Date",
+};
 
 function App() {
   // Form data management
-  const { formData, updateFormData, updateMultipleFields, loadedFromStorage, resetFormData, getRequiredFieldsForStep } = useFormData();
+  const {
+    formData,
+    updateFormData,
+    updateMultipleFields,
+    loadedFromStorage,
+    resetFormData,
+    getRequiredFieldsForStep,
+    isStepComplete,
+    getMissingFieldsForStep,
+  } = useFormData();
+
+  const [errorStep, setErrorStep] = useState(null);
+
+  const navigationGuard = useCallback(
+    ({ currentStep: step, direction }) => {
+      if (direction === "forward" && !isStepComplete(step)) {
+        setErrorStep(step);
+        const missingFields = getMissingFieldsForStep(step);
+        if (missingFields.length > 0) {
+          const fieldNames = missingFields
+            .map((field) => FIELD_LABELS[field] ?? field)
+            .join(", ");
+          toast.error(
+            `Complete the required fields before continuing: ${fieldNames}`,
+          );
+        } else {
+          toast.error("Complete the required fields before continuing.");
+        }
+        return false;
+      }
+
+      if (direction === "backward") {
+        setErrorStep(null);
+      }
+
+      return true;
+    },
+    [getMissingFieldsForStep, isStepComplete],
+  );
 
   // Navigation management
   const {
@@ -23,13 +88,27 @@ function App() {
     animationType,
     isDragging,
     isAnimating,
-    TOTAL_STEPS,
+    totalSteps,
     navigateToStep,
     handleInputStart,
     handleInputMove,
     handleInputEnd,
     handleMouseLeave,
-  } = useNavigation();
+  } = useNavigation({
+    canNavigateToStep: navigationGuard,
+    totalSteps: TOTAL_SURVEY_STEPS,
+  });
+
+  const canGoNext = useMemo(
+    () => isStepComplete(currentStep),
+    [currentStep, isStepComplete],
+  );
+
+  useEffect(() => {
+    if (canGoNext && errorStep === currentStep) {
+      setErrorStep(null);
+    }
+  }, [canGoNext, currentStep, errorStep]);
 
   // Keyboard navigation: Left/Right arrows
   useEffect(() => {
@@ -74,15 +153,11 @@ function App() {
         updateFormData={updateFormData}
         updateMultipleFields={updateMultipleFields}
         onExportJSON={exportToJSON}
-        showErrors={false}
+        showErrors={errorStep === step}
         getRequiredFieldsForStep={getRequiredFieldsForStep}
       />
     );
   };
-
-  const canGoNext = true;
-  const maxAccessibleStep = TOTAL_STEPS;
-
 
   return (
     <div className="min-h-screen bg-background">
@@ -127,7 +202,7 @@ function App() {
 
         {/* Card Stack */}
         <CardStack
-          totalSteps={TOTAL_STEPS}
+          totalSteps={totalSteps}
           currentStep={currentStep}
           dragOffset={dragOffset}
           animatingCard={animatingCard}
@@ -143,9 +218,10 @@ function App() {
         {/* Navigation Buttons */}
         <NavigationButtons
           currentStep={currentStep}
-          totalSteps={TOTAL_STEPS}
+          totalSteps={totalSteps}
           onNavigate={handleNavigate}
           isAnimating={isAnimating}
+          canGoNext={canGoNext}
         />
 
       </div>
