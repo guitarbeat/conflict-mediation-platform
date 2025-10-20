@@ -5,14 +5,19 @@ import { Button } from "./ui/button";
 const NavigationButton = ({
   onClick,
   disabled,
+  ariaDisabled = false,
   className,
   ariaLabel,
   children,
 }) => (
   <button
+    type="button"
     onClick={onClick}
     disabled={disabled}
-    className={`w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-background/90 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+    aria-disabled={ariaDisabled}
+    className={`w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-background/90 transition-all duration-200 flex items-center justify-center shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed ${
+      ariaDisabled ? "opacity-60" : ""
+    } ${className}`}
     aria-label={ariaLabel}
   >
     {children}
@@ -45,7 +50,8 @@ const NavigationButtons = ({
       ariaLabel: "Next step",
       svgPath: "M9 5l7 7-7 7",
       condition: hasNextStep,
-      disabled: isAnimating || !canGoNext,
+      disabled: isAnimating || !hasNextStep,
+      ariaDisabled: !canGoNext,
       onClick: () => onNavigate("next"),
     },
   };
@@ -58,6 +64,7 @@ const NavigationButtons = ({
               <NavigationButton
                 onClick={config.onClick}
                 disabled={config.disabled}
+                ariaDisabled={config.ariaDisabled}
                 className=""
                 ariaLabel={config.ariaLabel}
               >
@@ -100,7 +107,8 @@ const NavigationButtons = ({
               size="lg"
               className="flex-1"
               onClick={() => onNavigate("next")}
-              disabled={!hasNextStep || isAnimating || !canGoNext}
+              disabled={!hasNextStep || isAnimating}
+              aria-disabled={!canGoNext}
               aria-label={hasNextStep ? "Go to next step" : "Next step unavailable"}
             >
               <span className="font-medium">

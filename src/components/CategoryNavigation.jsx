@@ -53,6 +53,7 @@ const CategoryNavigation = ({
     return (
       <button
         key={step}
+        type="button"
         onClick={() => onNavigateToStep(step)}
         className={`w-full flex items-center gap-2 p-2 rounded text-left text-sm transition-colors ${
           isCurrentStep
