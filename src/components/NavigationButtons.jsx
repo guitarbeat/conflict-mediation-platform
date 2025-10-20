@@ -1,4 +1,6 @@
 import React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "./ui/button";
 
 const NavigationButton = ({
   onClick,
@@ -24,13 +26,16 @@ const NavigationButtons = ({
   isAnimating,
   canGoNext = true,
 }) => {
+  const canGoPrev = currentStep > 1;
+  const hasNextStep = currentStep < totalSteps;
+
   const buttonConfig = {
     prev: {
       direction: "left",
       className: "hidden sm:block fixed top-1/2 transform -translate-y-1/2 left-4 z-50",
       ariaLabel: "Previous step",
       svgPath: "M15 19l-7-7 7-7",
-      condition: currentStep > 1,
+      condition: canGoPrev,
       disabled: isAnimating,
       onClick: () => onNavigate("prev"),
     },
@@ -39,7 +44,7 @@ const NavigationButtons = ({
       className: "hidden sm:block fixed top-1/2 transform -translate-y-1/2 right-4 z-50",
       ariaLabel: "Next step",
       svgPath: "M9 5l7 7-7 7",
-      condition: currentStep < totalSteps,
+      condition: hasNextStep,
       disabled: isAnimating || !canGoNext,
       onClick: () => onNavigate("next"),
     },
@@ -47,32 +52,65 @@ const NavigationButtons = ({
 
   return (
     <>
-      {Object.entries(buttonConfig).map(([key, config]) => (
-        config.condition && (
-          <div key={key} className={config.className}>
-                          <NavigationButton
-              onClick={config.onClick}
-              disabled={config.disabled}
-              className=""
-              ariaLabel={config.ariaLabel}
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+        {Object.entries(buttonConfig).map(([key, config]) => (
+          config.condition && (
+            <div key={key} className={config.className}>
+              <NavigationButton
+                onClick={config.onClick}
+                disabled={config.disabled}
+                className=""
+                ariaLabel={config.ariaLabel}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d={config.svgPath}
-                />
-              </svg>
-            </NavigationButton>
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d={config.svgPath}
+                  />
+                </svg>
+              </NavigationButton>
+            </div>
+          )
+        ))}
+
+      {/* Mobile bottom navigation */}
+      {(canGoPrev || hasNextStep) && (
+        <div className="sm:hidden fixed bottom-0 left-0 right-0 px-4 pb-[env(safe-area-inset-bottom,1rem)] pt-2 pointer-events-none">
+          <div className="pointer-events-auto bg-card border border-border shadow-lg rounded-2xl px-4 py-3 flex items-center gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="flex-1"
+              onClick={() => onNavigate("prev")}
+              disabled={!canGoPrev || isAnimating}
+              aria-label="Go to previous step"
+            >
+              <ChevronLeft className="size-5" aria-hidden="true" />
+              <span className="font-medium">Back</span>
+            </Button>
+            <Button
+              type="button"
+              size="lg"
+              className="flex-1"
+              onClick={() => onNavigate("next")}
+              disabled={!hasNextStep || isAnimating || !canGoNext}
+              aria-label={hasNextStep ? "Go to next step" : "Next step unavailable"}
+            >
+              <span className="font-medium">
+                {hasNextStep ? "Next" : "Done"}
+              </span>
+              <ChevronRight className="size-5" aria-hidden="true" />
+            </Button>
           </div>
-        )
-      ))}
+        </div>
+      )}
     </>
   );
 };

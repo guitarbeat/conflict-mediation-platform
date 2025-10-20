@@ -176,7 +176,10 @@ const CardStack = ({
   };
 
   return (
-    <div className="relative min-h-[500px]" style={{ height: "auto" }}>
+    <div
+      className="relative min-h-[60vh] sm:min-h-[500px] pb-8"
+      style={{ height: "auto" }}
+    >
       {renderCardStack()}
     </div>
   );
