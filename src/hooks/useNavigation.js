@@ -26,10 +26,24 @@ export const useNavigation = () => {
      * Navigate to the next or previous step
      * @param {string} direction - 'next' or 'prev'
      */
-    const navigateToStep = (direction) => {
+    const navigateToStep = (target) => {
         if (isAnimating) return;
 
-        if (direction === "next" && currentStep < TOTAL_STEPS) {
+        if (typeof target === "number") {
+            const clampedTarget = Math.max(1, Math.min(TOTAL_STEPS, target));
+
+            if (clampedTarget === currentStep) {
+                return;
+            }
+
+            setCurrentStep(clampedTarget);
+            setAnimatingCard(null);
+            setAnimationType("");
+            setDragOffset(0);
+            return;
+        }
+
+        if (target === "next" && currentStep < TOTAL_STEPS) {
             setAnimatingCard(currentStep);
             setAnimationType("flyOut");
             setTimeout(() => {
@@ -38,7 +52,7 @@ export const useNavigation = () => {
                 setAnimationType("");
                 setDragOffset(0);
             }, ANIMATION_DURATION);
-        } else if (direction === "prev" && currentStep > 1) {
+        } else if (target === "prev" && currentStep > 1) {
             setAnimatingCard(currentStep - 1);
             setAnimationType("slideIn");
             setTimeout(() => {

@@ -107,6 +107,19 @@ function App() {
   };
 
   const canGoNext = isStepComplete(currentStep);
+  const maxAccessibleStep = (() => {
+    let furthestCompleted = 0;
+
+    for (let step = 1; step <= TOTAL_STEPS; step += 1) {
+      if (isStepComplete(step)) {
+        furthestCompleted = step;
+      } else {
+        break;
+      }
+    }
+
+    return Math.min(furthestCompleted + 1, TOTAL_STEPS);
+  })();
 
 
   return (
@@ -132,7 +145,7 @@ function App() {
         </div>
       </header>
 
-      <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-4 max-w-4xl">
+      <div className="mx-auto w-full px-3 sm:px-4 py-2 sm:py-4 pb-28 sm:pb-6 max-w-4xl">
         {loadedFromStorage && (
           <div className="mb-3 px-3 py-2 rounded-md bg-muted/40 border border-border text-xs sm:text-sm flex items-center justify-between">
             <span>Resumed a previously saved session from this device.</span>
@@ -144,8 +157,9 @@ function App() {
         <CategoryNavigation
           formData={formData}
           currentStep={currentStep}
+          maxAccessibleStep={maxAccessibleStep}
           onNavigateToStep={(step) => {
-            if (step <= currentStep + 1) {
+            if (step <= maxAccessibleStep) {
               navigateToStep(step);
             }
           }}
