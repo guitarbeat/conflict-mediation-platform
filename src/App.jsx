@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import DarkModeToggle from "./components/DarkModeToggle";
 import CategoryNavigation from "./components/CategoryNavigation";
 import NavigationButtons from "./components/NavigationButtons";
@@ -7,17 +7,13 @@ import StepContent from "./components/StepContent";
 import { useFormData } from "./hooks/useFormData";
 import { useNavigation } from "./hooks/useNavigation";
 import { Toaster } from "./components/ui/sonner";
-import { toast } from "sonner";
-import { ERROR_MESSAGES } from "./utils/errorMessages";
 import { Analytics } from "@vercel/analytics/react";
 import logo from "./assets/logo.png";
 import "./App.css";
 
 function App() {
   // Form data management
-  const { formData, updateFormData, updateMultipleFields, isStepComplete, loadedFromStorage, resetFormData, getRequiredFieldsForStep, getMissingFieldsForStep } = useFormData();
-
-  const [showStepErrors, setShowStepErrors] = useState(false);
+  const { formData, updateFormData, updateMultipleFields, loadedFromStorage, resetFormData, getRequiredFieldsForStep } = useFormData();
 
   // Navigation management
   const {
@@ -43,38 +39,16 @@ function App() {
       const isFormElement = target && (target.closest?.("input, textarea, select, [contenteditable=true]"));
       if (isFormElement) return;
       if (e.key === "ArrowRight") {
-        if (isStepComplete(currentStep)) {
-          setShowStepErrors(false);
-          navigateToStep("next");
-        } else {
-          setShowStepErrors(true);
-          const missingFields = getMissingFieldsForStep(currentStep);
-          const errorMessage = missingFields.length > 0 
-            ? `Please complete the following required fields: ${missingFields.join(', ')}`
-            : ERROR_MESSAGES.VALIDATION.STEP_INCOMPLETE(currentStep);
-          toast.error(errorMessage);
-        }
+        navigateToStep("next");
       } else if (e.key === "ArrowLeft") {
         navigateToStep("prev");
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [isAnimating, navigateToStep, isStepComplete, currentStep, getMissingFieldsForStep]);
+  }, [isAnimating, navigateToStep]);
 
   const handleNavigate = (direction) => {
-    if (direction === "next") {
-      if (!isStepComplete(currentStep)) {
-        setShowStepErrors(true);
-        const missingFields = getMissingFieldsForStep(currentStep);
-        const errorMessage = missingFields.length > 0 
-          ? `Please complete the following required fields: ${missingFields.join(', ')}`
-          : ERROR_MESSAGES.VALIDATION.STEP_INCOMPLETE(currentStep);
-        toast.error(errorMessage);
-        return;
-      }
-    }
-    setShowStepErrors(false);
     navigateToStep(direction);
   };
 
@@ -100,27 +74,11 @@ function App() {
         updateFormData={updateFormData}
         updateMultipleFields={updateMultipleFields}
         onExportJSON={exportToJSON}
-        showErrors={showStepErrors}
+        showErrors={false}
         getRequiredFieldsForStep={getRequiredFieldsForStep}
       />
     );
   };
-
-  const canGoNext = isStepComplete(currentStep);
-  const maxAccessibleStep = (() => {
-    let furthestCompleted = 0;
-
-    for (let step = 1; step <= TOTAL_STEPS; step += 1) {
-      if (isStepComplete(step)) {
-        furthestCompleted = step;
-      } else {
-        break;
-      }
-    }
-
-    return Math.min(furthestCompleted + 1, TOTAL_STEPS);
-  })();
-
 
   return (
     <div className="min-h-screen bg-background">
@@ -157,11 +115,8 @@ function App() {
         <CategoryNavigation
           formData={formData}
           currentStep={currentStep}
-          maxAccessibleStep={maxAccessibleStep}
           onNavigateToStep={(step) => {
-            if (step <= maxAccessibleStep) {
-              navigateToStep(step);
-            }
+            navigateToStep(step);
           }}
         />
 
@@ -187,7 +142,6 @@ function App() {
           totalSteps={TOTAL_STEPS}
           onNavigate={handleNavigate}
           isAnimating={isAnimating}
-          canGoNext={canGoNext}
         />
 
       </div>

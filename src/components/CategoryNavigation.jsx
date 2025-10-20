@@ -15,7 +15,6 @@ const CategoryNavigation = ({
   formData,
   currentStep,
   onNavigateToStep,
-  maxAccessibleStep,
 }) => {
   const [expandedCategory, setExpandedCategory] = useState(null);
   const [isOverviewCollapsed, setIsOverviewCollapsed] = useState(false);
@@ -51,20 +50,17 @@ const CategoryNavigation = ({
     const isCurrentStep = step === currentStep;
     const isCompleted =
       progress.completed >= getStepInCategory(category, step);
-    const isDisabled = step > maxAccessibleStep;
-
     return (
       <button
         key={step}
         onClick={() => onNavigateToStep(step)}
-        disabled={isDisabled}
         className={`w-full flex items-center gap-2 p-2 rounded text-left text-sm transition-colors ${
           isCurrentStep
             ? "bg-primary/20 text-primary font-medium"
             : isCompleted
             ? "text-green-600 hover:bg-green-50"
             : "text-muted-foreground hover:bg-muted/50"
-        } ${isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+        } cursor-pointer`}
       >
         {isCompleted ? (
           <CheckCircle className="h-4 w-4 text-green-500" aria-hidden="true" />
