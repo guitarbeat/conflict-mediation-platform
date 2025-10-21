@@ -292,6 +292,10 @@ export const StructuredListInput = ({
   required = false,
   description = "",
   itemType = "text", // text, textarea
+  containerClassName = "",
+  containerStyle = {},
+  containerProps = {},
+  labelClassName = "",
 }) => {
   const [newItem, setNewItem] = useState("");
   const [editingIndex, setEditingIndex] = useState(-1);
@@ -358,8 +362,19 @@ export const StructuredListInput = ({
   };
 
   return (
-    <div className="form-field space-y-2">
-      <label htmlFor={id} className={cn("form-label", required && "after:content-['*'] after:text-red-500 after:ml-1")}>
+    <div
+      className={cn("form-field space-y-2", containerClassName)}
+      style={containerStyle}
+      {...containerProps}
+    >
+      <label
+        htmlFor={id}
+        className={cn(
+          "form-label",
+          required && "after:content-['*'] after:text-red-500 after:ml-1",
+          labelClassName,
+        )}
+      >
         {label}
       </label>
       {description && <p className="form-description text-sm text-muted-foreground">{description}</p>}

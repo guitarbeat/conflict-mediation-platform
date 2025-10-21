@@ -10,6 +10,8 @@ export const useFormData = () => {
     const initialState = {
         partyAName: "",
         partyBName: "",
+        partyAColor: "#6B8E47",
+        partyBColor: "#0D9488",
         dateOfIncident: "",
         dateOfMediation: "",
         locationOfConflict: "",
@@ -155,6 +157,8 @@ export const useFormData = () => {
                 return {
                     partyAName: formData.partyAName,
                     partyBName: formData.partyBName,
+                    partyAColor: formData.partyAColor,
+                    partyBColor: formData.partyBColor,
                     dateOfIncident: formData.dateOfIncident,
                     dateOfMediation: formData.dateOfMediation,
                     locationOfConflict: formData.locationOfConflict,

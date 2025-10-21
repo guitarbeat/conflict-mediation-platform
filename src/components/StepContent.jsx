@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { Download, FileText, Upload, Loader2 } from "lucide-react";
+import { Download, FileText, Upload, Loader2, RefreshCcw, ArrowLeftRight } from "lucide-react";
 import { Button } from "./ui/button";
 import FormField from "./FormField";
 import EnhancedFormField from "./EnhancedFormField";
@@ -15,6 +15,271 @@ import { toast } from "sonner";
 import { getCategoryByStep } from "../config/surveyCategories";
 import { useErrorHandler } from "../hooks/useErrorHandler";
 import { PDFLoadingState, FileLoadingState } from "./LoadingState";
+
+const DEFAULT_PARTY_COLORS = {
+  A: "#6B8E47",
+  B: "#0D9488",
+};
+
+const HEX_COLOR_PATTERN = /^#(?:[0-9a-f]{3}){1,2}$/i;
+
+const expandHex = (value) => {
+  const normalized = value.replace("#", "");
+  if (normalized.length === 3) {
+    return `#${normalized
+      .split("")
+      .map((char) => `${char}${char}`)
+      .join("")
+      .toUpperCase()}`;
+  }
+
+  return `#${normalized.toUpperCase()}`;
+};
+
+const normalizePartyColor = (value, fallback) => {
+  const candidate = typeof value === "string" ? value.trim() : "";
+  if (HEX_COLOR_PATTERN.test(candidate)) {
+    return expandHex(candidate);
+  }
+
+  if (HEX_COLOR_PATTERN.test(fallback)) {
+    return expandHex(fallback.trim());
+  }
+
+  return "#2563EB";
+};
+
+const FALLBACK_THEME_SURFACES = {
+  light: "#F8FAFC",
+  dark: "#0F172A",
+};
+
+const rgbComponentToHex = (value) => {
+  const int = Math.max(0, Math.min(255, Number.parseInt(value, 10)));
+  return int.toString(16).padStart(2, "0").toUpperCase();
+};
+
+const parseCssColorToHex = (value, fallback) => {
+  if (!value) return fallback;
+  const candidate = value.trim();
+  if (HEX_COLOR_PATTERN.test(candidate)) {
+    return expandHex(candidate);
+  }
+
+  const rgbMatch = candidate.match(/^rgba?\((\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})/i);
+  if (rgbMatch) {
+    const [, r, g, b] = rgbMatch;
+    return `#${rgbComponentToHex(r)}${rgbComponentToHex(g)}${rgbComponentToHex(b)}`;
+  }
+
+  if (typeof window === "undefined" || !document.body) {
+    return fallback;
+  }
+
+  const probe = document.createElement("span");
+  probe.style.color = candidate;
+  probe.style.display = "none";
+  document.body.appendChild(probe);
+  const computedColor = getComputedStyle(probe).color;
+  document.body.removeChild(probe);
+
+  if (computedColor && computedColor !== candidate) {
+    return parseCssColorToHex(computedColor, fallback);
+  }
+
+  return fallback;
+};
+
+const getThemeSurfaceColors = () => {
+  if (typeof window === "undefined" || !document.body) {
+    return FALLBACK_THEME_SURFACES;
+  }
+
+  const fallbackLight = FALLBACK_THEME_SURFACES.light;
+  const fallbackDark = FALLBACK_THEME_SURFACES.dark;
+
+  const rootComputed = getComputedStyle(document.documentElement);
+  const lightCandidate =
+    rootComputed.getPropertyValue("--background").trim() ||
+    rootComputed.getPropertyValue("--card").trim();
+  const light = parseCssColorToHex(lightCandidate, fallbackLight);
+
+  const probe = document.createElement("div");
+  probe.className = "dark";
+  probe.style.display = "none";
+  document.body.appendChild(probe);
+  const darkComputed = getComputedStyle(probe);
+  const darkCandidate =
+    darkComputed.getPropertyValue("--background").trim() ||
+    darkComputed.getPropertyValue("--card").trim();
+  const dark = parseCssColorToHex(darkCandidate, fallbackDark);
+  document.body.removeChild(probe);
+
+  return { light, dark };
+};
+
+const useThemeContrastSurfaces = () => {
+  const [surfaces, setSurfaces] = React.useState(() => ({ ...FALLBACK_THEME_SURFACES }));
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const updateSurfaces = () => {
+      setSurfaces(getThemeSurfaceColors());
+    };
+
+    updateSurfaces();
+
+    const observer = typeof MutationObserver !== "undefined"
+      ? new MutationObserver(updateSurfaces)
+      : null;
+    if (observer) {
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+    }
+
+    const mediaQuery = typeof window.matchMedia === "function"
+      ? window.matchMedia("(prefers-color-scheme: dark)")
+      : null;
+    if (mediaQuery) {
+      const handler = () => updateSurfaces();
+      if (typeof mediaQuery.addEventListener === "function") {
+        mediaQuery.addEventListener("change", handler);
+      } else if (typeof mediaQuery.addListener === "function") {
+        mediaQuery.addListener(handler);
+      }
+      return () => {
+        observer?.disconnect();
+        if (typeof mediaQuery.removeEventListener === "function") {
+          mediaQuery.removeEventListener("change", handler);
+        } else if (typeof mediaQuery.removeListener === "function") {
+          mediaQuery.removeListener(handler);
+        }
+      };
+    }
+
+    return () => {
+      observer?.disconnect();
+    };
+  }, []);
+
+  return surfaces;
+};
+
+const hexToRgb = (hexColor) => {
+  const expanded = expandHex(hexColor).replace("#", "");
+  return {
+    r: parseInt(expanded.slice(0, 2), 16),
+    g: parseInt(expanded.slice(2, 4), 16),
+    b: parseInt(expanded.slice(4, 6), 16),
+  };
+};
+
+const toRgba = (hexColor, alpha) => {
+  const { r, g, b } = hexToRgb(hexColor);
+  const safeAlpha = Math.min(Math.max(Number.isFinite(alpha) ? alpha : 1, 0), 1);
+  return `rgba(${r}, ${g}, ${b}, ${safeAlpha})`;
+};
+
+const getRelativeLuminance = (hexColor) => {
+  const { r, g, b } = hexToRgb(hexColor);
+  const srgb = [r, g, b].map((channel) => {
+    const value = channel / 255;
+    return value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
+};
+
+const getReadableTextColor = (hexColor) => {
+  const luminance = getRelativeLuminance(hexColor);
+  return luminance > 0.5 ? "#1E293B" : "#F8FAFC";
+};
+
+const getContrastRatio = (hexColorA, hexColorB) => {
+  const luminanceA = getRelativeLuminance(hexColorA);
+  const luminanceB = getRelativeLuminance(hexColorB);
+  const [lighter, darker] = luminanceA > luminanceB ? [luminanceA, luminanceB] : [luminanceB, luminanceA];
+  return (lighter + 0.05) / (darker + 0.05);
+};
+
+const formatContrastRatio = (ratio) => {
+  if (!Number.isFinite(ratio)) return "–";
+  const precision = ratio >= 10 ? 1 : 2;
+  const rounded = Number(ratio.toFixed(precision));
+  return `${rounded}:1`;
+};
+
+const getContrastLabel = (ratio) => {
+  if (!Number.isFinite(ratio)) return "Unknown contrast";
+  if (ratio >= 7) return "Excellent (AAA)";
+  if (ratio >= 4.5) return "Great (AA)";
+  if (ratio >= 3) return "Readable (AA Large)";
+  return "Low contrast";
+};
+
+const createAccentConfig = (color, fallback) => {
+  const normalized = normalizePartyColor(color, fallback);
+  return {
+    color: normalized,
+    styles: {
+      "--party-accent": normalized,
+      "--party-accent-surface": toRgba(normalized, 0.08),
+      "--party-accent-surface-strong": toRgba(normalized, 0.18),
+      "--party-accent-border": toRgba(normalized, 0.32),
+      "--party-accent-border-strong": toRgba(normalized, 0.46),
+      "--party-accent-border-dark": toRgba(normalized, 0.55),
+      "--party-accent-focus": toRgba(normalized, 0.3),
+      "--party-accent-input": toRgba(normalized, 0.07),
+      "--party-accent-input-dark": toRgba(normalized, 0.22),
+      "--party-accent-text": toRgba(normalized, 0.85),
+      "--party-accent-text-muted": toRgba(normalized, 0.65),
+      "--party-accent-shadow": toRgba(normalized, 0.3),
+      "--party-accent-badge-text": getReadableTextColor(normalized),
+    },
+  };
+};
+
+const PartyAccentPreviewCard = ({ partyKey, details, surfaces }) => {
+  if (!details?.accent) return null;
+
+  const themeSurfaces = surfaces || FALLBACK_THEME_SURFACES;
+  const contrastOnLight = getContrastRatio(details.accent.color, themeSurfaces.light);
+  const contrastOnDark = getContrastRatio(details.accent.color, themeSurfaces.dark);
+  const lightBorderColor = toRgba(getReadableTextColor(themeSurfaces.light), 0.2);
+  const darkBorderColor = toRgba(getReadableTextColor(themeSurfaces.dark), 0.3);
+
+  return (
+    <div
+      className="party-accent-preview-card"
+      style={{
+        ...details.accent.styles,
+        "--party-preview-light-color": themeSurfaces.light,
+        "--party-preview-dark-color": themeSurfaces.dark,
+        "--party-preview-light-border": lightBorderColor,
+        "--party-preview-dark-border": darkBorderColor,
+      }}
+      data-party-key={partyKey}
+    >
+      <div className="party-accent-preview-chip">
+        <span className="party-accent-preview-name">{details.name}</span>
+        <span className="party-accent-preview-hex">{details.accent.color}</span>
+      </div>
+      <p className="party-accent-preview-label">{getContrastLabel(contrastOnLight)} on light backgrounds</p>
+      <div className="party-accent-preview-contrast">
+        <span>
+          <span className="party-accent-preview-dot" aria-hidden="true" />
+          Light: {formatContrastRatio(contrastOnLight)}
+        </span>
+        <span>
+          <span className="party-accent-preview-dot party-accent-preview-dot--dark" aria-hidden="true" />
+          Dark: {formatContrastRatio(contrastOnDark)}
+        </span>
+      </div>
+    </div>
+  );
+};
 
 // * Category Header component
 const CategoryHeader = ({ step }) => {
@@ -36,116 +301,150 @@ const CategoryHeader = ({ step }) => {
 };
 
 // * Communication Approaches component - moved outside to prevent recreation
-const CommunicationApproaches = ({ prefix, formData, updateFormData, isFieldMissing, context }) => (
-  <div className="space-y-4 sm:space-y-6">
-    <label className="form-label">I want... (Communication Approaches)</label>
-    <EnhancedFormField
-      id={`${prefix}AggressiveApproach`}
-      label="Aggressive Approach (Not Recommended)"
-      placeholder="What would you want to say if you were being aggressive?"
-      value={formData[`${prefix}AggressiveApproach`]}
-      onChange={(value) => updateFormData(`${prefix}AggressiveApproach`, value)}
-      type="textarea"
-      className="text-red-600"
-      description="This approach is not recommended as it can escalate conflict"
-      showCharacterCount={true}
-      maxLength={500}
-    />
-    <EnhancedFormField
-      id={`${prefix}PassiveApproach`}
-      label="Passive Approach"
-      placeholder="What would you want if you were being passive?"
-      value={formData[`${prefix}PassiveApproach`]}
-      onChange={(value) => updateFormData(`${prefix}PassiveApproach`, value)}
-      type="textarea"
-      className="text-blue-600"
-      description="This approach avoids conflict but may not address underlying issues"
-      showCharacterCount={true}
-      maxLength={500}
-    />
-    <EnhancedFormField
-      id={`${prefix}AssertiveApproach`}
-      label="Assertive Approach (Recommended)"
-      placeholder="What would you want to say if you were being assertive and respectful?"
-      value={formData[`${prefix}AssertiveApproach`]}
-      onChange={(value) => updateFormData(`${prefix}AssertiveApproach`, value)}
-      type="textarea"
-      className="text-green-600"
-      error={isFieldMissing(`${prefix}AssertiveApproach`) ? "Required" : ""}
-      description="This approach is recommended for healthy conflict resolution"
-      showCharacterCount={true}
-      maxLength={500}
-      smartSuggestions={true}
-      fieldType="assertiveApproach"
-      context={context}
-      showContextualHelp={true}
-    />
-    <EnhancedFormField
-      id={`${prefix}WhyBecause`}
-      label="Why/Because..."
-      placeholder="Explain your reasoning..."
-      value={formData[`${prefix}WhyBecause`]}
-      onChange={(value) => updateFormData(`${prefix}WhyBecause`, value)}
-      type="textarea"
-      description="Explain the reasoning behind your assertive approach"
-      showCharacterCount={true}
-      maxLength={300}
-    />
-  </div>
-);
+const CommunicationApproaches = ({
+  party,
+  prefix,
+  formData,
+  updateFormData,
+  isFieldMissing,
+  context,
+  getPartyFieldProps,
+}) => {
+  const fieldProps = getPartyFieldProps ? getPartyFieldProps(party) : {};
+
+  return (
+    <div className="space-y-4 sm:space-y-6">
+      <label className="form-label">I want... (Communication Approaches)</label>
+      <EnhancedFormField
+        {...fieldProps}
+        id={`${prefix}AggressiveApproach`}
+        label="Aggressive Approach (Not Recommended)"
+        placeholder="What would you want to say if you were being aggressive?"
+        value={formData[`${prefix}AggressiveApproach`]}
+        onChange={(value) => updateFormData(`${prefix}AggressiveApproach`, value)}
+        type="textarea"
+        className="text-red-600"
+        description="This approach is not recommended as it can escalate conflict"
+        showCharacterCount={true}
+        maxLength={500}
+      />
+      <EnhancedFormField
+        {...fieldProps}
+        id={`${prefix}PassiveApproach`}
+        label="Passive Approach"
+        placeholder="What would you want if you were being passive?"
+        value={formData[`${prefix}PassiveApproach`]}
+        onChange={(value) => updateFormData(`${prefix}PassiveApproach`, value)}
+        type="textarea"
+        className="text-blue-600"
+        description="This approach avoids conflict but may not address underlying issues"
+        showCharacterCount={true}
+        maxLength={500}
+      />
+      <EnhancedFormField
+        {...fieldProps}
+        id={`${prefix}AssertiveApproach`}
+        label="Assertive Approach (Recommended)"
+        placeholder="What would you want to say if you were being assertive and respectful?"
+        value={formData[`${prefix}AssertiveApproach`]}
+        onChange={(value) => updateFormData(`${prefix}AssertiveApproach`, value)}
+        type="textarea"
+        className="text-green-600"
+        error={isFieldMissing(`${prefix}AssertiveApproach`) ? "Required" : ""}
+        description="This approach is recommended for healthy conflict resolution"
+        showCharacterCount={true}
+        maxLength={500}
+        smartSuggestions={true}
+        fieldType="assertiveApproach"
+        context={context}
+        showContextualHelp={true}
+      />
+      <EnhancedFormField
+        {...fieldProps}
+        id={`${prefix}WhyBecause`}
+        label="Why/Because..."
+        placeholder="Explain your reasoning..."
+        value={formData[`${prefix}WhyBecause`]}
+        onChange={(value) => updateFormData(`${prefix}WhyBecause`, value)}
+        type="textarea"
+        description="Explain the reasoning behind your assertive approach"
+        showCharacterCount={true}
+        maxLength={300}
+      />
+    </div>
+  );
+};
 
 // * Individual Reflection component - moved outside to prevent recreation
-const IndividualReflection = ({ party, prefix, formData, updateFormData, isFieldMissing, context }) => (
-  <div className="space-y-4 sm:space-y-6">
-    <SectionSeparator title="Thoughts & Beliefs" />
-    <EnhancedFormField
-      id={`${prefix}Thoughts`}
-      label="I think..."
-      placeholder="Explain what you think or believe to be true about the conflict..."
-      value={formData[`${prefix}Thoughts`]}
-      onChange={(value) => updateFormData(`${prefix}Thoughts`, value)}
-      type="textarea"
-      rows={4}
-      error={isFieldMissing(`${prefix}Thoughts`) ? "Required" : ""}
-      description="Be honest about your beliefs and assumptions about the situation"
-      showCharacterCount={true}
-      maxLength={1000}
-      smartSuggestions={true}
-      fieldType="thoughts"
-      context={context}
-      showContextualHelp={true}
-    />
+const IndividualReflection = ({
+  party,
+  prefix,
+  formData,
+  updateFormData,
+  isFieldMissing,
+  context,
+  getPartyFieldProps,
+}) => {
+  const fieldProps = getPartyFieldProps ? getPartyFieldProps(party) : {};
 
-    <SectionSeparator title="Emotions & Feelings" />
-    <div className="space-y-3 sm:space-y-4">
-      <label className="form-label">
-        I feel... (Use both methods to express your emotions)
-      </label>
-      <Suspense fallback={<div className="text-sm text-muted-foreground">Loading emotion mapper…</div>}>
-        <EmojiGridMapper
-          onEmotionWordsChange={(words) =>
-            updateFormData(`${prefix}SelectedEmotionWords`, words)
-          }
-          onChartPositionChange={(position) =>
-            updateFormData(`${prefix}EmotionChartPosition`, position)
-          }
-          selectedEmotionWords={formData[`${prefix}SelectedEmotionWords`]}
-          chartPosition={formData[`${prefix}EmotionChartPosition`]}
-        />
-      </Suspense>
+  return (
+    <div className="space-y-4 sm:space-y-6">
+      <SectionSeparator title="Thoughts & Beliefs" />
+      <EnhancedFormField
+        {...fieldProps}
+        id={`${prefix}Thoughts`}
+        label="I think..."
+        placeholder="Explain what you think or believe to be true about the conflict..."
+        value={formData[`${prefix}Thoughts`]}
+        onChange={(value) => updateFormData(`${prefix}Thoughts`, value)}
+        type="textarea"
+        rows={4}
+        error={isFieldMissing(`${prefix}Thoughts`) ? "Required" : ""}
+        description="Be honest about your beliefs and assumptions about the situation"
+        showCharacterCount={true}
+        maxLength={1000}
+        smartSuggestions={true}
+        fieldType="thoughts"
+        context={context}
+        showContextualHelp={true}
+      />
+
+      <SectionSeparator title="Emotions & Feelings" />
+      <div className="space-y-3 sm:space-y-4">
+        <label className="form-label">
+          I feel... (Use both methods to express your emotions)
+        </label>
+        <Suspense fallback={<div className="text-sm text-muted-foreground">Loading emotion mapper…</div>}>
+          <EmojiGridMapper
+            onEmotionWordsChange={(words) =>
+              updateFormData(`${prefix}SelectedEmotionWords`, words)
+            }
+            onChartPositionChange={(position) =>
+              updateFormData(`${prefix}EmotionChartPosition`, position)
+            }
+            selectedEmotionWords={formData[`${prefix}SelectedEmotionWords`]}
+            chartPosition={formData[`${prefix}EmotionChartPosition`]}
+          />
+        </Suspense>
+      </div>
+
+      <SectionSeparator title="Communication Approaches" />
+      <CommunicationApproaches
+        party={party}
+        prefix={prefix}
+        formData={formData}
+        updateFormData={updateFormData}
+        isFieldMissing={isFieldMissing}
+        context={context}
+        getPartyFieldProps={getPartyFieldProps}
+      />
     </div>
+  );
+};
 
-    <SectionSeparator title="Communication Approaches" />
-    <CommunicationApproaches
-      party={party}
-      prefix={prefix}
-      formData={formData}
-      updateFormData={updateFormData}
-      isFieldMissing={isFieldMissing}
-      context={context}
-    />
-  </div>
-);
+const hexColorSchema = z
+  .string()
+  .regex(/^#(?:[0-9a-fA-F]{3}){1,2}$/, "Choose a valid color");
 
 const Step1Schema = z.object({
   partyAName: z.string().min(1, "Required"),
@@ -154,11 +453,13 @@ const Step1Schema = z.object({
   dateOfIncident: z.string().optional(),
   dateOfMediation: z.string().optional(),
   locationOfConflict: z.string().optional(),
+  partyAColor: hexColorSchema.optional(),
+  partyBColor: hexColorSchema.optional(),
 });
 
 const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON, showErrors, getRequiredFieldsForStep }) => {
   // Error handling
-    const { executeFileOperation, executeAsync } = useErrorHandler({
+  const { executeFileOperation, executeAsync } = useErrorHandler({
     showToast: true,
     logErrors: true
   });
@@ -175,6 +476,70 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
     partyBName: formData.partyBName,
     currentStep: step,
   };
+
+  const partyAccents = {
+    A: createAccentConfig(formData.partyAColor, DEFAULT_PARTY_COLORS.A),
+    B: createAccentConfig(formData.partyBColor, DEFAULT_PARTY_COLORS.B),
+  };
+
+  const partyDetails = {
+    A: {
+      name: formData.partyAName?.trim() || "Party A",
+      accent: partyAccents.A,
+    },
+    B: {
+      name: formData.partyBName?.trim() || "Party B",
+      accent: partyAccents.B,
+    },
+  };
+
+  const themeSurfaces = useThemeContrastSurfaces();
+
+  const getPartyFieldProps = (
+    party,
+    {
+      variant = "enhanced",
+      className = "",
+      labelClassName = "",
+      containerProps: extraContainerProps = {},
+      showBadge,
+    } = {},
+  ) => {
+    const details = partyDetails[party];
+    if (!details) return {};
+
+    const shouldShowBadge =
+      typeof showBadge === "boolean" ? showBadge : variant !== "simple";
+
+    const baseClasses = ["party-field"];
+    if (variant === "simple") {
+      baseClasses.push("party-field--compact");
+    }
+    if (shouldShowBadge) {
+      baseClasses.push("party-field--with-badge");
+    }
+
+    const combinedClassName = [
+      ...baseClasses,
+      className,
+    ]
+      .filter(Boolean)
+      .join(" ");
+
+    const combinedLabelClass = labelClassName || undefined;
+
+    return {
+      containerClassName: combinedClassName,
+      containerStyle: details.accent?.styles ? { ...details.accent.styles } : {},
+      containerProps: {
+        ...(shouldShowBadge ? { "data-party-label": details.name } : {}),
+        "data-party-key": party,
+        ...extraContainerProps,
+      },
+      labelClassName: combinedLabelClass,
+    };
+  };
+
   // react-hook-form for Step 1
   const step1Form = useForm({
     mode: "onChange",
@@ -182,6 +547,8 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
     defaultValues: {
       partyAName: formData.partyAName,
       partyBName: formData.partyBName,
+      partyAColor: partyAccents.A.color,
+      partyBColor: partyAccents.B.color,
       conflictDescription: formData.conflictDescription,
       dateOfIncident: formData.dateOfIncident,
       dateOfMediation: formData.dateOfMediation,
@@ -190,6 +557,26 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   });
 
   const step1Errors = step1Form.formState.errors;
+
+  const handleResetPartyColors = () => {
+    const defaultA = normalizePartyColor(DEFAULT_PARTY_COLORS.A, DEFAULT_PARTY_COLORS.A);
+    const defaultB = normalizePartyColor(DEFAULT_PARTY_COLORS.B, DEFAULT_PARTY_COLORS.B);
+
+    step1Form.setValue("partyAColor", defaultA, { shouldDirty: true, shouldValidate: true });
+    updateFormData("partyAColor", defaultA);
+    step1Form.setValue("partyBColor", defaultB, { shouldDirty: true, shouldValidate: true });
+    updateFormData("partyBColor", defaultB);
+  };
+
+  const handleSwapPartyColors = () => {
+    const colorA = normalizePartyColor(step1Form.getValues("partyAColor") || partyAccents.A.color, partyAccents.A.color);
+    const colorB = normalizePartyColor(step1Form.getValues("partyBColor") || partyAccents.B.color, partyAccents.B.color);
+
+    step1Form.setValue("partyAColor", colorB, { shouldDirty: true, shouldValidate: true });
+    updateFormData("partyAColor", colorB);
+    step1Form.setValue("partyBColor", colorA, { shouldDirty: true, shouldValidate: true });
+    updateFormData("partyBColor", colorA);
+  };
 
   useEffect(() => {
     if (showErrors && step === 1) {
@@ -266,7 +653,19 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   };
 
   switch (step) {
-    case 1:
+    case 1: {
+      const partyANameValue = step1Form.watch("partyAName");
+      const partyBNameValue = step1Form.watch("partyBName");
+      const partyAColorValue = step1Form.watch("partyAColor") || partyAccents.A.color;
+      const partyBColorValue = step1Form.watch("partyBColor") || partyAccents.B.color;
+      const normalizedPartyAColor = normalizePartyColor(partyAColorValue, partyAccents.A.color);
+      const normalizedPartyBColor = normalizePartyColor(partyBColorValue, partyAccents.B.color);
+      const defaultNormalizedA = normalizePartyColor(DEFAULT_PARTY_COLORS.A, DEFAULT_PARTY_COLORS.A);
+      const defaultNormalizedB = normalizePartyColor(DEFAULT_PARTY_COLORS.B, DEFAULT_PARTY_COLORS.B);
+      const isUsingDefaultPalette =
+        normalizedPartyAColor === defaultNormalizedA && normalizedPartyBColor === defaultNormalizedB;
+      const isSameAccent = normalizedPartyAColor === normalizedPartyBColor;
+
       return (
         <div className="space-y-2 sm:space-y-3">
           <CategoryHeader step={step} />
@@ -277,10 +676,11 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
           </p>
           <div className="form-grid form-grid-2">
             <EnhancedFormField
+              {...getPartyFieldProps("A")}
               id="partyAName"
               label="Party A Name"
               placeholder="Enter first person's name"
-              value={step1Form.watch("partyAName")}
+              value={partyANameValue}
               onChange={(value) => {
                 step1Form.setValue("partyAName", value, { shouldValidate: true, shouldDirty: true });
                 updateFormData("partyAName", value);
@@ -291,10 +691,11 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               autoSave={true}
             />
             <EnhancedFormField
+              {...getPartyFieldProps("B")}
               id="partyBName"
               label="Party B Name"
               placeholder="Enter second person's name"
-              value={step1Form.watch("partyBName")}
+              value={partyBNameValue}
               onChange={(value) => {
                 step1Form.setValue("partyBName", value, { shouldValidate: true, shouldDirty: true });
                 updateFormData("partyBName", value);
@@ -304,6 +705,76 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               description="The second person involved in the conflict"
               autoSave={true}
             />
+          </div>
+
+          <p className="text-xs text-muted-foreground text-center">
+            Optional: choose an accent color for each party to personalize the experience.
+          </p>
+          <div className="form-grid form-grid-2">
+            <FormField
+              {...getPartyFieldProps("A", { variant: "simple", showBadge: false })}
+              id="partyAColor"
+              label={`${partyANameValue || "Party A"} Color`}
+              type="color"
+              value={partyAColorValue}
+              onChange={(value) => {
+                const normalized = normalizePartyColor(value, partyAccents.A.color);
+                step1Form.setValue("partyAColor", normalized, { shouldDirty: true, shouldValidate: true });
+                updateFormData("partyAColor", normalized);
+              }}
+              inputClassName="party-color-input"
+            />
+            <FormField
+              {...getPartyFieldProps("B", { variant: "simple", showBadge: false })}
+              id="partyBColor"
+              label={`${partyBNameValue || "Party B"} Color`}
+              type="color"
+              value={partyBColorValue}
+              onChange={(value) => {
+                const normalized = normalizePartyColor(value, partyAccents.B.color);
+                step1Form.setValue("partyBColor", normalized, { shouldDirty: true, shouldValidate: true });
+                updateFormData("partyBColor", normalized);
+              }}
+              inputClassName="party-color-input"
+            />
+          </div>
+
+          <div className="party-accent-actions">
+            <div className="party-accent-actions__buttons">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleSwapPartyColors}
+                className="party-accent-actions__button"
+                disabled={isSameAccent}
+              >
+                <ArrowLeftRight className="h-4 w-4 mr-2" aria-hidden="true" /> Swap colors
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleResetPartyColors}
+                className="party-accent-actions__button"
+                disabled={isUsingDefaultPalette}
+                aria-label="Restore default party colors"
+              >
+                <RefreshCcw className="h-4 w-4 mr-2" aria-hidden="true" /> Restore default colors
+              </Button>
+            </div>
+            <p className="party-accent-actions__hint">Fine-tune the palette or swap colors if parties prefer each other's accent.</p>
+          </div>
+
+          <div className="party-accent-preview-grid">
+            {Object.entries(partyDetails).map(([key, details]) => (
+              <PartyAccentPreviewCard
+                key={key}
+                partyKey={key}
+                details={details}
+                surfaces={themeSurfaces}
+              />
+            ))}
           </div>
 
           <SectionSeparator title="Conflict Details" />
@@ -362,7 +833,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
           />
         </div>
       );
-
+    }
     case 2:
       return (
         <div className="space-y-4 sm:space-y-6">
@@ -374,6 +845,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
             updateFormData={updateFormData}
             isFieldMissing={isFieldMissing}
             context={context}
+            getPartyFieldProps={getPartyFieldProps}
           />
         </div>
       );
@@ -389,6 +861,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
             updateFormData={updateFormData}
             isFieldMissing={isFieldMissing}
             context={context}
+            getPartyFieldProps={getPartyFieldProps}
           />
         </div>
       );
@@ -424,6 +897,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
 
             <div className="form-grid form-grid-2">
               <EnhancedFormField
+                {...getPartyFieldProps("A")}
                 id="partyABeliefs"
                 label={`B - ${formData.partyAName || "Party A"} Beliefs`}
                 description="What thoughts or beliefs do you have about this event?"
@@ -440,6 +914,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 context={context}
               />
               <EnhancedFormField
+                {...getPartyFieldProps("B")}
                 id="partyBBeliefs"
                 label={`B - ${formData.partyBName || "Party B"} Beliefs`}
                 description="What thoughts or beliefs do you have about this event?"
@@ -459,6 +934,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
 
             <div className="form-grid form-grid-2">
               <EnhancedFormField
+                {...getPartyFieldProps("A")}
                 id="partyAConsequences"
                 label={`C - ${formData.partyAName || "Party A"} Consequences`}
                 description="How did your beliefs make you feel and behave?"
@@ -473,6 +949,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 maxLength={600}
               />
               <EnhancedFormField
+                {...getPartyFieldProps("B")}
                 id="partyBConsequences"
                 label={`C - ${formData.partyBName || "Party B"} Consequences`}
                 description="How did your beliefs make you feel and behave?"
@@ -490,6 +967,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
 
             <div className="form-grid form-grid-2">
               <EnhancedFormField
+                {...getPartyFieldProps("A")}
                 id="partyADisputations"
                 label={`D - ${formData.partyAName || "Party A"} Disputations`}
                 description="Challenge your beliefs. Are they helpful? Accurate? Realistic?"
@@ -504,6 +982,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 maxLength={600}
               />
               <EnhancedFormField
+                {...getPartyFieldProps("B")}
                 id="partyBDisputations"
                 label={`D - ${formData.partyBName || "Party B"} Disputations`}
                 description="Challenge your beliefs. Are they helpful? Accurate? Realistic?"
@@ -547,6 +1026,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
           <div className="space-y-4 sm:space-y-6">
             <div className="form-grid form-grid-2">
               <EnhancedFormField
+                {...getPartyFieldProps("A")}
                 id="partyAMiracle"
                 label={`${formData.partyAName || "Party A"} - Miracle Question`}
                 description="If you woke up tomorrow and this conflict was completely resolved, what would be different?"
@@ -564,6 +1044,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 showContextualHelp={true}
               />
               <EnhancedFormField
+                {...getPartyFieldProps("B")}
                 id="partyBMiracle"
                 label={`${formData.partyBName || "Party B"} - Miracle Question`}
                 description="If you woke up tomorrow and this conflict was completely resolved, what would be different?"
@@ -584,6 +1065,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
 
             <div className="form-grid form-grid-2">
               <StructuredListInput
+                {...getPartyFieldProps("A")}
                 id="partyATop3Solutions"
                 label={`${formData.partyAName || "Party A"} - Top 3 Solutions`}
                 placeholder="Add solution..."
@@ -595,6 +1077,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="List your top 3 preferred solutions for resolving this conflict"
               />
               <StructuredListInput
+                {...getPartyFieldProps("B")}
                 id="partyBTop3Solutions"
                 label={`${formData.partyBName || "Party B"} - Top 3 Solutions`}
                 placeholder="Add solution..."
@@ -611,6 +1094,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
 
             <div className="form-grid form-grid-2">
               <EnhancedFormField
+                {...getPartyFieldProps("A")}
                 id="partyAPerspective"
                 label={`${
                   formData.partyAName || "Party A"
@@ -625,6 +1109,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 maxLength={600}
               />
               <EnhancedFormField
+                {...getPartyFieldProps("B")}
                 id="partyBPerspective"
                 label={`${
                   formData.partyBName || "Party B"
@@ -673,6 +1158,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
           <div className="space-y-4 sm:space-y-6">
             <div className="form-grid form-grid-2">
               <FormField
+                {...getPartyFieldProps("A", { variant: "simple", showBadge: false })}
                 id="partyAUnmetNeeds"
                 label={`${formData.partyAName || "Party A"} - Unmet Needs`}
                 description="What needs of yours weren't being met in this situation?"
@@ -683,6 +1169,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 rows={3}
               />
               <FormField
+                {...getPartyFieldProps("B", { variant: "simple", showBadge: false })}
                 id="partyBUnmetNeeds"
                 label={`${formData.partyBName || "Party B"} - Unmet Needs`}
                 description="What needs of yours weren't being met in this situation?"
@@ -696,6 +1183,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
 
             <div className="form-grid form-grid-2">
               <FormField
+                {...getPartyFieldProps("A", { variant: "simple", showBadge: false })}
                 id="partyANeedsInPractice"
                 label={`${
                   formData.partyAName || "Party A"
@@ -710,6 +1198,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 rows={3}
               />
               <FormField
+                {...getPartyFieldProps("B", { variant: "simple", showBadge: false })}
                 id="partyBNeedsInPractice"
                 label={`${
                   formData.partyBName || "Party B"

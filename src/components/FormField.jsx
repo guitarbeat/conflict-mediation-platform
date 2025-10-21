@@ -1,7 +1,15 @@
 import React from "react";
 import EnhancedFormField from "./EnhancedFormField";
 
-const FormField = ({ className, labelClassName, inputClassName, containerClassName, ...props }) => {
+const FormField = ({
+  className,
+  labelClassName,
+  inputClassName,
+  containerClassName,
+  containerStyle,
+  containerProps,
+  ...props
+}) => {
   return (
     <EnhancedFormField
       {...props}
@@ -9,6 +17,8 @@ const FormField = ({ className, labelClassName, inputClassName, containerClassNa
       className={inputClassName}
       labelClassName={labelClassName ?? className}
       containerClassName={containerClassName}
+      containerStyle={containerStyle}
+      containerProps={containerProps}
     />
   );
 };

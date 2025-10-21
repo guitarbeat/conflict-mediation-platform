@@ -61,19 +61,29 @@ export const getCategoryByStep = (step) => {
 };
 
 export const getCategoryProgress = (formData, category) => {
-  const totalSteps = category.steps.length;
+  const requiredSteps = category.steps.filter(
+    (step) => getRequiredFieldsForStep(step).length > 0
+  );
+
+  const totalSteps = requiredSteps.length;
   let completedSteps = 0;
-  
-  category.steps.forEach(step => {
+
+  requiredSteps.forEach((step) => {
     if (isStepComplete(formData, step)) {
       completedSteps++;
     }
   });
-  
+
+  const optionalSteps = category.steps.length - requiredSteps.length;
+
   return {
     completed: completedSteps,
     total: totalSteps,
-    percentage: totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0
+    optional: optionalSteps,
+    percentage:
+      totalSteps > 0
+        ? Math.round((completedSteps / totalSteps) * 100)
+        : 0,
   };
 };
 
@@ -119,16 +129,20 @@ export const getOverallProgress = (formData) => {
   const categories = Object.values(SURVEY_CATEGORIES);
   let totalSteps = 0;
   let completedSteps = 0;
-  
-  categories.forEach(category => {
+
+  categories.forEach((category) => {
     const progress = getCategoryProgress(formData, category);
     totalSteps += progress.total;
     completedSteps += progress.completed;
   });
-  
+
   return {
     completed: completedSteps,
     total: totalSteps,
-    percentage: totalSteps > 0 ? Math.round((completedSteps / totalSteps) * 100) : 0
+    percentage:
+      totalSteps > 0
+        ? Math.round((completedSteps / totalSteps) * 100)
+        : 0,
   };
 };
+

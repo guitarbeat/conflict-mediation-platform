@@ -35,6 +35,8 @@ const EnhancedFormField = ({
   variant = "enhanced",
   labelClassName = "",
   containerClassName = "",
+  containerStyle = {},
+  containerProps = {},
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -206,6 +208,8 @@ const EnhancedFormField = ({
         variant === "enhanced" ? "space-y-2" : "space-y-1",
         containerClassName
       )}
+      style={containerStyle}
+      {...containerProps}
     >
       {variant === "enhanced" ? (
         <div className="flex items-center justify-between">

@@ -127,7 +127,13 @@ const CategoryNavigation = ({
                     <div>
                       <h4 className="font-medium text-sm">{category.name}</h4>
                       <p className="text-xs text-muted-foreground">
-                        {progress.completed} of {progress.total} steps completed
+                        {progress.total > 0
+                          ? `${progress.completed} of ${progress.total} steps completed`
+                          : progress.optional > 0
+                          ? `${progress.optional} optional ${
+                              progress.optional === 1 ? "step" : "steps"
+                            }`
+                          : "No required steps"}
                       </p>
                     </div>
                   </div>
