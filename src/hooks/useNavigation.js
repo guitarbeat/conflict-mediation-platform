@@ -21,6 +21,7 @@ export const useNavigation = (options = {}) => {
     } = options;
     const [currentStep, setCurrentStep] = useState(1);
     const [touchStart, setTouchStart] = useState(null);
+    const [touchStartY, setTouchStartY] = useState(null);
     const [touchEnd, setTouchEnd] = useState(null);
     const [dragOffset, setDragOffset] = useState(0);
     const [animatingCard, setAnimatingCard] = useState(null);
@@ -155,6 +156,10 @@ export const useNavigation = (options = {}) => {
         return e.touches ? e.touches[0].clientX : e.clientX;
     };
 
+    const getClientY = (e) => {
+        return e.touches ? e.touches[0].clientY : e.clientY;
+    };
+
     /**
      * Handle input start (touch/mouse down)
      * @param {Event} e - Touch or mouse event
@@ -193,6 +198,7 @@ export const useNavigation = (options = {}) => {
         setIsDragging(true);
         setTouchEnd(null);
         setTouchStart(getClientX(e));
+        setTouchStartY(getClientY(e));
         setDragOffset(0);
     };
 
@@ -205,10 +211,22 @@ export const useNavigation = (options = {}) => {
 
         // Don't prevent default on move to allow text selection
         const currentX = getClientX(e);
+        const currentY = getClientY(e);
         setTouchEnd(currentX);
 
         // Allow dragging in both directions, but limit right drag
         const offset = currentX - touchStart;
+        const verticalOffset =
+            typeof touchStartY === "number" && typeof currentY === "number"
+                ? currentY - touchStartY
+                : 0;
+        if (
+            e.cancelable &&
+            e.touches &&
+            Math.abs(offset) > Math.abs(verticalOffset)
+        ) {
+            e.preventDefault();
+        }
         const clampedOffset = Math.max(-MAX_DRAG_OFFSET, Math.min(50, offset));
         setDragOffset(clampedOffset);
     };
@@ -224,6 +242,9 @@ export const useNavigation = (options = {}) => {
 
         if (!touchStart || !touchEnd || isAnimating) {
             setDragOffset(0);
+            setTouchStart(null);
+            setTouchStartY(null);
+            setTouchEnd(null);
             return;
         }
 
@@ -238,6 +259,10 @@ export const useNavigation = (options = {}) => {
         } else {
             setDragOffset(0);
         }
+
+        setTouchStart(null);
+        setTouchStartY(null);
+        setTouchEnd(null);
     };
 
     /**
@@ -247,6 +272,9 @@ export const useNavigation = (options = {}) => {
         if (isDragging) {
             setIsDragging(false);
             setDragOffset(0);
+            setTouchStart(null);
+            setTouchStartY(null);
+            setTouchEnd(null);
         }
     };
 

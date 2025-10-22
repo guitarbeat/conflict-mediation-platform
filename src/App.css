@@ -868,7 +868,7 @@
 
 /* Draggable card container */
 .draggable-card-container {
-  touch-action: manipulation; /* Allow all touch actions except double-tap zoom */
+  touch-action: pan-y; /* Preserve vertical scrolling while we handle horizontal gestures */
   cursor: default;
 }
 
