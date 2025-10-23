@@ -1,11 +1,12 @@
 import React, { Suspense, useEffect } from "react";
-import { Download, FileText, Upload, Loader2, RefreshCcw, ArrowLeftRight } from "lucide-react";
+import { Download, FileText, Upload, Loader2, RefreshCcw, ArrowLeftRight, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import FormField from "./FormField";
 import EnhancedFormField from "./EnhancedFormField";
 import DatePickerField from "./DatePickerField";
 import SectionSeparator from "./SectionSeparator";
 import { MultiSelectInput, RatingInput, StructuredListInput, PriorityInput } from "./AdvancedInputs";
+import { cn } from "../lib/utils";
 // Lazy-load heavy component
 const EmojiGridMapper = React.lazy(() => import("./EmojiGridMapper"));
 import { z } from "zod";
@@ -20,6 +21,16 @@ const DEFAULT_PARTY_COLORS = {
   A: "#6B8E47",
   B: "#0D9488",
 };
+
+const RECOMMENDED_PARTY_COLORS = [
+  "#6B8E47",
+  "#0D9488",
+  "#2563EB",
+  "#9333EA",
+  "#EA580C",
+  "#DB2777",
+  "#0EA5E9",
+];
 
 const HEX_COLOR_PATTERN = /^#(?:[0-9a-f]{3}){1,2}$/i;
 
@@ -666,81 +677,149 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
         normalizedPartyAColor === defaultNormalizedA && normalizedPartyBColor === defaultNormalizedB;
       const isSameAccent = normalizedPartyAColor === normalizedPartyBColor;
 
+      const handlePartyColorChange = (partyKey, value) => {
+        const fieldName = partyKey === "A" ? "partyAColor" : "partyBColor";
+        const normalized = normalizePartyColor(value, partyAccents[partyKey].color);
+        step1Form.setValue(fieldName, normalized, { shouldDirty: true, shouldValidate: true });
+        updateFormData(fieldName, normalized);
+      };
+
+      const handlePartyNameChange = (partyKey, value) => {
+        const fieldName = partyKey === "A" ? "partyAName" : "partyBName";
+        step1Form.setValue(fieldName, value, { shouldValidate: true, shouldDirty: true });
+        updateFormData(fieldName, value);
+      };
+
+      const partyCards = [
+        {
+          key: "A",
+          colorValue: partyAColorValue,
+          normalizedColor: normalizedPartyAColor,
+          nameValue: partyANameValue,
+          fallbackName: "Party A",
+          colorFieldProps: getPartyFieldProps("A", { variant: "simple", showBadge: false }),
+          nameFieldProps: getPartyFieldProps("A"),
+          error: step1Errors.partyAName?.message,
+        },
+        {
+          key: "B",
+          colorValue: partyBColorValue,
+          normalizedColor: normalizedPartyBColor,
+          nameValue: partyBNameValue,
+          fallbackName: "Party B",
+          colorFieldProps: getPartyFieldProps("B", { variant: "simple", showBadge: false }),
+          nameFieldProps: getPartyFieldProps("B"),
+          error: step1Errors.partyBName?.message,
+        },
+      ];
+
       return (
-        <div className="space-y-2 sm:space-y-3">
+        <div className="space-y-3 sm:space-y-4">
           <CategoryHeader step={step} />
-          <SectionSeparator title="Party Information" />
-          <p className="text-center text-muted-foreground mb-1 sm:mb-2 text-sm sm:text-base">
-            Let's start by gathering some basic information about the conflict
-            and the parties involved.
-          </p>
-          <div className="form-grid form-grid-2">
-            <EnhancedFormField
-              {...getPartyFieldProps("A")}
-              id="partyAName"
-              label="Party A Name"
-              placeholder="Enter first person's name"
-              value={partyANameValue}
-              onChange={(value) => {
-                step1Form.setValue("partyAName", value, { shouldValidate: true, shouldDirty: true });
-                updateFormData("partyAName", value);
-              }}
-              error={step1Errors.partyAName?.message}
-              required={true}
-              description="The first person involved in the conflict"
-              autoSave={true}
-            />
-            <EnhancedFormField
-              {...getPartyFieldProps("B")}
-              id="partyBName"
-              label="Party B Name"
-              placeholder="Enter second person's name"
-              value={partyBNameValue}
-              onChange={(value) => {
-                step1Form.setValue("partyBName", value, { shouldValidate: true, shouldDirty: true });
-                updateFormData("partyBName", value);
-              }}
-              error={step1Errors.partyBName?.message}
-              required={true}
-              description="The second person involved in the conflict"
-              autoSave={true}
-            />
+          <SectionSeparator title="Personalize each party" />
+          <div className="rounded-lg border bg-card/40 p-3 sm:p-4 flex items-start gap-3">
+            <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+            <div className="space-y-2">
+              <p className="text-sm sm:text-base text-muted-foreground">
+                Start with the accent colors so every insight in later steps is easy to scan at a glance.
+                Then add each person's name to tailor the coaching language automatically.
+              </p>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                You can choose from the quick picks below or fine-tune the color picker for a custom shade.
+              </p>
+            </div>
           </div>
 
-          <p className="text-xs text-muted-foreground text-center">
-            Optional: choose an accent color for each party to personalize the experience.
-          </p>
-          <div className="form-grid form-grid-2">
-            <FormField
-              {...getPartyFieldProps("A", { variant: "simple", showBadge: false })}
-              id="partyAColor"
-              label={`${partyANameValue || "Party A"} Color`}
-              type="color"
-              value={partyAColorValue}
-              onChange={(value) => {
-                const normalized = normalizePartyColor(value, partyAccents.A.color);
-                step1Form.setValue("partyAColor", normalized, { shouldDirty: true, shouldValidate: true });
-                updateFormData("partyAColor", normalized);
-              }}
-              inputClassName="party-color-input"
-            />
-            <FormField
-              {...getPartyFieldProps("B", { variant: "simple", showBadge: false })}
-              id="partyBColor"
-              label={`${partyBNameValue || "Party B"} Color`}
-              type="color"
-              value={partyBColorValue}
-              onChange={(value) => {
-                const normalized = normalizePartyColor(value, partyAccents.B.color);
-                step1Form.setValue("partyBColor", normalized, { shouldDirty: true, shouldValidate: true });
-                updateFormData("partyBColor", normalized);
-              }}
-              inputClassName="party-color-input"
-            />
+          <div className="grid gap-4 md:grid-cols-2">
+            {partyCards.map(({ key, colorValue, normalizedColor, nameValue, fallbackName, colorFieldProps, nameFieldProps, error }) => {
+              const displayName = nameValue || fallbackName;
+              return (
+                <section
+                  key={key}
+                  className={cn(
+                    "space-y-4 rounded-xl border bg-background/60 p-4 shadow-sm transition",
+                    "hover:shadow-md focus-within:ring-2 focus-within:ring-primary/40"
+                  )}
+                >
+                  <header className="space-y-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="text-sm font-semibold tracking-wide text-muted-foreground uppercase">
+                        {fallbackName}
+                      </h3>
+                      <span
+                        className="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium"
+                      >
+                        <span className="inline-block h-2.5 w-2.5 rounded-full border" style={{ backgroundColor: normalizedColor }} />
+                        {displayName}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Pick a color that feels right for {displayName} and we'll use it throughout the toolkit.
+                    </p>
+                  </header>
+
+                  <div className="space-y-2">
+                    <FormField
+                      {...colorFieldProps}
+                      id={`party${key}Color`}
+                      label={`${displayName} color`}
+                      type="color"
+                      value={colorValue}
+                      onChange={(value) => handlePartyColorChange(key, value)}
+                      inputClassName="party-color-input"
+                    />
+                    <div className="flex flex-wrap items-center gap-2">
+                      {RECOMMENDED_PARTY_COLORS.map((color) => {
+                        const normalizedOption = normalizePartyColor(color, partyAccents[key].color);
+                        const isActive = normalizedOption === normalizedColor;
+                        return (
+                          <button
+                            key={`${key}-${color}`}
+                            type="button"
+                            className={cn(
+                              "h-8 w-8 rounded-full border border-border transition-transform",
+                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary",
+                              isActive ? "ring-2 ring-offset-2 ring-offset-background ring-primary" : "hover:scale-105"
+                            )}
+                            style={{ backgroundColor: color }}
+                            onClick={() => handlePartyColorChange(key, color)}
+                            aria-label={`Use ${color} for ${displayName}`}
+                          >
+                            <span className="sr-only">Use {color} for {displayName}</span>
+                          </button>
+                        );
+                      })}
+                      <span className="text-[11px] text-muted-foreground font-mono ml-1">
+                        {normalizedColor}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <EnhancedFormField
+                      {...nameFieldProps}
+                      id={`party${key}Name`}
+                      label={`${fallbackName} name`}
+                      placeholder={key === "A" ? "Enter first person's name" : "Enter second person's name"}
+                      value={nameValue}
+                      onChange={(value) => handlePartyNameChange(key, value)}
+                      error={error}
+                      required={true}
+                      description={
+                        key === "A"
+                          ? "This helps us personalize prompts for the first person involved"
+                          : "We'll tailor future reflections for the second person automatically"
+                      }
+                      autoSave={true}
+                    />
+                  </div>
+                </section>
+              );
+            })}
           </div>
 
-          <div className="party-accent-actions">
-            <div className="party-accent-actions__buttons">
+          <div className="rounded-lg border bg-muted/40 p-3 sm:p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap items-center gap-2">
               <Button
                 type="button"
                 variant="outline"
@@ -760,24 +839,38 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 disabled={isUsingDefaultPalette}
                 aria-label="Restore default party colors"
               >
-                <RefreshCcw className="h-4 w-4 mr-2" aria-hidden="true" /> Restore default colors
+                <RefreshCcw className="h-4 w-4 mr-2" aria-hidden="true" /> Restore defaults
               </Button>
             </div>
-            <p className="party-accent-actions__hint">Fine-tune the palette or swap colors if parties prefer each other's accent.</p>
+            <p className="text-xs text-muted-foreground sm:text-sm">
+              You can always revisit this step to adjust names or colors if anything changes.
+            </p>
           </div>
 
           <div className="party-accent-preview-grid">
-            {Object.entries(partyDetails).map(([key, details]) => (
-              <PartyAccentPreviewCard
-                key={key}
-                partyKey={key}
-                details={details}
-                surfaces={themeSurfaces}
-              />
-            ))}
+            {Object.entries(partyDetails).map(([key, details]) => {
+              const liveName = (key === "A" ? partyANameValue : partyBNameValue) || details.name;
+              const liveAccent = createAccentConfig(
+                key === "A" ? normalizedPartyAColor : normalizedPartyBColor,
+                DEFAULT_PARTY_COLORS[key]
+              );
+
+              return (
+                <PartyAccentPreviewCard
+                  key={key}
+                  partyKey={key}
+                  details={{
+                    ...details,
+                    name: liveName,
+                    accent: liveAccent,
+                  }}
+                  surfaces={themeSurfaces}
+                />
+              );
+            })}
           </div>
 
-          <SectionSeparator title="Conflict Details" />
+          <SectionSeparator title="Conflict Overview" />
           <div className="form-grid form-grid-3">
             <DatePickerField
               id="dateOfIncident"
