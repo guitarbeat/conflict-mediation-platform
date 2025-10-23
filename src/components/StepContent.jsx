@@ -758,60 +758,62 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                     </p>
                   </header>
 
-                  <div className="space-y-2">
-                    <FormField
-                      {...colorFieldProps}
-                      id={`party${key}Color`}
-                      label={`${displayName} color`}
-                      type="color"
-                      value={colorValue}
-                      onChange={(value) => handlePartyColorChange(key, value)}
-                      inputClassName="party-color-input"
-                    />
-                    <div className="flex flex-wrap items-center gap-2">
-                      {RECOMMENDED_PARTY_COLORS.map((color) => {
-                        const normalizedOption = normalizePartyColor(color, partyAccents[key].color);
-                        const isActive = normalizedOption === normalizedColor;
-                        return (
-                          <button
-                            key={`${key}-${color}`}
-                            type="button"
-                            className={cn(
-                              "h-8 w-8 rounded-full border border-border transition-transform",
-                              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary",
-                              isActive ? "ring-2 ring-offset-2 ring-offset-background ring-primary" : "hover:scale-105"
-                            )}
-                            style={{ backgroundColor: color }}
-                            onClick={() => handlePartyColorChange(key, color)}
-                            aria-label={`Use ${color} for ${displayName}`}
-                          >
-                            <span className="sr-only">Use {color} for {displayName}</span>
-                          </button>
-                        );
-                      })}
-                      <span className="text-[11px] text-muted-foreground font-mono ml-1">
-                        {normalizedColor}
-                      </span>
+                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-6">
+                    <div className="flex-1 space-y-2 md:max-w-[240px] md:flex-none">
+                      <FormField
+                        {...colorFieldProps}
+                        id={`party${key}Color`}
+                        label={`${displayName} color`}
+                        type="color"
+                        value={colorValue}
+                        onChange={(value) => handlePartyColorChange(key, value)}
+                        inputClassName="party-color-input"
+                      />
+                      <div className="flex flex-wrap items-center gap-2">
+                        {RECOMMENDED_PARTY_COLORS.map((color) => {
+                          const normalizedOption = normalizePartyColor(color, partyAccents[key].color);
+                          const isActive = normalizedOption === normalizedColor;
+                          return (
+                            <button
+                              key={`${key}-${color}`}
+                              type="button"
+                              className={cn(
+                                "h-8 w-8 rounded-full border border-border transition-transform",
+                                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary",
+                                isActive ? "ring-2 ring-offset-2 ring-offset-background ring-primary" : "hover:scale-105"
+                              )}
+                              style={{ backgroundColor: color }}
+                              onClick={() => handlePartyColorChange(key, color)}
+                              aria-label={`Use ${color} for ${displayName}`}
+                            >
+                              <span className="sr-only">Use {color} for {displayName}</span>
+                            </button>
+                          );
+                        })}
+                        <span className="text-[11px] text-muted-foreground font-mono ml-1">
+                          {normalizedColor}
+                        </span>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="space-y-1">
-                    <EnhancedFormField
-                      {...nameFieldProps}
-                      id={`party${key}Name`}
-                      label={`${fallbackName} name`}
-                      placeholder={key === "A" ? "Enter first person's name" : "Enter second person's name"}
-                      value={nameValue}
-                      onChange={(value) => handlePartyNameChange(key, value)}
-                      error={error}
-                      required={true}
-                      description={
-                        key === "A"
-                          ? "This helps us personalize prompts for the first person involved"
-                          : "We'll tailor future reflections for the second person automatically"
-                      }
-                      autoSave={true}
-                    />
+                    <div className="flex-1 space-y-1">
+                      <EnhancedFormField
+                        {...nameFieldProps}
+                        id={`party${key}Name`}
+                        label={`${fallbackName} name`}
+                        placeholder={key === "A" ? "Enter first person's name" : "Enter second person's name"}
+                        value={nameValue}
+                        onChange={(value) => handlePartyNameChange(key, value)}
+                        error={error}
+                        required={true}
+                        description={
+                          key === "A"
+                            ? "This helps us personalize prompts for the first person involved"
+                            : "We'll tailor future reflections for the second person automatically"
+                        }
+                        autoSave={true}
+                      />
+                    </div>
                   </div>
                 </section>
               );
