@@ -1,6 +1,33 @@
 import React from "react";
 import { Info, Users, User } from "lucide-react";
 
+const ACCENT_STYLES = {
+  primary: {
+    borderLeft: "border-l-primary/40",
+    badgeBackground: "bg-primary/10",
+    badgeText: "text-primary/70",
+    badgeBorder: "border-primary/20",
+  },
+  accent: {
+    borderLeft: "border-l-accent/40",
+    badgeBackground: "bg-accent/10",
+    badgeText: "text-accent/70",
+    badgeBorder: "border-accent/20",
+  },
+  secondary: {
+    borderLeft: "border-l-secondary/40",
+    badgeBackground: "bg-secondary/10",
+    badgeText: "text-secondary/70",
+    badgeBorder: "border-secondary/20",
+  },
+  muted: {
+    borderLeft: "border-l-muted/40",
+    badgeBackground: "bg-muted/10",
+    badgeText: "text-muted-foreground/70",
+    badgeBorder: "border-muted/20",
+  },
+};
+
 const GuidanceAlert = ({
   step,
   partyAName = "Party A",
@@ -108,10 +135,11 @@ const GuidanceAlert = ({
 
   const guidance = getGuidanceInfo(step);
   const IconComponent = guidance.icon;
+  const accentClasses = ACCENT_STYLES[guidance.accentColor] || ACCENT_STYLES.muted;
 
   return (
     <div
-      className={`relative ${guidance.borderColor} ${guidance.bgColor} p-2 sm:p-3 mb-2 rounded-lg border-l-4 border-l-${guidance.accentColor}/40`}
+      className={`relative ${guidance.borderColor} ${guidance.bgColor} p-2 sm:p-3 mb-2 rounded-lg border-l-4 ${accentClasses.borderLeft}`}
     >
       {/* Content */}
       <div className="flex items-start gap-1.5 sm:gap-2">
@@ -151,7 +179,7 @@ const GuidanceAlert = ({
 
         {/* Step indicator */}
         <div
-          className={`text-xs px-2 py-1 rounded-md bg-${guidance.accentColor}/10 text-${guidance.accentColor}/70 border border-${guidance.accentColor}/20 flex-shrink-0`}
+          className={`text-xs px-2 py-1 rounded-md ${accentClasses.badgeBackground} ${accentClasses.badgeText} border ${accentClasses.badgeBorder} flex-shrink-0`}
         >
           Step {step}
         </div>
