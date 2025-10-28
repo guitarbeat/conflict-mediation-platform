@@ -140,7 +140,8 @@ This project is open source and available under the [MIT License](LICENSE).
 For questions, issues, or suggestions:
 - Open an issue on GitHub
 - Contact the development team
-- Check the documentation in `/docs`
+- Review the mediation process overview in `manus-working/ConflictMediationProcessSummary(forMediators).txt`
+- Explore the sample interpersonal mediation worksheet in `manus-working/Copyof1.ExampleIntpersonalConflictMediationWorksheet.txt`
 
 ---
 
