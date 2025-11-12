@@ -199,6 +199,11 @@ const useContainerSize = (containerRef) => {
 };
 
 // * Custom hook for drag functionality
+const getClientPositionFromEvent = (e) =>
+  e.touches
+    ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
+    : { x: e.clientX, y: e.clientY };
+
 const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({
@@ -247,19 +252,13 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
     [containerSize]
   );
 
-  const getClientPosition = useCallback((e) => {
-    return e.touches
-      ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
-      : { x: e.clientX, y: e.clientY };
-  }, []);
-
   const handleMove = useCallback(
     (e) => {
       if (!isDragging || !containerRef.current) return;
 
       requestAnimationFrame(() => {
         const rect = containerRef.current.getBoundingClientRect();
-        const clientPos = getClientPosition(e);
+        const clientPos = getClientPositionFromEvent(e);
 
         // * Get position relative to container
         let x = clientPos.x - rect.left;
@@ -291,16 +290,47 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
       isDragging,
       containerRef,
       containerSize,
-      getClientPosition,
       calculateEmotionData,
       onChartPositionChange,
     ]
   );
 
-  const handleStart = useCallback((e) => {
-    setIsDragging(true);
-    e.preventDefault();
-  }, []);
+  const handleStart = useCallback(
+    (e) => {
+      e.preventDefault();
+      setIsDragging(true);
+
+      if (!containerRef.current) return;
+
+      const rect = containerRef.current.getBoundingClientRect();
+      const clientPos = getClientPositionFromEvent(e);
+
+      let x = clientPos.x - rect.left;
+      let y = clientPos.y - rect.top;
+
+      const centerX = containerSize / 2;
+      const centerY = containerSize / 2;
+      const maxRadius = containerSize / 2 - EMOJI_RADIUS;
+
+      const dx = x - centerX;
+      const dy = y - centerY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > maxRadius) {
+        const scale = maxRadius / distance;
+        x = centerX + dx * scale;
+        y = centerY + dy * scale;
+      }
+
+      setPosition({ x, y });
+
+      if (onChartPositionChange) {
+        const emotionData = calculateEmotionData(x, y, containerSize);
+        onChartPositionChange(emotionData);
+      }
+    },
+    [calculateEmotionData, containerRef, containerSize, onChartPositionChange]
+  );
 
   const handleEnd = useCallback(() => {
     setIsDragging(false);
@@ -328,6 +358,7 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
     position,
     setPosition,
     handleStart,
+    handleMove,
     calculateEmotionData,
   };
 };
@@ -436,22 +467,30 @@ const AxisLabels = React.memo(() => (
  * @param {number} props.currentEmotionData.arousal - Arousal value (-1 to 1)
  * @param {string} props.currentEmotionData.emoji - Current emoji
  * @param {string} props.currentEmotionData.label - Current emotion label
+ * @param {boolean} props.isEmojiPlaced - Whether the draggable emoji has been placed on the map
  */
 const EmotionWordsSelector = React.memo(
-  ({ emotionWords, selectedEmotionWords, onEmotionWordsChange, currentEmotionData }) => {
+  ({
+    emotionWords,
+    selectedEmotionWords,
+    onEmotionWordsChange,
+    currentEmotionData,
+    isEmojiPlaced,
+  }) => {
     const { quadrant, recommended, intensity, colors } = useEmotionRecommendation(
-      currentEmotionData.valence, 
+      currentEmotionData.valence,
       currentEmotionData.arousal
     );
 
     const toggleEmotionWord = useCallback(
       (word) => {
+        if (!isEmojiPlaced) return;
         const newWords = selectedEmotionWords.includes(word)
           ? selectedEmotionWords.filter((w) => w !== word)
           : [...selectedEmotionWords, word];
         onEmotionWordsChange(newWords);
       },
-      [selectedEmotionWords, onEmotionWordsChange]
+      [isEmojiPlaced, selectedEmotionWords, onEmotionWordsChange]
     );
 
     const getWordStyling = (word) => {
@@ -471,62 +510,73 @@ const EmotionWordsSelector = React.memo(
       <div className="space-y-4">
         <div className="text-center">
           <h3 className="text-lg font-semibold mb-2">
-            Select emotion words that describe how you feel:
+            {isEmojiPlaced
+              ? "Select emotion words that describe how you feel:"
+              : "Place the emoji to unlock tailored emotion words"}
           </h3>
           <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r ${colors.secondary} ${colors.border} border-2`}>
             <span className="text-2xl">{currentEmotionData.emoji}</span>
-            <div className="text-sm">
+            <div className="text-sm text-left">
               <div className={`font-medium ${colors.text}`}>
-                {currentEmotionData.label} • {quadrant.replace('-', ' ').toUpperCase()}
+                {isEmojiPlaced
+                  ? `${currentEmotionData.label} • ${quadrant.replace('-', ' ').toUpperCase()}`
+                  : "Emoji not placed yet"}
               </div>
               <div className="text-gray-500">
-                Intensity: {Math.round(intensity * 100)}%
+                {isEmojiPlaced
+                  ? `Intensity: ${Math.round(intensity * 100)}%`
+                  : "Drag the emoji into the map to view recommendations"}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Recommended emotions section */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <div className={`w-3 h-3 rounded-full ${colors.accent}`}></div>
-            <h4 className="font-medium text-sm">Recommended for your current position:</h4>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {recommended.map((word) => (
-              <Badge
-                key={word}
-                className={`cursor-pointer transition-all duration-300 hover:scale-105 ${getWordStyling(word)}`}
-                onClick={() => toggleEmotionWord(word)}
-              >
-                {word}
-              </Badge>
-            ))}
-          </div>
-        </div>
+        {isEmojiPlaced ? (
+          <>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div className={`w-3 h-3 rounded-full ${colors.accent}`}></div>
+                <h4 className="font-medium text-sm">Recommended for your current position:</h4>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {recommended.map((word) => (
+                  <Badge
+                    key={word}
+                    className={`cursor-pointer transition-all duration-300 hover:scale-105 ${getWordStyling(word)}`}
+                    onClick={() => toggleEmotionWord(word)}
+                  >
+                    {word}
+                  </Badge>
+                ))}
+              </div>
+            </div>
 
-        {/* All emotions section */}
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-gray-400"></div>
-            <h4 className="font-medium text-sm">All emotions:</h4>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-gray-400"></div>
+                <h4 className="font-medium text-sm">All emotions:</h4>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {emotionWords
+                  .filter((word) => !recommended.includes(word))
+                  .map((word) => (
+                    <Badge
+                      key={word}
+                      className={`cursor-pointer transition-all duration-200 hover:scale-105 ${getWordStyling(word)}`}
+                      onClick={() => toggleEmotionWord(word)}
+                    >
+                      {word}
+                    </Badge>
+                  ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="text-sm text-gray-500 text-center bg-gray-50 border border-dashed border-gray-300 rounded-lg px-4 py-3">
+            Drag the emoji token onto the mood map to reveal recommended emotion words.
           </div>
-          <div className="flex flex-wrap gap-2">
-            {emotionWords
-              .filter(word => !recommended.includes(word))
-              .map((word) => (
-                <Badge
-                  key={word}
-                  className={`cursor-pointer transition-all duration-200 hover:scale-105 ${getWordStyling(word)}`}
-                  onClick={() => toggleEmotionWord(word)}
-                >
-                  {word}
-                </Badge>
-              ))}
-          </div>
-        </div>
+        )}
 
-        {/* Selected emotions display */}
         {selectedEmotionWords.length > 0 && (
           <div className={`mt-4 p-4 rounded-lg bg-gradient-to-r ${colors.secondary} ${colors.border} border-2`}>
             <div className={`text-sm font-medium mb-2 ${colors.text}`}>
@@ -534,8 +584,8 @@ const EmotionWordsSelector = React.memo(
             </div>
             <div className="flex flex-wrap gap-2">
               {selectedEmotionWords.map((word) => (
-                <Badge 
-                  key={word} 
+                <Badge
+                  key={word}
                   className={`bg-gradient-to-r ${colors.primary} text-white border-0 shadow-md`}
                 >
                   {word}
@@ -567,12 +617,16 @@ const EmojiGridMapper = ({
 }) => {
   const containerRef = useRef(null);
   const containerSize = useContainerSize(containerRef);
+  const [hasPlacedEmoji, setHasPlacedEmoji] = useState(Boolean(chartPosition));
+  const [initialDragPosition, setInitialDragPosition] = useState(null);
+  const initialDragStateRef = useRef({ active: false });
 
   const {
     isDragging,
     position,
     setPosition,
     handleStart,
+    handleMove,
     calculateEmotionData,
   } = useDragHandler(containerRef, containerSize, onChartPositionChange);
 
@@ -580,36 +634,118 @@ const EmojiGridMapper = ({
   useEffect(() => {
     if (chartPosition) {
       setPosition({ x: chartPosition.x, y: chartPosition.y });
+      setHasPlacedEmoji(true);
     } else {
       const exactCenter = containerSize / 2;
       setPosition({ x: exactCenter, y: exactCenter });
-
-      if (onChartPositionChange) {
-        const emotionData = calculateEmotionData(
-          exactCenter,
-          exactCenter,
-          containerSize
-        );
-        onChartPositionChange(emotionData);
-      }
     }
   }, [
     containerSize,
     chartPosition,
     setPosition,
-    calculateEmotionData,
-    onChartPositionChange,
   ]);
 
-  const currentEmotionData = useMemo(
-    () => calculateEmotionData(position.x, position.y, containerSize),
-    [position.x, position.y, containerSize, calculateEmotionData]
-  );
+  const currentEmotionData = useMemo(() => {
+    if (!hasPlacedEmoji) {
+      const center = containerSize / 2;
+      return calculateEmotionData(center, center, containerSize);
+    }
+
+    return calculateEmotionData(position.x, position.y, containerSize);
+  }, [
+    hasPlacedEmoji,
+    position.x,
+    position.y,
+    containerSize,
+    calculateEmotionData,
+  ]);
 
   // Get emotion recommendations and colors for the main component
   const { quadrant: mainQuadrant, intensity: mainIntensity, colors: mainColors } = useEmotionRecommendation(
-    currentEmotionData.valence, 
+    currentEmotionData.valence,
     currentEmotionData.arousal
+  );
+
+  const handleInitialDragEnd = useCallback(
+    (clientX, clientY) => {
+      if (!containerRef.current) return;
+
+      const rect = containerRef.current.getBoundingClientRect();
+      let x = clientX - rect.left;
+      let y = clientY - rect.top;
+
+      const centerX = containerSize / 2;
+      const centerY = containerSize / 2;
+      const maxRadius = containerSize / 2 - EMOJI_RADIUS;
+
+      const dx = x - centerX;
+      const dy = y - centerY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > maxRadius) {
+        setHasPlacedEmoji(false);
+        return;
+      }
+
+      setHasPlacedEmoji(true);
+      setPosition({ x, y });
+
+      if (onChartPositionChange) {
+        const emotionData = calculateEmotionData(x, y, containerSize);
+        onChartPositionChange(emotionData);
+      }
+    },
+    [
+      calculateEmotionData,
+      containerRef,
+      containerSize,
+      onChartPositionChange,
+      setPosition,
+      setHasPlacedEmoji,
+    ]
+  );
+
+  useEffect(() => {
+    if (!initialDragStateRef.current.active) return;
+
+    const handlePointerMove = (event) => {
+      const { x, y } = getClientPositionFromEvent(event);
+      setInitialDragPosition({ x, y });
+    };
+
+    const handlePointerEnd = (event) => {
+      const { x, y } = getClientPositionFromEvent(event);
+      initialDragStateRef.current.active = false;
+      setInitialDragPosition(null);
+      handleInitialDragEnd(x, y);
+
+      document.removeEventListener("mousemove", handlePointerMove);
+      document.removeEventListener("mouseup", handlePointerEnd);
+      document.removeEventListener("touchmove", handlePointerMove);
+      document.removeEventListener("touchend", handlePointerEnd);
+    };
+
+    document.addEventListener("mousemove", handlePointerMove);
+    document.addEventListener("mouseup", handlePointerEnd);
+    document.addEventListener("touchmove", handlePointerMove, { passive: false });
+    document.addEventListener("touchend", handlePointerEnd);
+
+    return () => {
+      document.removeEventListener("mousemove", handlePointerMove);
+      document.removeEventListener("mouseup", handlePointerEnd);
+      document.removeEventListener("touchmove", handlePointerMove);
+      document.removeEventListener("touchend", handlePointerEnd);
+    };
+  }, [handleInitialDragEnd]);
+
+  const startInitialDrag = useCallback(
+    (event) => {
+      event.preventDefault();
+      initialDragStateRef.current.active = true;
+      setHasPlacedEmoji(false);
+      setInitialDragPosition(getClientPositionFromEvent(event));
+    },
+    []
   );
 
   return (
@@ -620,18 +756,23 @@ const EmojiGridMapper = ({
       {/* * Valence-Arousal Chart */}
       <div className="relative">
         <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-center px-2">
-          Drag the emoji to express your emotional state
+          {hasPlacedEmoji
+            ? "Drag the emoji around the mood map to update how you're feeling"
+            : "Drag the emoji token into the mood map to begin"}
         </h3>
         <div className="overflow-x-auto pb-4">
           <div
             ref={containerRef}
-            className="relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] mx-auto rounded-full flex-shrink-0 backdrop-blur-xl border-2 shadow-2xl transition-all duration-500"
+            className={`relative w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] lg:w-[500px] lg:h-[500px] mx-auto rounded-full flex-shrink-0 backdrop-blur-xl border-2 shadow-2xl transition-all duration-500 ${
+              hasPlacedEmoji ? "" : "ring-4 ring-offset-4 ring-orange-200"
+            }`}
             style={{
               userSelect: "none",
               background: `linear-gradient(135deg, ${mainColors.gradientColors}, rgba(255,255,255,0.05))`,
-              borderColor: mainColors.borderColor,
+              borderColor: hasPlacedEmoji ? mainColors.borderColor : "rgba(251, 191, 36, 0.7)",
               boxShadow: `0 8px 32px 0 ${mainColors.shadowColor}, inset 0 1px 0 rgba(255,255,255,0.2)`,
-              cursor: "pointer",
+              cursor: hasPlacedEmoji ? "pointer" : "grab",
+              borderStyle: hasPlacedEmoji ? "solid" : "dashed",
             }}
           >
             <AxisLabels />
@@ -640,15 +781,60 @@ const EmojiGridMapper = ({
             <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-300 opacity-30"></div>
             <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gray-300 opacity-30"></div>
 
-            <DraggableEmoji
-              position={position}
-              containerSize={containerSize}
-              isDragging={isDragging}
-              emotionData={currentEmotionData}
-              onStart={handleStart}
-            />
+            {!hasPlacedEmoji && (
+              <div className="absolute inset-10 rounded-full border-2 border-dashed border-orange-200 flex flex-col items-center justify-center text-center gap-2 text-sm text-orange-500">
+                <span className="text-3xl">{EMOTION_QUADRANTS.neutral.emoji}</span>
+                <span>Drop the emoji here to start mapping your feelings</span>
+              </div>
+            )}
+
+            {hasPlacedEmoji && (
+              <DraggableEmoji
+                position={position}
+                containerSize={containerSize}
+                isDragging={isDragging}
+                emotionData={currentEmotionData}
+                onStart={(event) => {
+                  handleStart(event);
+                  handleMove(event);
+                }}
+              />
+            )}
           </div>
         </div>
+
+        {!hasPlacedEmoji && (
+          <div className="mt-2 flex flex-col items-center gap-3">
+            <div className="text-sm text-gray-500 text-center max-w-sm">
+              Grab the emoji token below and place it anywhere on the map. Once it's inside, you can keep dragging it to explore different emotional states.
+            </div>
+            <div className="relative flex flex-col items-center gap-2">
+              <button
+                className="relative w-14 h-14 flex items-center justify-center text-3xl rounded-full bg-white border-2 border-orange-200 shadow-lg hover:shadow-xl transition-all duration-200"
+                onMouseDown={startInitialDrag}
+                onTouchStart={startInitialDrag}
+              >
+                {EMOTION_QUADRANTS.neutral.emoji}
+              </button>
+              <span className="text-xs uppercase tracking-wide text-orange-500 font-semibold">
+                Drag me into the map
+              </span>
+            </div>
+          </div>
+        )}
+
+        {initialDragPosition && (
+          <div
+            className="pointer-events-none fixed z-50 w-14 h-14 flex items-center justify-center text-3xl rounded-full bg-white border-2 border-orange-200 shadow-2xl"
+            style={{
+              left: `${initialDragPosition.x}px`,
+              top: `${initialDragPosition.y}px`,
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            {EMOTION_QUADRANTS.neutral.emoji}
+          </div>
+        )}
 
         {/* * Current position display with dynamic styling */}
         <div className="mt-4 text-center">
@@ -660,20 +846,23 @@ const EmojiGridMapper = ({
             }}
           >
             <span className="text-3xl">{currentEmotionData.emoji}</span>
-            <div className="text-sm">
+            <div className="text-sm text-left">
               <div className={`font-semibold ${mainColors.text}`}>
-                {currentEmotionData.label}
+                {hasPlacedEmoji ? currentEmotionData.label : "Emoji not placed yet"}
               </div>
               <div className="text-gray-500">
-                {mainQuadrant.replace('-', ' ').toUpperCase()} • 
-                Intensity: {Math.round(mainIntensity * 100)}%
+                {hasPlacedEmoji
+                  ? `${mainQuadrant.replace('-', ' ').toUpperCase()} • Intensity: ${Math.round(mainIntensity * 100)}%`
+                  : "Drag the emoji into the map to unlock insights"}
               </div>
-              <div className="text-xs text-gray-500 mt-1">
-                Valence: {currentEmotionData.valence > 0 ? "+" : ""}
-                {currentEmotionData.valence} | Arousal:{" "}
-                {currentEmotionData.arousal > 0 ? "+" : ""}
-                {currentEmotionData.arousal}
-              </div>
+              {hasPlacedEmoji && (
+                <div className="text-xs text-gray-500 mt-1">
+                  Valence: {currentEmotionData.valence > 0 ? "+" : ""}
+                  {currentEmotionData.valence} | Arousal: {" "}
+                  {currentEmotionData.arousal > 0 ? "+" : ""}
+                  {currentEmotionData.arousal}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -684,6 +873,7 @@ const EmojiGridMapper = ({
         selectedEmotionWords={selectedEmotionWords}
         onEmotionWordsChange={onEmotionWordsChange}
         currentEmotionData={currentEmotionData}
+        isEmojiPlaced={hasPlacedEmoji}
       />
     </div>
   );
