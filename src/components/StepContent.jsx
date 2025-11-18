@@ -395,60 +395,73 @@ const IndividualReflection = ({
   isFieldMissing,
   context,
   getPartyFieldProps,
+  currentSubStep,
 }) => {
   const fieldProps = getPartyFieldProps ? getPartyFieldProps(party) : {};
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      <SectionSeparator title="Thoughts & Beliefs" />
-      <EnhancedFormField
-        {...fieldProps}
-        id={`${prefix}Thoughts`}
-        label="I think..."
-        placeholder="Explain what you think or believe to be true about the conflict..."
-        value={formData[`${prefix}Thoughts`]}
-        onChange={(value) => updateFormData(`${prefix}Thoughts`, value)}
-        type="textarea"
-        rows={4}
-        error={isFieldMissing(`${prefix}Thoughts`) ? "Required" : ""}
-        description="Be honest about your beliefs and assumptions about the situation"
-        showCharacterCount={true}
-        maxLength={1000}
-        smartSuggestions={true}
-        fieldType="thoughts"
-        context={context}
-        showContextualHelp={true}
-      />
-
-      <SectionSeparator title="Emotions & Feelings" />
-      <div className="space-y-3 sm:space-y-4">
-        <label className="form-label">
-          I feel... (Use both methods to express your emotions)
-        </label>
-        <Suspense fallback={<div className="text-sm text-muted-foreground">Loading emotion mapper…</div>}>
-          <EmojiGridMapper
-            onEmotionWordsChange={(words) =>
-              updateFormData(`${prefix}SelectedEmotionWords`, words)
-            }
-            onChartPositionChange={(position) =>
-              updateFormData(`${prefix}EmotionChartPosition`, position)
-            }
-            selectedEmotionWords={formData[`${prefix}SelectedEmotionWords`]}
-            chartPosition={formData[`${prefix}EmotionChartPosition`]}
+      {currentSubStep === 0 && (
+        <>
+          <SectionSeparator title="Thoughts & Beliefs" />
+          <EnhancedFormField
+            {...fieldProps}
+            id={`${prefix}Thoughts`}
+            label="I think..."
+            placeholder="Explain what you think or believe to be true about the conflict..."
+            value={formData[`${prefix}Thoughts`]}
+            onChange={(value) => updateFormData(`${prefix}Thoughts`, value)}
+            type="textarea"
+            rows={4}
+            error={isFieldMissing(`${prefix}Thoughts`) ? "Required" : ""}
+            description="Be honest about your beliefs and assumptions about the situation"
+            showCharacterCount={true}
+            maxLength={1000}
+            smartSuggestions={true}
+            fieldType="thoughts"
+            context={context}
+            showContextualHelp={true}
           />
-        </Suspense>
-      </div>
+        </>
+      )}
 
-      <SectionSeparator title="Communication Approaches" />
-      <CommunicationApproaches
-        party={party}
-        prefix={prefix}
-        formData={formData}
-        updateFormData={updateFormData}
-        isFieldMissing={isFieldMissing}
-        context={context}
-        getPartyFieldProps={getPartyFieldProps}
-      />
+      {currentSubStep === 1 && (
+        <>
+          <SectionSeparator title="Emotions & Feelings" />
+          <div className="space-y-3 sm:space-y-4">
+            <label className="form-label">
+              I feel... (Use both methods to express your emotions)
+            </label>
+            <Suspense fallback={<div className="text-sm text-muted-foreground">Loading emotion mapper…</div>}>
+              <EmojiGridMapper
+                onEmotionWordsChange={(words) =>
+                  updateFormData(`${prefix}SelectedEmotionWords`, words)
+                }
+                onChartPositionChange={(position) =>
+                  updateFormData(`${prefix}EmotionChartPosition`, position)
+                }
+                selectedEmotionWords={formData[`${prefix}SelectedEmotionWords`]}
+                chartPosition={formData[`${prefix}EmotionChartPosition`]}
+              />
+            </Suspense>
+          </div>
+        </>
+      )}
+
+      {currentSubStep === 2 && (
+        <>
+          <SectionSeparator title="Communication Approaches" />
+          <CommunicationApproaches
+            party={party}
+            prefix={prefix}
+            formData={formData}
+            updateFormData={updateFormData}
+            isFieldMissing={isFieldMissing}
+            context={context}
+            getPartyFieldProps={getPartyFieldProps}
+          />
+        </>
+      )}
     </div>
   );
 };
@@ -468,7 +481,7 @@ const Step1Schema = z.object({
   partyBColor: hexColorSchema.optional(),
 });
 
-const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON, showErrors, getRequiredFieldsForStep }) => {
+const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON, showErrors, getRequiredFieldsForStep, currentSubStep, setCurrentSubStep }) => {
   // Error handling
   const { executeFileOperation, executeAsync } = useErrorHandler({
     showToast: true,
@@ -941,6 +954,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
             isFieldMissing={isFieldMissing}
             context={context}
             getPartyFieldProps={getPartyFieldProps}
+            currentSubStep={currentSubStep}
           />
         </div>
       );
@@ -957,6 +971,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
             isFieldMissing={isFieldMissing}
             context={context}
             getPartyFieldProps={getPartyFieldProps}
+            currentSubStep={currentSubStep}
           />
         </div>
       );

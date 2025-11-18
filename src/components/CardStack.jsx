@@ -168,6 +168,7 @@ const CardStack = ({
               : "transition-all duration-[400ms] ease-out"
           }`}
           style={cardStyle}
+          data-testid={isActive ? "current-card" : ""}
         >
           <StepCard>{renderStepContent(stepNumber)}</StepCard>
         </div>

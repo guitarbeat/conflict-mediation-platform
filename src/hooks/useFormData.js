@@ -214,12 +214,12 @@ export const useFormData = () => {
     /**
      * Check if a step has required data filled
      */
-    const isStepComplete = (step) => {
-        const stepData = getStepData(step);
-        const requiredFields = getRequiredFieldsForStep(step);
+    const isStepComplete = (step, subStep = 0) => {
+        const fields = getRequiredFieldsForSubStep(step, subStep);
+        if (fields.length === 0) return true;
 
-        return requiredFields.every(field => {
-            const value = stepData[field];
+        return fields.every(field => {
+            const value = formData[field];
             if (Array.isArray(value)) {
                 return value.length > 0 && value.every(item => 
                     typeof item === 'string' ? item.trim() !== '' : 
@@ -233,17 +233,30 @@ export const useFormData = () => {
     /**
      * Get list of missing required fields for a step
      */
-    const getMissingFieldsForStep = (step) => {
-        const stepData = getStepData(step);
-        const requiredFields = getRequiredFieldsForStep(step);
+    const getMissingFieldsForStep = (step, subStep = 0) => {
+        const requiredFields = getRequiredFieldsForSubStep(step, subStep);
         return requiredFields.filter(field => {
-            const value = stepData[field];
+            const value = formData[field];
             if (Array.isArray(value)) {
                 return value.length === 0;
             }
             return !value || value.toString().trim() === "";
         });
     };
+
+    const getRequiredFieldsForSubStep = (step, subStep) => {
+        if (step === 2) { // Party A Individual Reflection
+            if (subStep === 0) return ["partyAThoughts"];
+            if (subStep === 1) return [];
+            if (subStep === 2) return ["partyAAssertiveApproach"];
+        }
+        if (step === 3) { // Party B Individual Reflection
+            if (subStep === 0) return ["partyBThoughts"];
+            if (subStep === 1) return [];
+            if (subStep === 2) return ["partyBAssertiveApproach"];
+        }
+        return getRequiredFieldsForStep(step);
+    }
 
     /**
      * Get required fields for a specific step
@@ -279,6 +292,7 @@ export const useFormData = () => {
         isStepComplete,
         getMissingFieldsForStep,
         getRequiredFieldsForStep,
+        getRequiredFieldsForSubStep,
         loadedFromStorage,
     };
 };

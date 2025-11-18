@@ -35,9 +35,11 @@ const NavigationButtons = ({
   onNavigate,
   isAnimating,
   canGoNext = true,
+  currentSubStep = 0,
+  subStepCount = 0,
 }) => {
-  const canGoPrev = currentStep > 1;
-  const hasNextStep = currentStep < totalSteps;
+  const canGoPrev = currentStep > 1 || currentSubStep > 0;
+  const hasNextStep = currentStep < totalSteps || currentSubStep < subStepCount - 1;
 
   const buttonConfig = {
     prev: {
@@ -95,7 +97,7 @@ const NavigationButtons = ({
       {(canGoPrev || hasNextStep) && (
         <div
           className={cn(
-            "sm:hidden fixed bottom-0 left-0 right-0 px-4",
+            "sm:hidden fixed bottom-0 left-0 right-0 px-4 z-50",
             "pb-[env(safe-area-inset-bottom,1rem)] pt-2 pointer-events-none",
           )}
         >
@@ -119,12 +121,22 @@ const NavigationButtons = ({
               size="lg"
               className="flex-1"
               onClick={() => onNavigate("next")}
-              disabled={!hasNextStep || isAnimating}
-              aria-disabled={!canGoNext}
-              aria-label={hasNextStep ? "Go to next step" : "Next step unavailable"}
+              disabled={!hasNextStep || isAnimating || !canGoNext}
+              aria-label={
+                currentStep === 1
+                  ? "Start Mediation"
+                  : hasNextStep
+                    ? "Go to next step"
+                    : "Next step unavailable"
+              }
+              data-testid="next-button"
             >
               <span className="font-medium">
-                {hasNextStep ? "Next" : "Done"}
+                {currentStep === 1 && currentSubStep === 0
+                  ? "Start Mediation"
+                  : hasNextStep
+                    ? "Next"
+                    : "Done"}
               </span>
               <ChevronRight className="size-5" aria-hidden="true" />
             </Button>
