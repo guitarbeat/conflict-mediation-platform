@@ -18,6 +18,13 @@ const TOTAL_SURVEY_STEPS =
     .flatMap((category) => category.steps)
     .reduce((highest, step) => Math.max(highest, step), 0) || 1;
 
+const getSubStepCountForStep = (step) => {
+  if (step === 2 || step === 3) {
+    return 3;
+  }
+  return 0;
+};
+
 const FIELD_LABELS = {
   partyAName: "Party A Name",
   partyBName: "Party B Name",
@@ -49,15 +56,17 @@ function App() {
     getRequiredFieldsForStep,
     isStepComplete,
     getMissingFieldsForStep,
+    getRequiredFieldsForSubStep,
   } = useFormData();
 
+  const [currentSubStep, setCurrentSubStep] = useState(0);
   const [errorStep, setErrorStep] = useState(null);
 
   const navigationGuard = useCallback(
     ({ currentStep: step, direction }) => {
-      if (direction === "forward" && !isStepComplete(step)) {
+      if (direction === "forward" && !isStepComplete(step, currentSubStep)) {
         setErrorStep(step);
-        const missingFields = getMissingFieldsForStep(step);
+        const missingFields = getMissingFieldsForStep(step, currentSubStep);
         if (missingFields.length > 0) {
           const fieldNames = missingFields
             .map((field) => FIELD_LABELS[field] ?? field)
@@ -100,8 +109,8 @@ function App() {
   });
 
   const canGoNext = useMemo(
-    () => isStepComplete(currentStep),
-    [currentStep, isStepComplete],
+    () => isStepComplete(currentStep, currentSubStep),
+    [currentStep, currentSubStep, isStepComplete, formData],
   );
 
   useEffect(() => {
@@ -128,7 +137,27 @@ function App() {
   }, [isAnimating, navigateToStep]);
 
   const handleNavigate = (direction) => {
-    navigateToStep(direction);
+    const subStepCount = getSubStepCountForStep(currentStep);
+
+    if (direction === 'next') {
+      if (currentSubStep < subStepCount - 1) {
+        setCurrentSubStep(currentSubStep + 1);
+      } else {
+        navigateToStep('next');
+        setCurrentSubStep(0);
+      }
+    } else if (direction === 'prev') {
+      if (currentSubStep > 0) {
+        setCurrentSubStep(currentSubStep - 1);
+      } else {
+        const prevStep = currentStep - 1;
+        const prevSubStepCount = getSubStepCountForStep(prevStep);
+        navigateToStep('prev');
+        setCurrentSubStep(prevSubStepCount > 0 ? prevSubStepCount - 1 : 0);
+      }
+    } else {
+      navigateToStep(direction);
+    }
   };
 
   // Export functions
@@ -155,6 +184,8 @@ function App() {
         onExportJSON={exportToJSON}
         showErrors={errorStep === step}
         getRequiredFieldsForStep={getRequiredFieldsForStep}
+        currentSubStep={currentSubStep}
+        setCurrentSubStep={setCurrentSubStep}
       />
     );
   };
@@ -222,6 +253,8 @@ function App() {
           onNavigate={handleNavigate}
           isAnimating={isAnimating}
           canGoNext={canGoNext}
+          currentSubStep={currentSubStep}
+          subStepCount={getSubStepCountForStep(currentStep)}
         />
 
       </div>
