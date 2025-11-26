@@ -1,6 +1,5 @@
-@import "tailwindcss";
-@import "./styles/natural-utilities.css";
 @import "./styles/design-system.css";
+@import "./styles/natural-utilities.css";
 
 :root {
   --radius: 0.75rem;
@@ -10,16 +9,19 @@
   * {
     @apply border-[var(--border)] outline-[var(--ring)]/50;
   }
+
   body {
     @apply bg-[var(--background)] text-[var(--foreground)];
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     line-height: var(--line-height-relaxed);
     color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer utilities {
-  /* Enhanced Typography Utilities using new design system */
+  /* * Typography utilities using design system */
   .text-display-3xl {
     font-size: var(--font-size-3xl);
     font-weight: var(--font-weight-bold);
@@ -69,7 +71,7 @@
     letter-spacing: var(--letter-spacing-normal);
   }
 
-  /* Form element consistency using new design system */
+  /* * Form element consistency */
   .form-label {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
@@ -99,36 +101,5 @@
     line-height: var(--line-height-tight);
     letter-spacing: var(--letter-spacing-tight);
     margin-bottom: var(--space-6);
-  }
-
-  /* Mobile-specific improvements */
-  @media (max-width: 640px) {
-    /* Ensure form elements are properly sized for touch */
-    input,
-    textarea,
-    select {
-      font-size: 16px !important; /* Prevents zoom on iOS */
-      min-height: 44px; /* Minimum touch target size */
-    }
-
-    /* Improve text readability on small screens */
-    .text-body-md {
-      font-size: var(--font-size-sm);
-      line-height: var(--line-height-relaxed);
-    }
-
-    /* Better spacing for mobile forms */
-    .space-y-3 > * + * {
-      margin-top: var(--space-3);
-    }
-
-    .space-y-4 > * + * {
-      margin-top: var(--space-4);
-    }
-
-    /* Ensure proper padding for mobile cards */
-    .p-4 {
-      padding: var(--space-4);
-    }
   }
 }
