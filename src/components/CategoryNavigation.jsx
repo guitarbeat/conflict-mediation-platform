@@ -55,22 +55,22 @@ const CategoryNavigation = ({
         key={step}
         type="button"
         onClick={() => onNavigateToStep(step)}
-        className={`w-full flex items-center gap-2 p-2 rounded text-left text-sm transition-colors ${
+        className={`w-full flex items-center gap-3 p-3 rounded-lg text-left text-body-md transition-all duration-normal ${
           isCurrentStep
-            ? "bg-primary/20 text-primary font-medium"
+            ? "bg-primary/20 text-primary font-medium shadow-sm"
             : isCompleted
-            ? "text-green-600 hover:bg-green-50"
+            ? "text-success hover:bg-success/10"
             : "text-muted-foreground hover:bg-muted/50"
         } cursor-pointer`}
       >
         {isCompleted ? (
-          <CheckCircle className="h-4 w-4 text-green-500" aria-hidden="true" />
+          <CheckCircle className="h-5 w-5 text-success flex-shrink-0" aria-hidden="true" />
         ) : (
-          <Circle className="h-4 w-4" aria-hidden="true" />
+          <Circle className="h-5 w-5 text-muted-foreground flex-shrink-0" aria-hidden="true" />
         )}
-        <span>{getStepName(step)}</span>
+        <span className="flex-1">{getStepName(step)}</span>
         {isCurrentStep && (
-          <span className="ml-auto text-xs px-2 py-1 bg-primary/20 rounded-full">
+          <span className="badge badge-primary">
             Current
           </span>
         )}
@@ -79,27 +79,27 @@ const CategoryNavigation = ({
   };
 
   return (
-    <div className="bg-card border border-border rounded-lg p-4 mb-6">
+    <div className="bg-card border border-border rounded-lg p-6 mb-6 shadow-sm">
       <button
         type="button"
         onClick={toggleOverview}
-        className="w-full text-left mb-4 flex items-center justify-between hover:bg-muted/50 rounded-lg p-2 -m-2 transition-colors"
+        className="w-full text-left mb-6 flex items-center justify-between hover:bg-muted/50 rounded-lg p-2 -m-2 transition-all duration-normal"
       >
-        <h3 className="text-lg font-semibold flex items-center gap-2">
+        <h3 className="text-heading-md flex items-center gap-3">
           <span role="img" aria-label="Survey overview">
             📊
           </span>
           Survey Progress Overview
         </h3>
         {isOverviewCollapsed ? (
-          <ChevronRight className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+          <ChevronRight className="h-5 w-5 text-muted-foreground transition-transform duration-normal" aria-hidden="true" />
         ) : (
-          <ChevronUp className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+          <ChevronUp className="h-5 w-5 text-muted-foreground transition-transform duration-normal" aria-hidden="true" />
         )}
       </button>
 
       {!isOverviewCollapsed && (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {Object.values(SURVEY_CATEGORIES).map((category) => {
             const progress = getCategoryProgress(formData, category);
             const isExpanded = expandedCategory === category.id;
@@ -108,25 +108,25 @@ const CategoryNavigation = ({
             return (
               <div
                 key={category.id}
-                className="border border-border rounded-lg overflow-hidden"
+                className="border border-border rounded-lg overflow-hidden transition-all duration-normal hover:shadow-sm"
               >
                 <button
                   type="button"
                   onClick={() => toggleCategory(category.id)}
-                  className={`w-full p-3 text-left flex items-center justify-between transition-colors ${
+                  className={`w-full p-4 text-left flex items-center justify-between transition-all duration-normal ${
                     isCurrentCategory
-                      ? "bg-primary/10 border-primary/20"
+                      ? "bg-primary/10 border-l-2 border-l-primary"
                       : "hover:bg-muted/50"
                   }`}
                   aria-expanded={isExpanded}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="text-lg" aria-hidden="true">
+                  <div className="flex items-center gap-4">
+                    <span className="text-xl" aria-hidden="true">
                       {category.icon}
                     </span>
                     <div>
-                      <h4 className="font-medium text-sm">{category.name}</h4>
-                      <p className="text-xs text-muted-foreground">
+                      <h4 className="text-heading-sm mb-1">{category.name}</h4>
+                      <p className="text-body-sm text-muted-foreground">
                         {progress.total > 0
                           ? `${progress.completed} of ${progress.total} steps completed`
                           : progress.optional > 0
@@ -138,12 +138,12 @@ const CategoryNavigation = ({
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <div className="w-16 h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="flex items-center gap-3">
+                    <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
                       <div
-                        className={`h-full transition-all duration-300 ${
+                        className={`h-full transition-all duration-normal ${
                           progress.percentage === 100
-                            ? "bg-green-500"
+                            ? "bg-success"
                             : "bg-primary"
                         }`}
                         style={{ width: `${progress.percentage}%` }}
@@ -152,12 +152,12 @@ const CategoryNavigation = ({
 
                     {isExpanded ? (
                       <ChevronDown
-                        className="h-4 w-4 text-muted-foreground"
+                        className="h-4 w-4 text-muted-foreground transition-transform duration-normal"
                         aria-hidden="true"
                       />
                     ) : (
                       <ChevronRight
-                        className="h-4 w-4 text-muted-foreground"
+                        className="h-4 w-4 text-muted-foreground transition-transform duration-normal"
                         aria-hidden="true"
                       />
                     )}
@@ -165,12 +165,12 @@ const CategoryNavigation = ({
                 </button>
 
                 {isExpanded && (
-                  <div className="border-t border-border bg-muted/20 p-3">
-                    <p className="text-xs text-muted-foreground mb-3">
+                  <div className="border-t border-border bg-muted/30 p-4">
+                    <p className="text-body-sm text-muted-foreground mb-4">
                       {category.description}
                     </p>
 
-                    <div className="space-y-1">
+                    <div className="space-y-2">
                       {category.steps.map((step) =>
                         renderStepButton(category, step, progress)
                       )}

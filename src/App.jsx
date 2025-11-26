@@ -195,29 +195,34 @@ function App() {
       <Toaster richColors position="top-right" />
       <DarkModeToggle />
 
-      <header className="border-b border-border bg-card/60 backdrop-blur">
-        <div className="container mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-3 px-3 sm:px-6 py-4 max-w-4xl">
+      <header className="border-b border-border bg-card/80 backdrop-blur-sm">
+        <div className="container mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4 px-4 sm:px-6 py-6 max-w-4xl">
           <img
             src={logo}
             alt="Co-op logo"
-            className="h-12 w-12 rounded-md border border-border bg-background object-contain"
+            className="h-12 w-12 rounded-lg border border-border bg-background object-contain shadow-sm"
           />
-          <div>
-            <h1 className="text-xl sm:text-2xl font-semibold text-foreground">
+          <div className="flex-1">
+            <h1 className="text-heading-lg text-foreground mb-1">
               Co-op Conflict Resolution Platform
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-body-md text-muted-foreground">
               Guide teams through mediation steps and capture agreements with confidence.
             </p>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto w-full px-3 sm:px-4 py-2 sm:py-4 pb-28 sm:pb-6 max-w-4xl">
+      <div className="container mx-auto w-full px-4 py-6 pb-28 sm:pb-8 max-w-4xl">
         {loadedFromStorage && (
-          <div className="mb-3 px-3 py-2 rounded-md bg-muted/40 border border-border text-xs sm:text-sm flex items-center justify-between">
-            <span>Resumed a previously saved session from this device.</span>
-            <button onClick={resetFormData} className="underline text-primary">Reset</button>
+          <div className="mb-6 px-4 py-3 rounded-lg bg-muted/50 border border-border text-body-sm flex items-center justify-between shadow-sm">
+            <span className="text-muted-foreground">Resumed a previously saved session from this device.</span>
+            <button 
+              onClick={resetFormData} 
+              className="text-ui-sm text-primary hover:text-primary-hover transition-colors underline-offset-2 hover:underline"
+            >
+              Reset
+            </button>
           </div>
         )}
 

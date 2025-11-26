@@ -17,9 +17,9 @@ const NavigationButton = ({
     disabled={disabled}
     aria-disabled={ariaDisabled}
     className={cn(
-      "w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-border",
-      "hover:bg-background/90 transition-all duration-200 flex items-center justify-center",
-      "shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed",
+      "w-12 h-12 rounded-full bg-card/90 backdrop-blur-sm border border-border",
+      "hover:bg-card transition-all duration-normal flex items-center justify-center",
+      "shadow-md hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
       ariaDisabled && "opacity-60",
       className,
     )}
@@ -98,11 +98,11 @@ const NavigationButtons = ({
         <div
           className={cn(
             "sm:hidden fixed bottom-0 left-0 right-0 px-4 z-50",
-            "pb-[env(safe-area-inset-bottom,1rem)] pt-2 pointer-events-none",
+            "pb-[env(safe-area-inset-bottom,1rem)] pt-3 pointer-events-none",
           )}
         >
           <div
-            className="pointer-events-auto bg-card border border-border shadow-lg rounded-2xl px-4 py-3 flex items-center gap-3"
+            className="pointer-events-auto bg-card border border-border shadow-xl rounded-xl px-4 py-3 flex items-center gap-3 backdrop-blur-sm"
           >
             <Button
               type="button"
