@@ -90,10 +90,48 @@ export const useFormData = () => {
         }, { operation: "save" });
     }, [executeAsync]);
 
+    const saveTimeoutRef = useRef(null);
+    const latestFormDataRef = useRef(formData);
+
+    // Keep latestFormDataRef updated
+    useEffect(() => {
+        latestFormDataRef.current = formData;
+    }, [formData]);
+
+    // Save on unmount
+    useEffect(() => {
+        return () => {
+            if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current);
+                // If there was a pending save (timeout exists), save immediately on unmount
+                // We use latestFormDataRef to get the most up-to-date state
+                saveToStorage(latestFormDataRef.current);
+            }
+        };
+    }, [saveToStorage]);
+
+    // Debounced save
     useEffect(() => {
         if (loadedFromStorage) { // Only save after initial load
-            saveToStorage(formData);
+            // Clear existing timeout
+            if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current);
+            }
+
+            // Debounce save operation
+            saveTimeoutRef.current = setTimeout(() => {
+                saveToStorage(formData);
+                saveTimeoutRef.current = null; // Clear ref after execution
+            }, 500);
         }
+
+        // Cleanup for this effect only needs to clear timeout to prevent execution after dependency change
+        // The unmount effect handles the final save
+        return () => {
+             if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current);
+            }
+        };
     }, [formData, loadedFromStorage, saveToStorage]);
 
     /**

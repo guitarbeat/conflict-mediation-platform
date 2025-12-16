@@ -1,0 +1,3 @@
+## 2024-05-23 - Debouncing LocalStorage Writes
+**Learning:** `localStorage.setItem` is synchronous and blocking. Using it directly in a `useEffect` that depends on frequently updating state (like form inputs) causes significant performance degradation on the main thread (typing lag).
+**Action:** Always debounce writes to `localStorage` or other persistence layers when binding them to rapid user input. Ensure to handle the "unmount" case to prevent data loss if the user navigates away before the debounce timer fires. Using a ref to track pending saves and executing them in a cleanup function is a robust pattern for this.
