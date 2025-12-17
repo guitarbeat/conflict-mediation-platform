@@ -173,6 +173,7 @@ export const SmartSuggestions = ({
             disabled={isLoading}
             className="p-1 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
             title="Refresh suggestions"
+            aria-label="Refresh suggestions"
           >
             <RefreshCw className={cn("h-3 w-3", isLoading && "animate-spin")} />
           </button>
@@ -181,6 +182,7 @@ export const SmartSuggestions = ({
             onClick={() => setShowSuggestions(!showSuggestions)}
             className="p-1 text-muted-foreground hover:text-foreground transition-colors"
             title={showSuggestions ? "Hide suggestions" : "Show suggestions"}
+            aria-label={showSuggestions ? "Hide suggestions" : "Show suggestions"}
           >
             {showSuggestions ? <X className="h-3 w-3" /> : <Check className="h-3 w-3" />}
           </button>
