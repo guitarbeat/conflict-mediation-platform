@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useErrorHandler } from "./useErrorHandler";
 
@@ -90,10 +90,15 @@ export const useFormData = () => {
         }, { operation: "save" });
     }, [executeAsync]);
 
+    // Debounce save to storage to avoid performance issues
     useEffect(() => {
-        if (loadedFromStorage) { // Only save after initial load
+        if (!loadedFromStorage) return;
+
+        const timeoutId = setTimeout(() => {
             saveToStorage(formData);
-        }
+        }, 500); // 500ms debounce
+
+        return () => clearTimeout(timeoutId);
     }, [formData, loadedFromStorage, saveToStorage]);
 
     /**
