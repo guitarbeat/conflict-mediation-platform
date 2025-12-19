@@ -231,6 +231,7 @@ const EnhancedFormField = ({
                 type="button"
                 className="text-muted-foreground hover:text-foreground transition-colors"
                 title={helpText}
+                aria-label="Field help information"
               >
                 <HelpCircle className="h-4 w-4" />
               </button>
@@ -240,6 +241,7 @@ const EnhancedFormField = ({
                 type="button"
                 className="text-muted-foreground hover:text-foreground transition-colors"
                 title="Smart suggestions available"
+                aria-label="Smart suggestions available"
               >
                 <Lightbulb className="h-4 w-4" />
               </button>
@@ -279,6 +281,7 @@ const EnhancedFormField = ({
             type="button"
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => setShowPassword(!showPassword)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>

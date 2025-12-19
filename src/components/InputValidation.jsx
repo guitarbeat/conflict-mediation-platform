@@ -84,7 +84,7 @@ const InputValidation = ({
 
     if (validationState.errors.length > 0) {
       return (
-        <div className="space-y-2">
+        <div className="space-y-2" role="alert">
           {validationState.errors.map((error, index) => (
             <div key={index} className="space-y-1">
               <p className="text-red-600 text-xs flex items-center gap-1">
