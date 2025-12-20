@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
 import { useErrorHandler } from "./useErrorHandler";
+import { debounce } from "../utils/debounce";
 
 const initialState = {
     partyAName: "",
@@ -84,11 +85,15 @@ export const useFormData = () => {
         loadFromStorage();
     }, [loadFromStorage]);
 
-    const saveToStorage = useCallback(async (data) => {
-        await executeAsync(async () => {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        }, { operation: "save" });
-    }, [executeAsync]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const saveToStorage = useCallback(
+        debounce(async (data) => {
+            await executeAsync(async () => {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            }, { operation: "save" });
+        }, 500),
+        [executeAsync]
+    );
 
     useEffect(() => {
         if (loadedFromStorage) { // Only save after initial load
