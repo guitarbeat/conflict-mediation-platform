@@ -7,6 +7,17 @@ import StepContent from "./components/StepContent";
 import { useFormData } from "./hooks/useFormData";
 import { useNavigation } from "./hooks/useNavigation";
 import { Toaster } from "./components/ui/sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./components/ui/alert-dialog";
 import { Analytics } from "@vercel/analytics/react";
 import { toast } from "sonner";
 import logo from "./assets/logo.png";
@@ -56,7 +67,6 @@ function App() {
     getRequiredFieldsForStep,
     isStepComplete,
     getMissingFieldsForStep,
-    getRequiredFieldsForSubStep,
   } = useFormData();
 
   const [currentSubStep, setCurrentSubStep] = useState(0);
@@ -216,13 +226,33 @@ function App() {
       <div className="container mx-auto w-full px-4 py-6 pb-28 sm:pb-8 max-w-4xl">
         {loadedFromStorage && (
           <div className="mb-6 px-4 py-3 rounded-lg bg-muted/50 border border-border text-body-sm flex items-center justify-between shadow-sm">
-            <span className="text-muted-foreground">Resumed a previously saved session from this device.</span>
-            <button 
-              onClick={resetFormData} 
-              className="text-ui-sm text-primary hover:text-primary-hover transition-colors underline-offset-2 hover:underline"
+            <span
+              className="text-muted-foreground"
+              data-testid="resume-text"
             >
-              Reset
-            </button>
+              Resumed a previously saved session from this device.
+            </span>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button className="text-ui-sm text-primary hover:text-primary-hover transition-colors underline-offset-2 hover:underline">
+                  Reset
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset Form?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete all your progress. This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={resetFormData}>
+                    Reset
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         )}
 
