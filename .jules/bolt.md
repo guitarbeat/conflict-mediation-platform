@@ -1,0 +1,3 @@
+## 2024-05-23 - Debouncing LocalStorage Writes
+**Learning:** Writing to `localStorage` synchronously on every state change (especially high-frequency events like drag-and-drop) causes significant performance degradation (blocking the main thread).
+**Action:** Implement a debounce mechanism for persistence layers (recommended 300-500ms for balance between performance and data safety). When using React hooks, ensure the debounced function is memoized with `useMemo` so the debounce timer isn't reset on every render. Ensure the debounce utility handles `this` context or arguments correctly if needed (though arrow functions usually suffice).

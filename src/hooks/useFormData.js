@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { toast } from "sonner";
 import { useErrorHandler } from "./useErrorHandler";
+import { debounce } from "../utils/debounce";
 
 const initialState = {
     partyAName: "",
@@ -90,11 +91,16 @@ export const useFormData = () => {
         }, { operation: "save" });
     }, [executeAsync]);
 
+    const debouncedSave = useMemo(
+        () => debounce((data) => saveToStorage(data), 500),
+        [saveToStorage]
+    );
+
     useEffect(() => {
         if (loadedFromStorage) { // Only save after initial load
-            saveToStorage(formData);
+            debouncedSave(formData);
         }
-    }, [formData, loadedFromStorage, saveToStorage]);
+    }, [formData, loadedFromStorage, debouncedSave]);
 
     /**
      * Update a single form field
