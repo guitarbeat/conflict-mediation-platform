@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Check, X, AlertCircle, HelpCircle, Eye, EyeOff, Lightbulb } from "lucide-react";
 import { cn } from "../lib/utils";
 import { SmartSuggestions, ContextualHelp } from "./SmartSuggestions";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const EnhancedFormField = ({
   id,
@@ -227,22 +228,36 @@ const EnhancedFormField = ({
             {renderValidationIcon()}
             {renderAutoSaveStatus()}
             {helpText && (
-              <button
-                type="button"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                title={helpText}
-              >
-                <HelpCircle className="h-4 w-4" />
-              </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="View help text"
+                  >
+                    <HelpCircle className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{helpText}</p>
+                </TooltipContent>
+              </Tooltip>
             )}
             {smartSuggestions && (
-              <button
-                type="button"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                title="Smart suggestions available"
-              >
-                <Lightbulb className="h-4 w-4" />
-              </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    className="text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="Smart suggestions available"
+                  >
+                    <Lightbulb className="h-4 w-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Smart suggestions available</p>
+                </TooltipContent>
+              </Tooltip>
             )}
           </div>
         </div>
@@ -279,6 +294,7 @@ const EnhancedFormField = ({
             type="button"
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => setShowPassword(!showPassword)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
