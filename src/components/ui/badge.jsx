@@ -25,12 +25,12 @@ const badgeVariants = cva(
   }
 )
 
-function Badge({
+const Badge = React.memo(({
   className,
   variant,
   asChild = false,
   ...props
-}) {
+}) => {
   const Comp = asChild ? Slot : "span"
 
   return (
@@ -39,6 +39,7 @@ function Badge({
       className={cn(badgeVariants({ variant }), className)}
       {...props} />
   );
-}
+})
+Badge.displayName = "Badge"
 
 export { Badge, badgeVariants }

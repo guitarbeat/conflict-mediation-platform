@@ -96,6 +96,29 @@ const EMOTION_COLORS = {
   }
 };
 
+const RECOMMENDATIONS = {
+  // High valence, high arousal (pleasant-energetic)
+  "pleasant-energetic": [
+    "happy", "excited", "enthusiastic", "joyful", "confident", "proud"
+  ],
+  // High valence, low arousal (pleasant-calm)
+  "pleasant-calm": [
+    "content", "calm", "peaceful", "satisfied", "grateful", "relieved"
+  ],
+  // Low valence, high arousal (unpleasant-energetic)
+  "unpleasant-energetic": [
+    "angry", "frustrated", "irritated", "stressed", "anxious", "overwhelmed"
+  ],
+  // Low valence, low arousal (unpleasant-calm)
+  "unpleasant-calm": [
+    "sad", "disappointed", "lonely", "bored", "guilty", "worried"
+  ],
+  // Neutral position
+  "neutral": [
+    "confused", "curious", "surprised", "hopeful", "nervous", "embarrassed"
+  ]
+};
+
 const EMOJI_RADIUS = 24; // * Radius of the draggable emoji in pixels
 const DEFAULT_CONTAINER_SIZE = 500;
 
@@ -111,29 +134,6 @@ const EMOTION_QUADRANTS = {
 // * Custom hook for emotion recommendations
 const useEmotionRecommendation = (valence, arousal) => {
   return useMemo(() => {
-    const recommendations = {
-      // High valence, high arousal (pleasant-energetic)
-      "pleasant-energetic": [
-        "happy", "excited", "enthusiastic", "joyful", "confident", "proud"
-      ],
-      // High valence, low arousal (pleasant-calm)
-      "pleasant-calm": [
-        "content", "calm", "peaceful", "satisfied", "grateful", "relieved"
-      ],
-      // Low valence, high arousal (unpleasant-energetic)
-      "unpleasant-energetic": [
-        "angry", "frustrated", "irritated", "stressed", "anxious", "overwhelmed"
-      ],
-      // Low valence, low arousal (unpleasant-calm)
-      "unpleasant-calm": [
-        "sad", "disappointed", "lonely", "bored", "guilty", "worried"
-      ],
-      // Neutral position
-      "neutral": [
-        "confused", "curious", "surprised", "hopeful", "nervous", "embarrassed"
-      ]
-    };
-
     // Determine quadrant based on valence and arousal with improved thresholds
     let quadrant = "neutral";
     const valenceThreshold = 0.15; // Reduced from 0.2 for better edge case handling
@@ -154,7 +154,7 @@ const useEmotionRecommendation = (valence, arousal) => {
 
     return {
       quadrant,
-      recommended: recommendations[quadrant] || recommendations.neutral,
+      recommended: RECOMMENDATIONS[quadrant] || RECOMMENDATIONS.neutral,
       intensity: Math.sqrt(valence * valence + arousal * arousal), // Distance from center
       colors: EMOTION_COLORS[quadrant]
     };
@@ -456,6 +456,75 @@ const AxisLabels = React.memo(() => (
   </>
 ));
 
+/**
+ * Isolated component for rendering the list of emotion badges.
+ * This component is memoized to prevent re-renders when the parent (EmotionWordsSelector)
+ * re-renders due to intensity/text updates.
+ */
+const EmotionBadgeList = React.memo(({
+  recommended,
+  emotionWords,
+  selectedEmotionWords,
+  onToggle,
+  colors
+}) => {
+  const getWordStyling = (word) => {
+    const isRecommended = recommended.includes(word);
+    const isSelected = selectedEmotionWords.includes(word);
+
+    if (isSelected) {
+      return `bg-gradient-to-r ${colors.primary} text-white border-0 shadow-lg transform scale-105 animate-pulse`;
+    } else if (isRecommended) {
+      return `bg-gradient-to-r ${colors.secondary} ${colors.text} ${colors.border} border-2 hover:shadow-md hover:scale-105 transition-all duration-300 animate-pulse`;
+    } else {
+      return `bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200 transition-all duration-200`;
+    }
+  };
+
+  return (
+    <>
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <div className={`w-3 h-3 rounded-full ${colors.accent}`}></div>
+          <h4 className="font-medium text-sm">Recommended for your current position:</h4>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {recommended.map((word) => (
+            <Badge
+              key={word}
+              className={`cursor-pointer transition-all duration-300 hover:scale-105 ${getWordStyling(word)}`}
+              onClick={() => onToggle(word)}
+            >
+              {word}
+            </Badge>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-gray-400"></div>
+          <h4 className="font-medium text-sm">All emotions:</h4>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {emotionWords
+            .filter((word) => !recommended.includes(word))
+            .map((word) => (
+              <Badge
+                key={word}
+                className={`cursor-pointer transition-all duration-200 hover:scale-105 ${getWordStyling(word)}`}
+                onClick={() => onToggle(word)}
+              >
+                {word}
+              </Badge>
+            ))}
+        </div>
+      </div>
+    </>
+  );
+});
+EmotionBadgeList.displayName = "EmotionBadgeList";
+
 // * Component for emotion words selection with dynamic styling
 /**
  * @param {Object} props
@@ -493,19 +562,6 @@ const EmotionWordsSelector = React.memo(
       [isEmojiPlaced, selectedEmotionWords, onEmotionWordsChange]
     );
 
-    const getWordStyling = (word) => {
-      const isRecommended = recommended.includes(word);
-      const isSelected = selectedEmotionWords.includes(word);
-
-      if (isSelected) {
-        return `bg-gradient-to-r ${colors.primary} text-white border-0 shadow-lg transform scale-105 animate-pulse`;
-      } else if (isRecommended) {
-        return `bg-gradient-to-r ${colors.secondary} ${colors.text} ${colors.border} border-2 hover:shadow-md hover:scale-105 transition-all duration-300 animate-pulse`;
-      } else {
-        return `bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200 transition-all duration-200`;
-      }
-    };
-
     return (
       <div className="space-y-4">
         <div className="text-center">
@@ -532,45 +588,13 @@ const EmotionWordsSelector = React.memo(
         </div>
 
         {isEmojiPlaced ? (
-          <>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full ${colors.accent}`}></div>
-                <h4 className="font-medium text-sm">Recommended for your current position:</h4>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {recommended.map((word) => (
-                  <Badge
-                    key={word}
-                    className={`cursor-pointer transition-all duration-300 hover:scale-105 ${getWordStyling(word)}`}
-                    onClick={() => toggleEmotionWord(word)}
-                  >
-                    {word}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-gray-400"></div>
-                <h4 className="font-medium text-sm">All emotions:</h4>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {emotionWords
-                  .filter((word) => !recommended.includes(word))
-                  .map((word) => (
-                    <Badge
-                      key={word}
-                      className={`cursor-pointer transition-all duration-200 hover:scale-105 ${getWordStyling(word)}`}
-                      onClick={() => toggleEmotionWord(word)}
-                    >
-                      {word}
-                    </Badge>
-                  ))}
-              </div>
-            </div>
-          </>
+          <EmotionBadgeList
+            recommended={recommended}
+            emotionWords={emotionWords}
+            selectedEmotionWords={selectedEmotionWords}
+            onToggle={toggleEmotionWord}
+            colors={colors}
+          />
         ) : (
           <div className="text-sm text-gray-500 text-center bg-gray-50 border border-dashed border-gray-300 rounded-lg px-4 py-3">
             Drag the emoji token onto the mood map to reveal recommended emotion words.
