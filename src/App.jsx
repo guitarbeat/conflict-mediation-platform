@@ -161,7 +161,7 @@ function App() {
   };
 
   // Export functions
-  const exportToJSON = () => {
+  const exportToJSON = useCallback(() => {
     const dataStr = JSON.stringify(formData, null, 2);
     const dataUri =
       "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
@@ -172,9 +172,9 @@ function App() {
     linkElement.setAttribute("href", dataUri);
     linkElement.setAttribute("download", exportFileDefaultName);
     linkElement.click();
-  };
+  }, [formData]);
 
-  const renderStepContent = (step) => {
+  const renderStepContent = useCallback((step) => {
     return (
       <StepContent
         step={step}
@@ -188,7 +188,11 @@ function App() {
         setCurrentSubStep={setCurrentSubStep}
       />
     );
-  };
+  }, [formData, updateFormData, updateMultipleFields, exportToJSON, errorStep, getRequiredFieldsForStep, currentSubStep]);
+
+  const handleNavigateToStep = useCallback((step) => {
+    navigateToStep(step);
+  }, [navigateToStep]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -230,9 +234,7 @@ function App() {
         <CategoryNavigation
           formData={formData}
           currentStep={currentStep}
-          onNavigateToStep={(step) => {
-            navigateToStep(step);
-          }}
+          onNavigateToStep={handleNavigateToStep}
         />
 
 

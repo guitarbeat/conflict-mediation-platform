@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -11,7 +11,7 @@ import {
   getCategoryProgress,
 } from "../config/surveyCategories";
 
-const CategoryNavigation = ({
+const CategoryNavigation = memo(({
   formData,
   currentStep,
   onNavigateToStep,
@@ -184,6 +184,8 @@ const CategoryNavigation = ({
       )}
     </div>
   );
-};
+});
+
+CategoryNavigation.displayName = "CategoryNavigation";
 
 export default CategoryNavigation;

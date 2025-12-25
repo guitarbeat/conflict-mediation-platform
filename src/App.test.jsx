@@ -39,7 +39,7 @@ describe("App", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows the resume banner when saved data exists", () => {
+  it("shows the resume banner when saved data exists", async () => {
     const savedFormData = {
       partyAName: "Alice",
       partyBName: "Bob",
@@ -64,7 +64,7 @@ describe("App", () => {
     render(<App />);
 
     expect(
-      screen.getByText(
+      await screen.findByText(
         /Resumed a previously saved session from this device\./i
       )
     ).toBeInTheDocument();
