@@ -108,6 +108,28 @@ const EMOTION_QUADRANTS = {
   neutral: { emoji: "😐", label: "Neutral" },
 };
 
+// * Helper to constrain position within circle
+const constrainToCircle = (x, y, containerSize) => {
+  const centerX = containerSize / 2;
+  const centerY = containerSize / 2;
+  const maxRadius = containerSize / 2 - EMOJI_RADIUS;
+
+  const dx = x - centerX;
+  const dy = y - centerY;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance > maxRadius) {
+    // * Scale back to the circle edge
+    const scale = maxRadius / distance;
+    return {
+      x: centerX + dx * scale,
+      y: centerY + dy * scale
+    };
+  }
+
+  return { x, y };
+};
+
 // * Custom hook for emotion recommendations
 const useEmotionRecommendation = (valence, arousal) => {
   return useMemo(() => {
@@ -264,21 +286,9 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
         let x = clientPos.x - rect.left;
         let y = clientPos.y - rect.top;
 
-        // * Constrain to circular boundary
-        const centerX = containerSize / 2;
-        const centerY = containerSize / 2;
-        const maxRadius = containerSize / 2 - EMOJI_RADIUS;
-
-        const dx = x - centerX;
-        const dy = y - centerY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance > maxRadius) {
-          // * Scale back to the circle edge
-          const scale = maxRadius / distance;
-          x = centerX + dx * scale;
-          y = centerY + dy * scale;
-        }
+        const constrained = constrainToCircle(x, y, containerSize);
+        x = constrained.x;
+        y = constrained.y;
 
         setPosition({ x, y });
 
@@ -308,19 +318,9 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
       let x = clientPos.x - rect.left;
       let y = clientPos.y - rect.top;
 
-      const centerX = containerSize / 2;
-      const centerY = containerSize / 2;
-      const maxRadius = containerSize / 2 - EMOJI_RADIUS;
-
-      const dx = x - centerX;
-      const dy = y - centerY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance > maxRadius) {
-        const scale = maxRadius / distance;
-        x = centerX + dx * scale;
-        y = centerY + dy * scale;
-      }
+      const constrained = constrainToCircle(x, y, containerSize);
+      x = constrained.x;
+      y = constrained.y;
 
       setPosition({ x, y });
 
@@ -378,9 +378,11 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
  * @param {string} props.emotionData.label - Current emotion label
  * @param {number} props.emotionData.scaleFactor - Scale factor for the emoji
  * @param {function} props.onStart - Callback when drag starts
+ * @param {function} props.onKeyDown - Callback for keyboard navigation
+ * @param {boolean} [props.autoFocus] - Whether to auto-focus on mount
  */
 const DraggableEmoji = React.memo(
-  ({ position, containerSize, isDragging, emotionData, onStart }) => {
+  ({ position, containerSize, isDragging, emotionData, onStart, onKeyDown, autoFocus }) => {
     const emojiRef = useRef(null);
     const { colors } = useEmotionRecommendation(emotionData.valence, emotionData.arousal);
 
@@ -428,8 +430,10 @@ const DraggableEmoji = React.memo(
           cursor: isDragging ? "grabbing" : "grab",
         }}
         role="button"
-        aria-label={`Drag to express emotion: ${emotionData.label}`}
+        aria-label={`Drag to express emotion: ${emotionData.label}. Use arrow keys to move.`}
         tabIndex={0}
+        onKeyDown={onKeyDown}
+        autoFocus={autoFocus}
       >
         {emotionData.emoji}
       </div>
@@ -619,6 +623,7 @@ const EmojiGridMapper = ({
   const containerSize = useContainerSize(containerRef);
   const [hasPlacedEmoji, setHasPlacedEmoji] = useState(Boolean(chartPosition));
   const [initialDragPosition, setInitialDragPosition] = useState(null);
+  const [shouldAutoFocus, setShouldAutoFocus] = useState(false);
   const initialDragStateRef = useRef({ active: false });
 
   const {
@@ -710,6 +715,15 @@ const EmojiGridMapper = ({
 
     const handlePointerMove = (event) => {
       const { x, y } = getClientPositionFromEvent(event);
+
+      // Check moved
+      if (!initialDragStateRef.current.moved) {
+         const start = initialDragStateRef.current.startPos;
+         if (start && (Math.pow(x - start.x, 2) + Math.pow(y - start.y, 2) > 25)) {
+             initialDragStateRef.current.moved = true;
+         }
+      }
+
       setInitialDragPosition({ x, y });
     };
 
@@ -717,7 +731,10 @@ const EmojiGridMapper = ({
       const { x, y } = getClientPositionFromEvent(event);
       initialDragStateRef.current.active = false;
       setInitialDragPosition(null);
-      handleInitialDragEnd(x, y);
+
+      if (initialDragStateRef.current.moved) {
+        handleInitialDragEnd(x, y);
+      }
 
       document.removeEventListener("mousemove", handlePointerMove);
       document.removeEventListener("mouseup", handlePointerEnd);
@@ -740,13 +757,84 @@ const EmojiGridMapper = ({
 
   const startInitialDrag = useCallback(
     (event) => {
-      event.preventDefault();
-      initialDragStateRef.current.active = true;
+      // event.preventDefault(); // Removed to allow click events
+      const pos = getClientPositionFromEvent(event);
+      initialDragStateRef.current = {
+         active: true,
+         moved: false,
+         startPos: pos
+      };
       setHasPlacedEmoji(false);
-      setInitialDragPosition(getClientPositionFromEvent(event));
+      setInitialDragPosition(pos);
     },
     []
   );
+
+  // * Handle keyboard navigation for accessibility
+  const handleKeyDown = useCallback(
+    (e) => {
+      // Only handle if emoji is placed
+      if (!hasPlacedEmoji) return;
+
+      const STEP = 20; // 20px step for keyboard navigation
+      let { x, y } = position;
+      let handled = false;
+
+      switch (e.key) {
+        case "ArrowUp":
+          y -= STEP;
+          handled = true;
+          break;
+        case "ArrowDown":
+          y += STEP;
+          handled = true;
+          break;
+        case "ArrowLeft":
+          x -= STEP;
+          handled = true;
+          break;
+        case "ArrowRight":
+          x += STEP;
+          handled = true;
+          break;
+        default:
+          return;
+      }
+
+      if (handled) {
+        e.preventDefault();
+        e.stopPropagation(); // Prevent global navigation
+
+        const constrained = constrainToCircle(x, y, containerSize);
+        setPosition(constrained);
+
+        if (onChartPositionChange) {
+          onChartPositionChange(calculateEmotionData(constrained.x, constrained.y, containerSize));
+        }
+      }
+    },
+    [hasPlacedEmoji, position, containerSize, onChartPositionChange, calculateEmotionData, setPosition]
+  );
+
+  // * Handle initial click for accessibility (mouse/keyboard users who prefer clicking)
+  const handleInitialClick = useCallback((e) => {
+    e.preventDefault();
+
+    // Ignore click if a drag operation occurred
+    if (initialDragStateRef.current.moved) return;
+
+    setShouldAutoFocus(true);
+    setHasPlacedEmoji(true);
+    // Position is already centered by default in useDragHandler
+    const center = containerSize / 2;
+    setPosition({ x: center, y: center });
+
+    // Focus will be handled by autoFocus prop on DraggableEmoji when it mounts
+
+    if (onChartPositionChange) {
+      onChartPositionChange(calculateEmotionData(center, center, containerSize));
+    }
+  }, [containerSize, onChartPositionChange, calculateEmotionData, setPosition]);
 
   return (
     <div
@@ -798,6 +886,8 @@ const EmojiGridMapper = ({
                   handleStart(event);
                   handleMove(event);
                 }}
+                onKeyDown={handleKeyDown}
+                autoFocus={shouldAutoFocus}
               />
             )}
           </div>
@@ -810,9 +900,11 @@ const EmojiGridMapper = ({
             </div>
             <div className="relative flex flex-col items-center gap-2">
               <button
-                className="relative w-14 h-14 flex items-center justify-center text-3xl rounded-full bg-white border-2 border-orange-200 shadow-lg hover:shadow-xl transition-all duration-200"
+                className="relative w-14 h-14 flex items-center justify-center text-3xl rounded-full bg-white border-2 border-orange-200 shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer select-none"
                 onMouseDown={startInitialDrag}
                 onTouchStart={startInitialDrag}
+                onClick={handleInitialClick}
+                aria-label="Start mapping emotion"
               >
                 {EMOTION_QUADRANTS.neutral.emoji}
               </button>
