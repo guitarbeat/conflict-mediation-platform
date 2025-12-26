@@ -2,6 +2,11 @@ import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 const NavigationButton = ({
   onClick,
@@ -10,24 +15,37 @@ const NavigationButton = ({
   className,
   ariaLabel,
   children,
-}) => (
-  <button
-    type="button"
-    onClick={onClick}
-    disabled={disabled}
-    aria-disabled={ariaDisabled}
-    className={cn(
-      "w-12 h-12 rounded-full bg-card/90 backdrop-blur-sm border border-border",
-      "hover:bg-card transition-all duration-normal flex items-center justify-center",
-      "shadow-md hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
-      ariaDisabled && "opacity-60",
-      className,
-    )}
-    aria-label={ariaLabel}
-  >
-    {children}
-  </button>
-);
+}) => {
+  const button = (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-disabled={ariaDisabled}
+      className={cn(
+        "w-12 h-12 rounded-full bg-card/90 backdrop-blur-sm border border-border",
+        "hover:bg-card transition-all duration-normal flex items-center justify-center",
+        "shadow-md hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
+        ariaDisabled && "opacity-60",
+        className,
+      )}
+      aria-label={ariaLabel}
+    >
+      {children}
+    </button>
+  );
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        {button}
+      </TooltipTrigger>
+      <TooltipContent side="bottom">
+        <p>{ariaLabel}</p>
+      </TooltipContent>
+    </Tooltip>
+  );
+};
 
 const NavigationButtons = ({
   currentStep,
