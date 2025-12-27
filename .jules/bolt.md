@@ -1,0 +1,3 @@
+## 2024-05-23 - Stable Event Handlers & Memoization
+**Learning:** `useNavigation` returns an unstable `navigateToStep` function because it depends on `navigationGuard`, which depends on `formData`. This causes deep re-renders even when `CategoryNavigation` is memoized, because the `onNavigateToStep` prop changes on every keystroke.
+**Action:** Use the `useRef` + `useCallback` pattern (or `useEvent` in the future) to create a stable event handler reference in the parent component (`App.jsx`) when passing callbacks to memoized children that rely on frequently changing state for their internal logic but not for rendering.

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -186,4 +186,36 @@ const CategoryNavigation = ({
   );
 };
 
-export default CategoryNavigation;
+const arePropsEqual = (prevProps, nextProps) => {
+  // If the step changed, we must re-render
+  if (prevProps.currentStep !== nextProps.currentStep) {
+    return false;
+  }
+
+  // If the navigation handler changed (shouldn't happen with our stable wrapper), re-render
+  if (prevProps.onNavigateToStep !== nextProps.onNavigateToStep) {
+    return false;
+  }
+
+  // Smart comparison for formData:
+  // Instead of checking if formData object changed (which happens on every keystroke),
+  // we check if the calculated progress for any category has changed.
+  // This prevents expensive DOM diffing when typing in fields that don't affect progress status.
+  const categories = Object.values(SURVEY_CATEGORIES);
+  for (const category of categories) {
+    const prevProgress = getCategoryProgress(prevProps.formData, category);
+    const nextProgress = getCategoryProgress(nextProps.formData, category);
+
+    if (
+      prevProgress.completed !== nextProgress.completed ||
+      prevProgress.total !== nextProgress.total ||
+      prevProgress.percentage !== nextProgress.percentage
+    ) {
+      return false; // Progress changed, need to re-render
+    }
+  }
+
+  return true; // No relevant changes, skip re-render
+};
+
+export default memo(CategoryNavigation, arePropsEqual);
