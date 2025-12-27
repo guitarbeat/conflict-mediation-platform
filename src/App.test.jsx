@@ -20,12 +20,31 @@ vi.mock("@vercel/analytics/react", () => ({
   Analytics: () => null,
 }));
 
+// Mock Tooltip component to avoid Radix issues in tests
+vi.mock("./components/ui/tooltip", () => ({
+  Tooltip: ({ children }) => <div>{children}</div>,
+  TooltipContent: ({ children }) => <div>{children}</div>,
+  TooltipTrigger: ({ children }) => <div>{children}</div>,
+  TooltipProvider: ({ children }) => <div>{children}</div>,
+}));
+
 import App from "./App.jsx";
 
 describe("App", () => {
   beforeEach(() => {
     mockToast.success.mockReset();
     mockToast.error.mockReset();
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn().mockReturnValue({
+        matches: false,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })
+    );
   });
 
   afterEach(() => {
@@ -39,32 +58,24 @@ describe("App", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows the resume banner when saved data exists", () => {
+  it("shows the resume banner when saved data exists", async () => {
     const savedFormData = {
       partyAName: "Alice",
       partyBName: "Bob",
     };
 
-    vi.stubGlobal(
-      "matchMedia",
-      vi.fn().mockReturnValue({
-        matches: false,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      })
-    );
-
-    vi.spyOn(Storage.prototype, "getItem").mockReturnValue(
-      JSON.stringify(savedFormData)
-    );
+    // Directly mock localStorage instead of spyOn prototype to ensure it works with standard APIs
+    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
+        if (key === "mediation_form_v1") {
+            return JSON.stringify(savedFormData);
+        }
+        return null;
+    });
 
     render(<App />);
 
     expect(
-      screen.getByText(
+      await screen.findByText(
         /Resumed a previously saved session from this device\./i
       )
     ).toBeInTheDocument();
@@ -74,29 +85,22 @@ describe("App", () => {
     const resetButton = resetButtons[0];
     expect(resetButton).toBeVisible();
     expect(resetButton).toBeEnabled();
+
+    getItemSpy.mockRestore();
   });
 
-  it("resets the saved session when clicking the resume banner reset button", () => {
+  it("resets the saved session when clicking the resume banner reset button", async () => {
     const savedFormData = {
       partyAName: "Alice",
       partyBName: "Bob",
     };
 
-    vi.stubGlobal(
-      "matchMedia",
-      vi.fn().mockReturnValue({
-        matches: false,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      })
-    );
-
-    vi.spyOn(Storage.prototype, "getItem").mockReturnValue(
-      JSON.stringify(savedFormData)
-    );
+    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
+        if (key === "mediation_form_v1") {
+            return JSON.stringify(savedFormData);
+        }
+        return null;
+    });
 
     const removeItemSpy = vi
       .spyOn(Storage.prototype, "removeItem")
@@ -104,30 +108,28 @@ describe("App", () => {
 
     render(<App />);
 
+    await screen.findByText(
+      /Resumed a previously saved session from this device\./i
+    );
+
     const resetButtons = screen.getAllByRole("button", { name: /reset/i });
     expect(resetButtons.length).toBeGreaterThan(0);
     const resetButton = resetButtons[0];
     fireEvent.click(resetButton);
 
-    expect(removeItemSpy).toHaveBeenCalledWith("mediation_form_v1");
-    expect(mockToast.success).toHaveBeenCalledWith(
-      "Form data reset successfully"
-    );
+    // Use waitFor to handle potential async nature of the click handler (even though it looks sync)
+    // The previous failure might be due to the state update loop or async error handler wrapper
+    await vi.waitFor(() => {
+        expect(removeItemSpy).toHaveBeenCalledWith("mediation_form_v1");
+        expect(mockToast.success).toHaveBeenCalledWith(
+        "Form data reset successfully"
+        );
+    });
+
+    getItemSpy.mockRestore();
   });
 
   it("blocks navigation when required fields are missing", () => {
-    vi.stubGlobal(
-      "matchMedia",
-      vi.fn().mockReturnValue({
-        matches: false,
-        addEventListener: vi.fn(),
-        removeEventListener: vi.fn(),
-        addListener: vi.fn(),
-        removeListener: vi.fn(),
-        dispatchEvent: vi.fn(),
-      })
-    );
-
     vi.spyOn(Storage.prototype, "getItem").mockReturnValue(null);
 
     render(<App />);

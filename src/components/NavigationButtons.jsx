@@ -2,6 +2,11 @@ import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 const NavigationButton = ({
   onClick,
@@ -10,24 +15,43 @@ const NavigationButton = ({
   className,
   ariaLabel,
   children,
-}) => (
-  <button
-    type="button"
-    onClick={onClick}
-    disabled={disabled}
-    aria-disabled={ariaDisabled}
-    className={cn(
-      "w-12 h-12 rounded-full bg-card/90 backdrop-blur-sm border border-border",
-      "hover:bg-card transition-all duration-normal flex items-center justify-center",
-      "shadow-md hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
-      ariaDisabled && "opacity-60",
-      className,
-    )}
-    aria-label={ariaLabel}
-  >
-    {children}
-  </button>
-);
+  tooltip,
+  tooltipSide = "top",
+}) => {
+  const button = (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-disabled={ariaDisabled}
+      className={cn(
+        "w-12 h-12 rounded-full bg-card/90 backdrop-blur-sm border border-border",
+        "hover:bg-card transition-all duration-normal flex items-center justify-center",
+        "shadow-md hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
+        ariaDisabled && "opacity-60",
+        className,
+      )}
+      aria-label={ariaLabel}
+    >
+      {children}
+    </button>
+  );
+
+  if (tooltip && !disabled) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {button}
+        </TooltipTrigger>
+        <TooltipContent side={tooltipSide}>
+          <p>{tooltip}</p>
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return button;
+};
 
 const NavigationButtons = ({
   currentStep,
@@ -50,6 +74,8 @@ const NavigationButtons = ({
       condition: canGoPrev,
       disabled: isAnimating,
       onClick: () => onNavigate("prev"),
+      tooltip: "Previous step",
+      tooltipSide: "right",
     },
     next: {
       direction: "right",
@@ -60,6 +86,8 @@ const NavigationButtons = ({
       disabled: isAnimating || !hasNextStep,
       ariaDisabled: !canGoNext,
       onClick: () => onNavigate("next"),
+      tooltip: "Next step",
+      tooltipSide: "left",
     },
   };
 
@@ -74,6 +102,8 @@ const NavigationButtons = ({
                 ariaDisabled={config.ariaDisabled}
                 className=""
                 ariaLabel={config.ariaLabel}
+                tooltip={config.tooltip}
+                tooltipSide={config.tooltipSide}
               >
                 <svg
                   className="w-6 h-6"
