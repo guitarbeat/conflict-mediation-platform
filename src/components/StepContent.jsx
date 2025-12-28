@@ -501,68 +501,79 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
     currentStep: step,
   };
 
-  const partyAccents = {
-    A: createAccentConfig(formData.partyAColor, DEFAULT_PARTY_COLORS.A),
-    B: createAccentConfig(formData.partyBColor, DEFAULT_PARTY_COLORS.B),
-  };
+  const partyAccents = React.useMemo(
+    () => ({
+      A: createAccentConfig(formData.partyAColor, DEFAULT_PARTY_COLORS.A),
+      B: createAccentConfig(formData.partyBColor, DEFAULT_PARTY_COLORS.B),
+    }),
+    [formData.partyAColor, formData.partyBColor],
+  );
 
-  const partyDetails = {
-    A: {
-      name: formData.partyAName?.trim() || "Party A",
-      accent: partyAccents.A,
-    },
-    B: {
-      name: formData.partyBName?.trim() || "Party B",
-      accent: partyAccents.B,
-    },
-  };
+  const partyDetails = React.useMemo(
+    () => ({
+      A: {
+        name: formData.partyAName?.trim() || "Party A",
+        accent: partyAccents.A,
+      },
+      B: {
+        name: formData.partyBName?.trim() || "Party B",
+        accent: partyAccents.B,
+      },
+    }),
+    [formData.partyAName, formData.partyBName, partyAccents],
+  );
 
   const themeSurfaces = useThemeContrastSurfaces();
 
-  const getPartyFieldProps = (
-    party,
-    {
-      variant = "enhanced",
-      className = "",
-      labelClassName = "",
-      containerProps: extraContainerProps = {},
-      showBadge,
-    } = {},
-  ) => {
-    const details = partyDetails[party];
-    if (!details) return {};
+  const getPartyFieldProps = React.useCallback(
+    (
+      party,
+      {
+        variant = "enhanced",
+        className = "",
+        labelClassName = "",
+        containerProps: extraContainerProps = {},
+        showBadge,
+      } = {},
+    ) => {
+      const details = partyDetails[party];
+      if (!details) return {};
 
-    const shouldShowBadge =
-      typeof showBadge === "boolean" ? showBadge : variant !== "simple";
+      const shouldShowBadge =
+        typeof showBadge === "boolean" ? showBadge : variant !== "simple";
 
-    const baseClasses = ["party-field"];
-    if (variant === "simple") {
-      baseClasses.push("party-field--compact");
-    }
-    if (shouldShowBadge) {
-      baseClasses.push("party-field--with-badge");
-    }
+      const baseClasses = ["party-field"];
+      if (variant === "simple") {
+        baseClasses.push("party-field--compact");
+      }
+      if (shouldShowBadge) {
+        baseClasses.push("party-field--with-badge");
+      }
 
-    const combinedClassName = [
-      ...baseClasses,
-      className,
-    ]
-      .filter(Boolean)
-      .join(" ");
+      const combinedClassName = [
+        ...baseClasses,
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ");
 
-    const combinedLabelClass = labelClassName || undefined;
+      const combinedLabelClass = labelClassName || undefined;
 
-    return {
-      containerClassName: combinedClassName,
-      containerStyle: details.accent?.styles ? { ...details.accent.styles } : {},
-      containerProps: {
-        ...(shouldShowBadge ? { "data-party-label": details.name } : {}),
-        "data-party-key": party,
-        ...extraContainerProps,
-      },
-      labelClassName: combinedLabelClass,
-    };
-  };
+      return {
+        containerClassName: combinedClassName,
+        containerStyle: details.accent?.styles
+          ? { ...details.accent.styles }
+          : {},
+        containerProps: {
+          ...(shouldShowBadge ? { "data-party-label": details.name } : {}),
+          "data-party-key": party,
+          ...extraContainerProps,
+        },
+        labelClassName: combinedLabelClass,
+      };
+    },
+    [partyDetails],
+  );
 
   // react-hook-form for Step 1
   const step1Form = useForm({
