@@ -204,6 +204,26 @@ const getClientPositionFromEvent = (e) =>
     ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
     : { x: e.clientX, y: e.clientY };
 
+// * Helper to constrain position within the circle
+const constrainToCircle = (x, y, containerSize) => {
+  const centerX = containerSize / 2;
+  const centerY = containerSize / 2;
+  const maxRadius = containerSize / 2 - EMOJI_RADIUS;
+
+  const dx = x - centerX;
+  const dy = y - centerY;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance > maxRadius) {
+    const scale = maxRadius / distance;
+    return {
+      x: centerX + dx * scale,
+      y: centerY + dy * scale
+    };
+  }
+  return { x, y };
+};
+
 const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({
@@ -264,21 +284,9 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
         let x = clientPos.x - rect.left;
         let y = clientPos.y - rect.top;
 
-        // * Constrain to circular boundary
-        const centerX = containerSize / 2;
-        const centerY = containerSize / 2;
-        const maxRadius = containerSize / 2 - EMOJI_RADIUS;
-
-        const dx = x - centerX;
-        const dy = y - centerY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance > maxRadius) {
-          // * Scale back to the circle edge
-          const scale = maxRadius / distance;
-          x = centerX + dx * scale;
-          y = centerY + dy * scale;
-        }
+        const constrained = constrainToCircle(x, y, containerSize);
+        x = constrained.x;
+        y = constrained.y;
 
         setPosition({ x, y });
 
@@ -308,19 +316,9 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
       let x = clientPos.x - rect.left;
       let y = clientPos.y - rect.top;
 
-      const centerX = containerSize / 2;
-      const centerY = containerSize / 2;
-      const maxRadius = containerSize / 2 - EMOJI_RADIUS;
-
-      const dx = x - centerX;
-      const dy = y - centerY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance > maxRadius) {
-        const scale = maxRadius / distance;
-        x = centerX + dx * scale;
-        y = centerY + dy * scale;
-      }
+      const constrained = constrainToCircle(x, y, containerSize);
+      x = constrained.x;
+      y = constrained.y;
 
       setPosition({ x, y });
 
@@ -335,6 +333,42 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
   const handleEnd = useCallback(() => {
     setIsDragging(false);
   }, []);
+
+  const handleKeyDown = useCallback(
+    (e) => {
+      if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) return;
+      e.preventDefault();
+
+      const step = 20; // Pixels to move per key press
+      let { x, y } = position;
+
+      switch (e.key) {
+        case "ArrowUp":
+          y -= step;
+          break;
+        case "ArrowDown":
+          y += step;
+          break;
+        case "ArrowLeft":
+          x -= step;
+          break;
+        case "ArrowRight":
+          x += step;
+          break;
+        default:
+          return;
+      }
+
+      const constrained = constrainToCircle(x, y, containerSize);
+      x = constrained.x;
+      y = constrained.y;
+
+      setPosition({ x, y });
+      const emotionData = calculateEmotionData(x, y, containerSize);
+      onChartPositionChange(emotionData);
+    },
+    [position, containerSize, calculateEmotionData, onChartPositionChange]
+  );
 
   // * Event listeners management
   useEffect(() => {
@@ -360,6 +394,7 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
     handleStart,
     handleMove,
     calculateEmotionData,
+    handleKeyDown,
   };
 };
 
@@ -378,9 +413,10 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
  * @param {string} props.emotionData.label - Current emotion label
  * @param {number} props.emotionData.scaleFactor - Scale factor for the emoji
  * @param {function} props.onStart - Callback when drag starts
+ * @param {function} props.onKeyDown - Callback for keyboard navigation
  */
 const DraggableEmoji = React.memo(
-  ({ position, containerSize, isDragging, emotionData, onStart }) => {
+  ({ position, containerSize, isDragging, emotionData, onStart, onKeyDown }) => {
     const emojiRef = useRef(null);
     const { colors } = useEmotionRecommendation(emotionData.valence, emotionData.arousal);
 
@@ -411,7 +447,7 @@ const DraggableEmoji = React.memo(
     return (
       <div
         ref={emojiRef}
-        className={`absolute w-12 h-12 flex items-center justify-center text-2xl rounded-full backdrop-blur-md border-2 transition-all duration-300 ${
+        className={`absolute w-12 h-12 flex items-center justify-center text-2xl rounded-full backdrop-blur-md border-2 transition-all duration-300 focus-visible:ring-4 focus-visible:ring-primary focus-visible:outline-none ${
           isDragging ? 'shadow-2xl animate-pulse' : 'shadow-lg'
         }`}
         style={{
@@ -428,8 +464,10 @@ const DraggableEmoji = React.memo(
           cursor: isDragging ? "grabbing" : "grab",
         }}
         role="button"
-        aria-label={`Drag to express emotion: ${emotionData.label}`}
+        aria-label={`Drag to express emotion: ${emotionData.label}. Use arrow keys to move.`}
+        aria-description="Use arrow keys to move the emoji around the mood map."
         tabIndex={0}
+        onKeyDown={onKeyDown}
       >
         {emotionData.emoji}
       </div>
@@ -628,6 +666,7 @@ const EmojiGridMapper = ({
     handleStart,
     handleMove,
     calculateEmotionData,
+    handleKeyDown,
   } = useDragHandler(containerRef, containerSize, onChartPositionChange);
 
   // * Initialize position based on props or center
@@ -798,6 +837,7 @@ const EmojiGridMapper = ({
                   handleStart(event);
                   handleMove(event);
                 }}
+                onKeyDown={handleKeyDown}
               />
             )}
           </div>
