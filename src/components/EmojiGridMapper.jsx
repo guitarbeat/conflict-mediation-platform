@@ -211,6 +211,9 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
     y: DEFAULT_CONTAINER_SIZE / 2,
   });
 
+  // Ref to store latest data for handleEnd
+  const latestEmotionDataRef = useRef(null);
+
   const calculateEmotionData = useCallback(
     (x, y, size = containerSize) => {
       const centerX = size / 2;
@@ -283,7 +286,8 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
         setPosition({ x, y });
 
         const emotionData = calculateEmotionData(x, y, containerSize);
-        onChartPositionChange(emotionData);
+        latestEmotionDataRef.current = emotionData;
+        // Don't call onChartPositionChange on every frame to avoid parent re-renders
       });
     },
     [
@@ -291,7 +295,6 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
       containerRef,
       containerSize,
       calculateEmotionData,
-      onChartPositionChange,
     ]
   );
 
@@ -324,8 +327,11 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
 
       setPosition({ x, y });
 
+      const emotionData = calculateEmotionData(x, y, containerSize);
+      latestEmotionDataRef.current = emotionData;
+
+      // Call immediately on start (click/tap)
       if (onChartPositionChange) {
-        const emotionData = calculateEmotionData(x, y, containerSize);
         onChartPositionChange(emotionData);
       }
     },
@@ -334,7 +340,10 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
 
   const handleEnd = useCallback(() => {
     setIsDragging(false);
-  }, []);
+    if (latestEmotionDataRef.current && onChartPositionChange) {
+      onChartPositionChange(latestEmotionDataRef.current);
+    }
+  }, [onChartPositionChange]);
 
   // * Event listeners management
   useEffect(() => {
@@ -364,21 +373,6 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
 };
 
 // * Component for the draggable emoji with dynamic styling
-/**
- * @param {Object} props
- * @param {Object} props.position - Position of the emoji
- * @param {number} props.position.x - X coordinate
- * @param {number} props.position.y - Y coordinate
- * @param {number} props.containerSize - Size of the container
- * @param {boolean} props.isDragging - Whether the emoji is being dragged
- * @param {Object} props.emotionData - Current emotion data
- * @param {number} props.emotionData.valence - Valence value (-1 to 1)
- * @param {number} props.emotionData.arousal - Arousal value (-1 to 1)
- * @param {string} props.emotionData.emoji - Current emoji
- * @param {string} props.emotionData.label - Current emotion label
- * @param {number} props.emotionData.scaleFactor - Scale factor for the emoji
- * @param {function} props.onStart - Callback when drag starts
- */
 const DraggableEmoji = React.memo(
   ({ position, containerSize, isDragging, emotionData, onStart }) => {
     const emojiRef = useRef(null);
@@ -456,19 +450,83 @@ const AxisLabels = React.memo(() => (
   </>
 ));
 
-// * Component for emotion words selection with dynamic styling
 /**
- * @param {Object} props
- * @param {string[]} props.emotionWords - Array of available emotion words
- * @param {string[]} props.selectedEmotionWords - Array of currently selected emotion words
- * @param {function} props.onEmotionWordsChange - Callback when emotion words selection changes
- * @param {Object} props.currentEmotionData - Current emotion data with valence and arousal
- * @param {number} props.currentEmotionData.valence - Valence value (-1 to 1)
- * @param {number} props.currentEmotionData.arousal - Arousal value (-1 to 1)
- * @param {string} props.currentEmotionData.emoji - Current emoji
- * @param {string} props.currentEmotionData.label - Current emotion label
- * @param {boolean} props.isEmojiPlaced - Whether the draggable emoji has been placed on the map
+ * Memoized component for rendering the list of emotion words.
+ * This separates the heavy list rendering from the high-frequency drag updates.
  */
+const EmotionWordCloud = React.memo(({
+  recommended,
+  emotionWords,
+  selectedEmotionWords,
+  toggleEmotionWord,
+  colors,
+  isEmojiPlaced
+}) => {
+  const getWordStyling = (word) => {
+    const isRecommended = recommended.includes(word);
+    const isSelected = selectedEmotionWords.includes(word);
+
+    if (isSelected) {
+      return `bg-gradient-to-r ${colors.primary} text-white border-0 shadow-lg transform scale-105 animate-pulse`;
+    } else if (isRecommended) {
+      return `bg-gradient-to-r ${colors.secondary} ${colors.text} ${colors.border} border-2 hover:shadow-md hover:scale-105 transition-all duration-300 animate-pulse`;
+    } else {
+      return `bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200 transition-all duration-200`;
+    }
+  };
+
+  if (!isEmojiPlaced) {
+    return (
+      <div className="text-sm text-gray-500 text-center bg-gray-50 border border-dashed border-gray-300 rounded-lg px-4 py-3">
+        Drag the emoji token onto the mood map to reveal recommended emotion words.
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <div className={`w-3 h-3 rounded-full ${colors.accent}`}></div>
+          <h4 className="font-medium text-sm">Recommended for your current position:</h4>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {recommended.map((word) => (
+            <Badge
+              key={word}
+              className={`cursor-pointer transition-all duration-300 hover:scale-105 ${getWordStyling(word)}`}
+              onClick={() => toggleEmotionWord(word)}
+            >
+              {word}
+            </Badge>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-gray-400"></div>
+          <h4 className="font-medium text-sm">All emotions:</h4>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {emotionWords
+            .filter((word) => !recommended.includes(word))
+            .map((word) => (
+              <Badge
+                key={word}
+                className={`cursor-pointer transition-all duration-200 hover:scale-105 ${getWordStyling(word)}`}
+                onClick={() => toggleEmotionWord(word)}
+              >
+                {word}
+              </Badge>
+            ))}
+        </div>
+      </div>
+    </>
+  );
+});
+
+// * Component for emotion words selection with dynamic styling
 const EmotionWordsSelector = React.memo(
   ({
     emotionWords,
@@ -477,6 +535,7 @@ const EmotionWordsSelector = React.memo(
     currentEmotionData,
     isEmojiPlaced,
   }) => {
+    // We still need intensity and quadrant for the header
     const { quadrant, recommended, intensity, colors } = useEmotionRecommendation(
       currentEmotionData.valence,
       currentEmotionData.arousal
@@ -492,19 +551,6 @@ const EmotionWordsSelector = React.memo(
       },
       [isEmojiPlaced, selectedEmotionWords, onEmotionWordsChange]
     );
-
-    const getWordStyling = (word) => {
-      const isRecommended = recommended.includes(word);
-      const isSelected = selectedEmotionWords.includes(word);
-
-      if (isSelected) {
-        return `bg-gradient-to-r ${colors.primary} text-white border-0 shadow-lg transform scale-105 animate-pulse`;
-      } else if (isRecommended) {
-        return `bg-gradient-to-r ${colors.secondary} ${colors.text} ${colors.border} border-2 hover:shadow-md hover:scale-105 transition-all duration-300 animate-pulse`;
-      } else {
-        return `bg-gray-100 text-gray-600 border border-gray-300 hover:bg-gray-200 transition-all duration-200`;
-      }
-    };
 
     return (
       <div className="space-y-4">
@@ -531,51 +577,15 @@ const EmotionWordsSelector = React.memo(
           </div>
         </div>
 
-        {isEmojiPlaced ? (
-          <>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full ${colors.accent}`}></div>
-                <h4 className="font-medium text-sm">Recommended for your current position:</h4>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {recommended.map((word) => (
-                  <Badge
-                    key={word}
-                    className={`cursor-pointer transition-all duration-300 hover:scale-105 ${getWordStyling(word)}`}
-                    onClick={() => toggleEmotionWord(word)}
-                  >
-                    {word}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-gray-400"></div>
-                <h4 className="font-medium text-sm">All emotions:</h4>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {emotionWords
-                  .filter((word) => !recommended.includes(word))
-                  .map((word) => (
-                    <Badge
-                      key={word}
-                      className={`cursor-pointer transition-all duration-200 hover:scale-105 ${getWordStyling(word)}`}
-                      onClick={() => toggleEmotionWord(word)}
-                    >
-                      {word}
-                    </Badge>
-                  ))}
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="text-sm text-gray-500 text-center bg-gray-50 border border-dashed border-gray-300 rounded-lg px-4 py-3">
-            Drag the emoji token onto the mood map to reveal recommended emotion words.
-          </div>
-        )}
+        {/* Use the split component for the heavy list */}
+        <EmotionWordCloud
+          recommended={recommended}
+          emotionWords={emotionWords}
+          selectedEmotionWords={selectedEmotionWords}
+          toggleEmotionWord={toggleEmotionWord}
+          colors={colors}
+          isEmojiPlaced={isEmojiPlaced}
+        />
 
         {selectedEmotionWords.length > 0 && (
           <div className={`mt-4 p-4 rounded-lg bg-gradient-to-r ${colors.secondary} ${colors.border} border-2`}>
@@ -600,15 +610,6 @@ const EmotionWordsSelector = React.memo(
 );
 
 // * Main component
-/**
- * @param {Object} props
- * @param {function} props.onEmotionWordsChange - Callback when emotion words selection changes
- * @param {function} props.onChartPositionChange - Callback when chart position changes
- * @param {string[]} [props.selectedEmotionWords=[]] - Array of currently selected emotion words
- * @param {Object|null} [props.chartPosition=null] - Initial chart position
- * @param {number} [props.chartPosition.x] - Initial X coordinate
- * @param {number} [props.chartPosition.y] - Initial Y coordinate
- */
 const EmojiGridMapper = ({
   onEmotionWordsChange,
   onChartPositionChange,
