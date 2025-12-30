@@ -204,6 +204,26 @@ const getClientPositionFromEvent = (e) =>
     ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
     : { x: e.clientX, y: e.clientY };
 
+// * Helper to constrain point to circle
+const constrainToCircle = (x, y, containerSize) => {
+  const centerX = containerSize / 2;
+  const centerY = containerSize / 2;
+  const maxRadius = containerSize / 2 - EMOJI_RADIUS;
+
+  const dx = x - centerX;
+  const dy = y - centerY;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance > maxRadius) {
+    const scale = maxRadius / distance;
+    return {
+      x: centerX + dx * scale,
+      y: centerY + dy * scale,
+    };
+  }
+  return { x, y };
+};
+
 const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({
@@ -265,20 +285,9 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
         let y = clientPos.y - rect.top;
 
         // * Constrain to circular boundary
-        const centerX = containerSize / 2;
-        const centerY = containerSize / 2;
-        const maxRadius = containerSize / 2 - EMOJI_RADIUS;
-
-        const dx = x - centerX;
-        const dy = y - centerY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance > maxRadius) {
-          // * Scale back to the circle edge
-          const scale = maxRadius / distance;
-          x = centerX + dx * scale;
-          y = centerY + dy * scale;
-        }
+        const constrained = constrainToCircle(x, y, containerSize);
+        x = constrained.x;
+        y = constrained.y;
 
         setPosition({ x, y });
 
@@ -308,19 +317,9 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
       let x = clientPos.x - rect.left;
       let y = clientPos.y - rect.top;
 
-      const centerX = containerSize / 2;
-      const centerY = containerSize / 2;
-      const maxRadius = containerSize / 2 - EMOJI_RADIUS;
-
-      const dx = x - centerX;
-      const dy = y - centerY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance > maxRadius) {
-        const scale = maxRadius / distance;
-        x = centerX + dx * scale;
-        y = centerY + dy * scale;
-      }
+      const constrained = constrainToCircle(x, y, containerSize);
+      x = constrained.x;
+      y = constrained.y;
 
       setPosition({ x, y });
 
@@ -378,9 +377,10 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
  * @param {string} props.emotionData.label - Current emotion label
  * @param {number} props.emotionData.scaleFactor - Scale factor for the emoji
  * @param {function} props.onStart - Callback when drag starts
+ * @param {function} props.onKeyDown - Callback for keyboard navigation
  */
 const DraggableEmoji = React.memo(
-  ({ position, containerSize, isDragging, emotionData, onStart }) => {
+  ({ position, containerSize, isDragging, emotionData, onStart, onKeyDown }) => {
     const emojiRef = useRef(null);
     const { colors } = useEmotionRecommendation(emotionData.valence, emotionData.arousal);
 
@@ -428,8 +428,10 @@ const DraggableEmoji = React.memo(
           cursor: isDragging ? "grabbing" : "grab",
         }}
         role="button"
-        aria-label={`Drag to express emotion: ${emotionData.label}`}
+        aria-label={`Drag to express emotion: ${emotionData.label}. Use arrow keys to move.`}
+        aria-describedby="keyboard-instructions"
         tabIndex={0}
+        onKeyDown={onKeyDown}
       >
         {emotionData.emoji}
       </div>
@@ -630,6 +632,44 @@ const EmojiGridMapper = ({
     calculateEmotionData,
   } = useDragHandler(containerRef, containerSize, onChartPositionChange);
 
+  const handleKeyboardMove = useCallback((e) => {
+    const step = 20; // px to move per key press
+    let dx = 0;
+    let dy = 0;
+
+    switch (e.key) {
+      case "ArrowUp":
+        dy = -step;
+        break;
+      case "ArrowDown":
+        dy = step;
+        break;
+      case "ArrowLeft":
+        dx = -step;
+        break;
+      case "ArrowRight":
+        dx = step;
+        break;
+      default:
+        return;
+    }
+
+    e.preventDefault();
+
+    const newX = position.x + dx;
+    const newY = position.y + dy;
+
+    // Use the same constraint logic as drag
+    const constrained = constrainToCircle(newX, newY, containerSize);
+
+    setPosition({ x: constrained.x, y: constrained.y });
+
+    if (onChartPositionChange) {
+      const emotionData = calculateEmotionData(constrained.x, constrained.y, containerSize);
+      onChartPositionChange(emotionData);
+    }
+  }, [position, containerSize, setPosition, onChartPositionChange, calculateEmotionData]);
+
   // * Initialize position based on props or center
   useEffect(() => {
     if (chartPosition) {
@@ -798,9 +838,17 @@ const EmojiGridMapper = ({
                   handleStart(event);
                   handleMove(event);
                 }}
+                onKeyDown={handleKeyboardMove}
               />
             )}
           </div>
+        </div>
+
+        {/* SR-only keyboard instructions */}
+        <div id="keyboard-instructions" className="sr-only">
+          Use arrow keys to move the emoji around the mood map.
+          Up arrow moves to higher energy, down to lower energy.
+          Right arrow moves to pleasant, left to unpleasant.
         </div>
 
         {!hasPlacedEmoji && (

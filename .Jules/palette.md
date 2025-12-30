@@ -1,0 +1,3 @@
+## 2024-05-23 - [Keyboard Accessibility for Drag Interactions]
+**Learning:** Custom drag-and-drop interfaces often neglect keyboard users. Simply adding `tabIndex="0"` allows focus but not interaction. We must implement specific key handlers (Arrow keys) and ensure they replicate the constraints of the mouse interaction (e.g., circular boundaries).
+**Action:** When identifying custom interactive widgets (like canvases or complex divs), always check for `onKeyDown` handlers. If missing, implement them using the same logic/helpers as the mouse handlers. Add invisible instructions for screen reader users using `aria-describedby` or `sr-only` text.
