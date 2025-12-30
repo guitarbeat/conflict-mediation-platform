@@ -56,7 +56,6 @@ function App() {
     getRequiredFieldsForStep,
     isStepComplete,
     getMissingFieldsForStep,
-    getRequiredFieldsForSubStep,
   } = useFormData();
 
   const [currentSubStep, setCurrentSubStep] = useState(0);
@@ -86,7 +85,7 @@ function App() {
 
       return true;
     },
-    [getMissingFieldsForStep, isStepComplete],
+    [getMissingFieldsForStep, isStepComplete, currentSubStep],
   );
 
   // Navigation management
@@ -110,7 +109,7 @@ function App() {
 
   const canGoNext = useMemo(
     () => isStepComplete(currentStep, currentSubStep),
-    [currentStep, currentSubStep, isStepComplete, formData],
+    [currentStep, currentSubStep, isStepComplete],
   );
 
   useEffect(() => {
@@ -161,7 +160,7 @@ function App() {
   };
 
   // Export functions
-  const exportToJSON = () => {
+  const exportToJSON = useCallback(() => {
     const dataStr = JSON.stringify(formData, null, 2);
     const dataUri =
       "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
@@ -172,9 +171,9 @@ function App() {
     linkElement.setAttribute("href", dataUri);
     linkElement.setAttribute("download", exportFileDefaultName);
     linkElement.click();
-  };
+  }, [formData]);
 
-  const renderStepContent = (step) => {
+  const renderStepContent = useCallback((step) => {
     return (
       <StepContent
         step={step}
@@ -188,7 +187,7 @@ function App() {
         setCurrentSubStep={setCurrentSubStep}
       />
     );
-  };
+  }, [formData, updateFormData, updateMultipleFields, exportToJSON, errorStep, getRequiredFieldsForStep, currentSubStep]);
 
   return (
     <div className="min-h-screen bg-background">

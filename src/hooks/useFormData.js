@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useErrorHandler } from "./useErrorHandler";
 
@@ -78,7 +78,7 @@ export const useFormData = () => {
             setFormData({ ...initialState, ...data });
             setLoadedFromStorage(true);
         }
-    }, [executeAsync, initialState]);
+    }, [executeAsync]);
 
     useEffect(() => {
         loadFromStorage();
@@ -99,33 +99,33 @@ export const useFormData = () => {
     /**
      * Update a single form field
      */
-    const updateFormData = (field, value) => {
+    const updateFormData = useCallback((field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
-    };
+    }, []);
 
     /**
      * Update multiple form fields at once
      */
-    const updateMultipleFields = (updates) => {
+    const updateMultipleFields = useCallback((updates) => {
         setFormData((prev) => ({ ...prev, ...updates }));
-    };
+    }, []);
 
     /**
      * Load form data from a plain object (e.g., imported JSON)
      */
-    const loadFromJSON = (dataObject) => {
+    const loadFromJSON = useCallback((dataObject) => {
         if (!dataObject || typeof dataObject !== "object") return;
         const allowedKeys = Object.keys(initialState);
         const sanitized = Object.fromEntries(
             Object.entries(dataObject).filter(([key]) => allowedKeys.includes(key))
         );
         setFormData((prev) => ({ ...prev, ...sanitized }));
-    };
+    }, []);
 
     /**
      * Reset form data to initial state and clear saved storage
      */
-    const resetFormData = async () => {
+    const resetFormData = useCallback(async () => {
         setFormData(initialState);
         setLoadedFromStorage(false);
         const { success } = await executeAsync(async () => {
@@ -135,12 +135,12 @@ export const useFormData = () => {
         if (success) {
             toast.success("Form data reset successfully");
         }
-    };
+    }, [executeAsync]);
 
     /**
      * Get form data for a specific step
      */
-    const getStepData = (step) => {
+    const getStepData = useCallback((step) => {
         switch (step) {
             case 1:
                 return {
@@ -209,59 +209,12 @@ export const useFormData = () => {
             default:
                 return {};
         }
-    };
-
-    /**
-     * Check if a step has required data filled
-     */
-    const isStepComplete = (step, subStep = 0) => {
-        const fields = getRequiredFieldsForSubStep(step, subStep);
-        if (fields.length === 0) return true;
-
-        return fields.every(field => {
-            const value = formData[field];
-            if (Array.isArray(value)) {
-                return value.length > 0 && value.every(item => 
-                    typeof item === 'string' ? item.trim() !== '' : 
-                    typeof item === 'object' ? item.text && item.text.trim() !== '' : false
-                );
-            }
-            return value && value.toString().trim() !== "";
-        });
-    };
-
-    /**
-     * Get list of missing required fields for a step
-     */
-    const getMissingFieldsForStep = (step, subStep = 0) => {
-        const requiredFields = getRequiredFieldsForSubStep(step, subStep);
-        return requiredFields.filter(field => {
-            const value = formData[field];
-            if (Array.isArray(value)) {
-                return value.length === 0;
-            }
-            return !value || value.toString().trim() === "";
-        });
-    };
-
-    const getRequiredFieldsForSubStep = (step, subStep) => {
-        if (step === 2) { // Party A Individual Reflection
-            if (subStep === 0) return ["partyAThoughts"];
-            if (subStep === 1) return [];
-            if (subStep === 2) return ["partyAAssertiveApproach"];
-        }
-        if (step === 3) { // Party B Individual Reflection
-            if (subStep === 0) return ["partyBThoughts"];
-            if (subStep === 1) return [];
-            if (subStep === 2) return ["partyBAssertiveApproach"];
-        }
-        return getRequiredFieldsForStep(step);
-    }
+    }, [formData]);
 
     /**
      * Get required fields for a specific step
      */
-    const getRequiredFieldsForStep = (step) => {
+    const getRequiredFieldsForStep = useCallback((step) => {
         switch (step) {
             case 1:
                 return ["partyAName", "partyBName", "conflictDescription"];
@@ -280,7 +233,54 @@ export const useFormData = () => {
             default:
                 return [];
         }
-    };
+    }, []);
+
+    const getRequiredFieldsForSubStep = useCallback((step, subStep) => {
+        if (step === 2) { // Party A Individual Reflection
+            if (subStep === 0) return ["partyAThoughts"];
+            if (subStep === 1) return [];
+            if (subStep === 2) return ["partyAAssertiveApproach"];
+        }
+        if (step === 3) { // Party B Individual Reflection
+            if (subStep === 0) return ["partyBThoughts"];
+            if (subStep === 1) return [];
+            if (subStep === 2) return ["partyBAssertiveApproach"];
+        }
+        return getRequiredFieldsForStep(step);
+    }, [getRequiredFieldsForStep]);
+
+    /**
+     * Check if a step has required data filled
+     */
+    const isStepComplete = useCallback((step, subStep = 0) => {
+        const fields = getRequiredFieldsForSubStep(step, subStep);
+        if (fields.length === 0) return true;
+
+        return fields.every(field => {
+            const value = formData[field];
+            if (Array.isArray(value)) {
+                return value.length > 0 && value.every(item => 
+                    typeof item === 'string' ? item.trim() !== '' : 
+                    typeof item === 'object' ? item.text && item.text.trim() !== '' : false
+                );
+            }
+            return value && value.toString().trim() !== "";
+        });
+    }, [formData, getRequiredFieldsForSubStep]);
+
+    /**
+     * Get list of missing required fields for a step
+     */
+    const getMissingFieldsForStep = useCallback((step, subStep = 0) => {
+        const requiredFields = getRequiredFieldsForSubStep(step, subStep);
+        return requiredFields.filter(field => {
+            const value = formData[field];
+            if (Array.isArray(value)) {
+                return value.length === 0;
+            }
+            return !value || value.toString().trim() === "";
+        });
+    }, [formData, getRequiredFieldsForSubStep]);
 
     return {
         formData,

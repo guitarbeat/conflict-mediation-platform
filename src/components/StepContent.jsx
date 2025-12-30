@@ -481,7 +481,7 @@ const Step1Schema = z.object({
   partyBColor: hexColorSchema.optional(),
 });
 
-const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON, showErrors, getRequiredFieldsForStep, currentSubStep, setCurrentSubStep }) => {
+const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onExportJSON, showErrors, getRequiredFieldsForStep, currentSubStep }) => {
   // Error handling
   const { executeFileOperation, executeAsync } = useErrorHandler({
     showToast: true,
@@ -1547,4 +1547,4 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   }
 };
 
-export default StepContent;
+export default React.memo(StepContent);
