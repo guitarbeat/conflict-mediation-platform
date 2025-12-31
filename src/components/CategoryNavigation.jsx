@@ -6,6 +6,7 @@ import {
   Circle,
   ChevronUp,
 } from "lucide-react";
+import { Badge } from "./ui/badge";
 import {
   SURVEY_CATEGORIES,
   getCategoryProgress,
@@ -70,9 +71,9 @@ const CategoryNavigation = ({
         )}
         <span className="flex-1">{getStepName(step)}</span>
         {isCurrentStep && (
-          <span className="badge badge-primary">
+          <Badge variant="default">
             Current
-          </span>
+          </Badge>
         )}
       </button>
     );
@@ -139,7 +140,14 @@ const CategoryNavigation = ({
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
+                    <div
+                      role="progressbar"
+                      aria-valuenow={progress.percentage}
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      aria-label={`${category.name} progress`}
+                      className="w-20 h-2 bg-muted rounded-full overflow-hidden"
+                    >
                       <div
                         className={`h-full transition-all duration-normal ${
                           progress.percentage === 100
