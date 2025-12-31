@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useMemo, useCallback } from "react";
 import { Download, FileText, Upload, Loader2, RefreshCcw, ArrowLeftRight, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import FormField from "./FormField";
@@ -293,7 +293,7 @@ const PartyAccentPreviewCard = ({ partyKey, details, surfaces }) => {
 };
 
 // * Category Header component
-const CategoryHeader = ({ step }) => {
+const CategoryHeader = React.memo(({ step }) => {
   const category = getCategoryByStep(step);
   
   if (!category) return null;
@@ -309,10 +309,10 @@ const CategoryHeader = ({ step }) => {
       </div>
     </div>
   );
-};
+});
 
 // * Communication Approaches component - moved outside to prevent recreation
-const CommunicationApproaches = ({
+const CommunicationApproaches = React.memo(({
   party,
   prefix,
   formData,
@@ -321,7 +321,11 @@ const CommunicationApproaches = ({
   context,
   getPartyFieldProps,
 }) => {
-  const fieldProps = getPartyFieldProps ? getPartyFieldProps(party) : {};
+  const fieldProps = useMemo(() => getPartyFieldProps ? getPartyFieldProps(party) : {}, [getPartyFieldProps, party]);
+
+  const handleFieldChange = useCallback((id, value) => {
+    updateFormData(id, value);
+  }, [updateFormData]);
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -332,7 +336,7 @@ const CommunicationApproaches = ({
         label="Aggressive Approach (Not Recommended)"
         placeholder="What would you want to say if you were being aggressive?"
         value={formData[`${prefix}AggressiveApproach`]}
-        onChange={(value) => updateFormData(`${prefix}AggressiveApproach`, value)}
+        onFieldChange={handleFieldChange}
         type="textarea"
         className="text-red-600"
         description="This approach is not recommended as it can escalate conflict"
@@ -345,7 +349,7 @@ const CommunicationApproaches = ({
         label="Passive Approach"
         placeholder="What would you want if you were being passive?"
         value={formData[`${prefix}PassiveApproach`]}
-        onChange={(value) => updateFormData(`${prefix}PassiveApproach`, value)}
+        onFieldChange={handleFieldChange}
         type="textarea"
         className="text-blue-600"
         description="This approach avoids conflict but may not address underlying issues"
@@ -358,7 +362,7 @@ const CommunicationApproaches = ({
         label="Assertive Approach (Recommended)"
         placeholder="What would you want to say if you were being assertive and respectful?"
         value={formData[`${prefix}AssertiveApproach`]}
-        onChange={(value) => updateFormData(`${prefix}AssertiveApproach`, value)}
+        onFieldChange={handleFieldChange}
         type="textarea"
         className="text-green-600"
         error={isFieldMissing(`${prefix}AssertiveApproach`) ? "Required" : ""}
@@ -376,7 +380,7 @@ const CommunicationApproaches = ({
         label="Why/Because..."
         placeholder="Explain your reasoning..."
         value={formData[`${prefix}WhyBecause`]}
-        onChange={(value) => updateFormData(`${prefix}WhyBecause`, value)}
+        onFieldChange={handleFieldChange}
         type="textarea"
         description="Explain the reasoning behind your assertive approach"
         showCharacterCount={true}
@@ -384,10 +388,10 @@ const CommunicationApproaches = ({
       />
     </div>
   );
-};
+});
 
 // * Individual Reflection component - moved outside to prevent recreation
-const IndividualReflection = ({
+const IndividualReflection = React.memo(({
   party,
   prefix,
   formData,
@@ -397,7 +401,19 @@ const IndividualReflection = ({
   getPartyFieldProps,
   currentSubStep,
 }) => {
-  const fieldProps = getPartyFieldProps ? getPartyFieldProps(party) : {};
+  const fieldProps = useMemo(() => getPartyFieldProps ? getPartyFieldProps(party) : {}, [getPartyFieldProps, party]);
+
+  const handleFieldChange = useCallback((id, value) => {
+    updateFormData(id, value);
+  }, [updateFormData]);
+
+  const handleEmotionWordsChange = useCallback((words) => {
+    updateFormData(`${prefix}SelectedEmotionWords`, words);
+  }, [updateFormData, prefix]);
+
+  const handleChartPositionChange = useCallback((position) => {
+    updateFormData(`${prefix}EmotionChartPosition`, position);
+  }, [updateFormData, prefix]);
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -410,7 +426,7 @@ const IndividualReflection = ({
             label="I think..."
             placeholder="Explain what you think or believe to be true about the conflict..."
             value={formData[`${prefix}Thoughts`]}
-            onChange={(value) => updateFormData(`${prefix}Thoughts`, value)}
+            onFieldChange={handleFieldChange}
             type="textarea"
             rows={4}
             error={isFieldMissing(`${prefix}Thoughts`) ? "Required" : ""}
@@ -434,12 +450,8 @@ const IndividualReflection = ({
             </label>
             <Suspense fallback={<div className="text-sm text-muted-foreground">Loading emotion mapper…</div>}>
               <EmojiGridMapper
-                onEmotionWordsChange={(words) =>
-                  updateFormData(`${prefix}SelectedEmotionWords`, words)
-                }
-                onChartPositionChange={(position) =>
-                  updateFormData(`${prefix}EmotionChartPosition`, position)
-                }
+                onEmotionWordsChange={handleEmotionWordsChange}
+                onChartPositionChange={handleChartPositionChange}
                 selectedEmotionWords={formData[`${prefix}SelectedEmotionWords`]}
                 chartPosition={formData[`${prefix}EmotionChartPosition`]}
               />
@@ -464,7 +476,7 @@ const IndividualReflection = ({
       )}
     </div>
   );
-};
+});
 
 const hexColorSchema = z
   .string()
@@ -495,18 +507,18 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   const [importError, setImportError] = React.useState(null);
 
   // Create context for smart suggestions
-  const context = {
+  const context = useMemo(() => ({
     partyAName: formData.partyAName,
     partyBName: formData.partyBName,
     currentStep: step,
-  };
+  }), [formData.partyAName, formData.partyBName, step]);
 
-  const partyAccents = {
+  const partyAccents = useMemo(() => ({
     A: createAccentConfig(formData.partyAColor, DEFAULT_PARTY_COLORS.A),
     B: createAccentConfig(formData.partyBColor, DEFAULT_PARTY_COLORS.B),
-  };
+  }), [formData.partyAColor, formData.partyBColor]);
 
-  const partyDetails = {
+  const partyDetails = useMemo(() => ({
     A: {
       name: formData.partyAName?.trim() || "Party A",
       accent: partyAccents.A,
@@ -515,11 +527,11 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
       name: formData.partyBName?.trim() || "Party B",
       accent: partyAccents.B,
     },
-  };
+  }), [formData.partyAName, formData.partyBName, partyAccents]);
 
   const themeSurfaces = useThemeContrastSurfaces();
 
-  const getPartyFieldProps = (
+  const getPartyFieldProps = useCallback((
     party,
     {
       variant = "enhanced",
@@ -554,7 +566,8 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
 
     return {
       containerClassName: combinedClassName,
-      containerStyle: details.accent?.styles ? { ...details.accent.styles } : {},
+      // Use styles directly instead of spreading if possible, or ensure it's stable
+      containerStyle: details.accent?.styles || {},
       containerProps: {
         ...(shouldShowBadge ? { "data-party-label": details.name } : {}),
         "data-party-key": party,
@@ -562,7 +575,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
       },
       labelClassName: combinedLabelClass,
     };
-  };
+  }, [partyDetails]);
 
   // react-hook-form for Step 1
   const step1Form = useForm({
@@ -580,15 +593,15 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
     },
   });
 
-  const step1Errors = step1Form.formState.errors;
+  const { setValue, watch, formState: { errors: step1Errors }, trigger } = step1Form;
 
   const handleResetPartyColors = () => {
     const defaultA = normalizePartyColor(DEFAULT_PARTY_COLORS.A, DEFAULT_PARTY_COLORS.A);
     const defaultB = normalizePartyColor(DEFAULT_PARTY_COLORS.B, DEFAULT_PARTY_COLORS.B);
 
-    step1Form.setValue("partyAColor", defaultA, { shouldDirty: true, shouldValidate: true });
+    setValue("partyAColor", defaultA, { shouldDirty: true, shouldValidate: true });
     updateFormData("partyAColor", defaultA);
-    step1Form.setValue("partyBColor", defaultB, { shouldDirty: true, shouldValidate: true });
+    setValue("partyBColor", defaultB, { shouldDirty: true, shouldValidate: true });
     updateFormData("partyBColor", defaultB);
   };
 
@@ -596,17 +609,17 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
     const colorA = normalizePartyColor(step1Form.getValues("partyAColor") || partyAccents.A.color, partyAccents.A.color);
     const colorB = normalizePartyColor(step1Form.getValues("partyBColor") || partyAccents.B.color, partyAccents.B.color);
 
-    step1Form.setValue("partyAColor", colorB, { shouldDirty: true, shouldValidate: true });
+    setValue("partyAColor", colorB, { shouldDirty: true, shouldValidate: true });
     updateFormData("partyAColor", colorB);
-    step1Form.setValue("partyBColor", colorA, { shouldDirty: true, shouldValidate: true });
+    setValue("partyBColor", colorA, { shouldDirty: true, shouldValidate: true });
     updateFormData("partyBColor", colorA);
   };
 
   useEffect(() => {
     if (showErrors && step === 1) {
-      step1Form.trigger();
+      trigger();
     }
-  }, [showErrors, step, step1Form]);
+  }, [showErrors, step, trigger]);
 
   const requiredFields = getRequiredFieldsForStep(step);
   const isFieldMissing = (field) => {
@@ -615,6 +628,11 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
     if (Array.isArray(value)) return value.length === 0;
     return !value || value.toString().trim() === "";
   };
+
+  // Stable handler for generic field changes
+  const handleFieldChange = useCallback((id, value) => {
+    updateFormData(id, value);
+  }, [updateFormData]);
 
   const TwoColumnFields = ({ fields }) => (
     <div className="form-grid form-grid-2">
@@ -676,12 +694,33 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
     }
   };
 
+  // Stable handlers for step 1
+  const handleStep1FieldChange = useCallback((id, value) => {
+    setValue(id, value, { shouldValidate: true, shouldDirty: true });
+    updateFormData(id, value);
+  }, [setValue, updateFormData]);
+
+  const handleDateIncidentChange = useCallback((value) => {
+    setValue("dateOfIncident", value, { shouldDirty: true });
+    updateFormData("dateOfIncident", value);
+  }, [setValue, updateFormData]);
+
+  const handleDateMediationChange = useCallback((value) => {
+    setValue("dateOfMediation", value, { shouldDirty: true });
+    updateFormData("dateOfMediation", value);
+  }, [setValue, updateFormData]);
+
+  const handleLocationChange = useCallback((value) => {
+    setValue("locationOfConflict", value, { shouldDirty: true });
+    updateFormData("locationOfConflict", value);
+  }, [setValue, updateFormData]);
+
   switch (step) {
     case 1: {
-      const partyANameValue = step1Form.watch("partyAName");
-      const partyBNameValue = step1Form.watch("partyBName");
-      const partyAColorValue = step1Form.watch("partyAColor") || partyAccents.A.color;
-      const partyBColorValue = step1Form.watch("partyBColor") || partyAccents.B.color;
+      const partyANameValue = watch("partyAName");
+      const partyBNameValue = watch("partyBName");
+      const partyAColorValue = watch("partyAColor") || partyAccents.A.color;
+      const partyBColorValue = watch("partyBColor") || partyAccents.B.color;
       const normalizedPartyAColor = normalizePartyColor(partyAColorValue, partyAccents.A.color);
       const normalizedPartyBColor = normalizePartyColor(partyBColorValue, partyAccents.B.color);
       const defaultNormalizedA = normalizePartyColor(DEFAULT_PARTY_COLORS.A, DEFAULT_PARTY_COLORS.A);
@@ -693,13 +732,13 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
       const handlePartyColorChange = (partyKey, value) => {
         const fieldName = partyKey === "A" ? "partyAColor" : "partyBColor";
         const normalized = normalizePartyColor(value, partyAccents[partyKey].color);
-        step1Form.setValue(fieldName, normalized, { shouldDirty: true, shouldValidate: true });
+        setValue(fieldName, normalized, { shouldDirty: true, shouldValidate: true });
         updateFormData(fieldName, normalized);
       };
 
       const handlePartyNameChange = (partyKey, value) => {
         const fieldName = partyKey === "A" ? "partyAName" : "partyBName";
-        step1Form.setValue(fieldName, value, { shouldValidate: true, shouldDirty: true });
+        setValue(fieldName, value, { shouldValidate: true, shouldDirty: true });
         updateFormData(fieldName, value);
       };
 
@@ -890,30 +929,21 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
             <DatePickerField
               id="dateOfIncident"
               label="Date of Incident"
-              value={step1Form.watch("dateOfIncident")}
-              onChange={(value) => {
-                step1Form.setValue("dateOfIncident", value, { shouldDirty: true });
-                updateFormData("dateOfIncident", value);
-              }}
+              value={watch("dateOfIncident")}
+              onChange={handleDateIncidentChange}
             />
             <DatePickerField
               id="dateOfMediation"
               label="Date of Mediation"
-              value={step1Form.watch("dateOfMediation")}
-              onChange={(value) => {
-                step1Form.setValue("dateOfMediation", value, { shouldDirty: true });
-                updateFormData("dateOfMediation", value);
-              }}
+              value={watch("dateOfMediation")}
+              onChange={handleDateMediationChange}
             />
             <FormField
               id="locationOfConflict"
               label="Location of Conflict"
               placeholder="Where did this happen?"
-              value={step1Form.watch("locationOfConflict")}
-              onChange={(value) => {
-                step1Form.setValue("locationOfConflict", value, { shouldDirty: true });
-                updateFormData("locationOfConflict", value);
-              }}
+              value={watch("locationOfConflict")}
+              onChange={handleLocationChange}
             />
           </div>
 
@@ -921,11 +951,8 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
             id="conflictDescription"
             label="Agreed Upon Description of Conflict"
             placeholder="Both parties should agree on this description of what happened..."
-            value={step1Form.watch("conflictDescription")}
-            onChange={(value) => {
-              step1Form.setValue("conflictDescription", value, { shouldValidate: true, shouldDirty: true });
-              updateFormData("conflictDescription", value);
-            }}
+            value={watch("conflictDescription")}
+            onFieldChange={handleStep1FieldChange}
             type="textarea"
             rows={4}
             error={step1Errors.conflictDescription?.message}
@@ -993,7 +1020,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               description="What actually happened? Stick to observable facts."
               placeholder="Describe the factual events that triggered this conflict..."
               value={formData.activatingEvent}
-              onChange={(value) => updateFormData("activatingEvent", value)}
+              onFieldChange={handleFieldChange}
               type="textarea"
               rows={3}
               required={true}
@@ -1013,7 +1040,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="What thoughts or beliefs do you have about this event?"
                 placeholder="Your thoughts and beliefs about what happened..."
                 value={formData.partyABeliefs}
-                onChange={(value) => updateFormData("partyABeliefs", value)}
+                onFieldChange={handleFieldChange}
                 type="textarea"
                 rows={3}
                 required={true}
@@ -1030,7 +1057,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="What thoughts or beliefs do you have about this event?"
                 placeholder="Your thoughts and beliefs about what happened..."
                 value={formData.partyBBeliefs}
-                onChange={(value) => updateFormData("partyBBeliefs", value)}
+                onFieldChange={handleFieldChange}
                 type="textarea"
                 rows={3}
                 required={true}
@@ -1050,9 +1077,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="How did your beliefs make you feel and behave?"
                 placeholder="Your emotional and behavioral responses..."
                 value={formData.partyAConsequences}
-                onChange={(value) =>
-                  updateFormData("partyAConsequences", value)
-                }
+                onFieldChange={handleFieldChange}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1065,9 +1090,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="How did your beliefs make you feel and behave?"
                 placeholder="Your emotional and behavioral responses..."
                 value={formData.partyBConsequences}
-                onChange={(value) =>
-                  updateFormData("partyBConsequences", value)
-                }
+                onFieldChange={handleFieldChange}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1083,9 +1106,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="Challenge your beliefs. Are they helpful? Accurate? Realistic?"
                 placeholder="Question and challenge your initial beliefs..."
                 value={formData.partyADisputations}
-                onChange={(value) =>
-                  updateFormData("partyADisputations", value)
-                }
+                onFieldChange={handleFieldChange}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1098,9 +1119,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="Challenge your beliefs. Are they helpful? Accurate? Realistic?"
                 placeholder="Question and challenge your initial beliefs..."
                 value={formData.partyBDisputations}
-                onChange={(value) =>
-                  updateFormData("partyBDisputations", value)
-                }
+                onFieldChange={handleFieldChange}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1114,7 +1133,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               description="What new insights have emerged? How do you both feel now?"
               placeholder="Reflect on new perspectives and feelings that have emerged..."
               value={formData.effectsReflections}
-              onChange={(value) => updateFormData("effectsReflections", value)}
+              onFieldChange={handleFieldChange}
               type="textarea"
               rows={4}
               showCharacterCount={true}
@@ -1142,7 +1161,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="If you woke up tomorrow and this conflict was completely resolved, what would be different?"
                 placeholder="Describe your ideal resolution..."
                 value={formData.partyAMiracle}
-                onChange={(value) => updateFormData("partyAMiracle", value)}
+                onFieldChange={handleFieldChange}
                 type="textarea"
                 rows={4}
                 required={true}
@@ -1160,7 +1179,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="If you woke up tomorrow and this conflict was completely resolved, what would be different?"
                 placeholder="Describe your ideal resolution..."
                 value={formData.partyBMiracle}
-                onChange={(value) => updateFormData("partyBMiracle", value)}
+                onFieldChange={handleFieldChange}
                 type="textarea"
                 rows={4}
                 required={true}
@@ -1212,7 +1231,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="Try to understand the other person's point of view."
                 placeholder="What might the other person be thinking or feeling?"
                 value={formData.partyAPerspective}
-                onChange={(value) => updateFormData("partyAPerspective", value)}
+                onFieldChange={handleFieldChange}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1227,7 +1246,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="Try to understand the other person's point of view."
                 placeholder="What might the other person be thinking or feeling?"
                 value={formData.partyBPerspective}
-                onChange={(value) => updateFormData("partyBPerspective", value)}
+                onFieldChange={handleFieldChange}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1241,7 +1260,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               description="What solutions can you both agree on? What compromises are you willing to make?"
               placeholder="Describe the solutions you both can accept..."
               value={formData.compromiseSolutions}
-              onChange={(value) => updateFormData("compromiseSolutions", value)}
+              onFieldChange={handleFieldChange}
               type="textarea"
               rows={4}
               required={true}
@@ -1343,7 +1362,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="When should you check in on progress?"
                 type="date"
                 value={formData.followUpDate}
-                onChange={(value) => updateFormData("followUpDate", value)}
+                onFieldChange={handleFieldChange}
                 required={true}
               />
               <EnhancedFormField
@@ -1352,7 +1371,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="What additional resources or support might be helpful?"
                 placeholder="Describe any additional support needed..."
                 value={formData.additionalSupport}
-                onChange={(value) => updateFormData("additionalSupport", value)}
+                onFieldChange={handleFieldChange}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1547,4 +1566,4 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   }
 };
 
-export default StepContent;
+export default React.memo(StepContent);

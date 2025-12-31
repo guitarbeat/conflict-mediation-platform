@@ -9,6 +9,7 @@ const EnhancedFormField = ({
   placeholder,
   value,
   onChange,
+  onFieldChange,
   type = "input",
   rows = 3,
   className = "",
@@ -83,7 +84,13 @@ const EnhancedFormField = ({
   };
 
   const handleChange = (newValue) => {
-    onChange(newValue);
+    if (onFieldChange) {
+      // Use stable handler if provided
+      onFieldChange(id || props.name, newValue);
+    } else if (onChange) {
+      // Fallback to traditional onChange
+      onChange(newValue);
+    }
     
     if (validationMessage) {
       setIsValidating(true);
@@ -385,4 +392,4 @@ const EnhancedFormField = ({
   );
 };
 
-export default EnhancedFormField;
+export default React.memo(EnhancedFormField);
