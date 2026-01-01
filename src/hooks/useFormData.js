@@ -55,6 +55,45 @@ const initialState = {
     };
 
 /**
+ * Get required fields for a specific step
+ * ⚡ Bolt Optimization: Moved outside hook to be stable
+ */
+const getRequiredFieldsForStep = (step) => {
+    switch (step) {
+        case 1:
+            return ["partyAName", "partyBName", "conflictDescription"];
+        case 2:
+            return ["partyAThoughts", "partyAAssertiveApproach"];
+        case 3:
+            return ["partyBThoughts", "partyBAssertiveApproach"];
+        case 4:
+            return ["activatingEvent", "partyABeliefs", "partyBBeliefs"];
+        case 5:
+            return ["partyAMiracle", "partyBMiracle", "compromiseSolutions", "partyATop3Solutions", "partyBTop3Solutions"];
+        case 6:
+            return ["actionSteps", "followUpDate"];
+        case 7:
+            return [];
+        default:
+            return [];
+    }
+};
+
+const getRequiredFieldsForSubStep = (step, subStep) => {
+    if (step === 2) { // Party A Individual Reflection
+        if (subStep === 0) return ["partyAThoughts"];
+        if (subStep === 1) return [];
+        if (subStep === 2) return ["partyAAssertiveApproach"];
+    }
+    if (step === 3) { // Party B Individual Reflection
+        if (subStep === 0) return ["partyBThoughts"];
+        if (subStep === 1) return [];
+        if (subStep === 2) return ["partyBAssertiveApproach"];
+    }
+    return getRequiredFieldsForStep(step);
+}
+
+/**
  * Custom hook for managing conflict mediation form data
  * @returns {Object} Form data state and operations
  */
@@ -78,7 +117,7 @@ export const useFormData = () => {
             setFormData({ ...initialState, ...data });
             setLoadedFromStorage(true);
         }
-    }, [executeAsync, initialState]);
+    }, [executeAsync]);
 
     useEffect(() => {
         loadFromStorage();
@@ -98,34 +137,38 @@ export const useFormData = () => {
 
     /**
      * Update a single form field
+     * ⚡ Bolt Optimization: Wrapped in useCallback to ensure referential stability
      */
-    const updateFormData = (field, value) => {
+    const updateFormData = useCallback((field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
-    };
+    }, []);
 
     /**
      * Update multiple form fields at once
+     * ⚡ Bolt Optimization: Wrapped in useCallback
      */
-    const updateMultipleFields = (updates) => {
+    const updateMultipleFields = useCallback((updates) => {
         setFormData((prev) => ({ ...prev, ...updates }));
-    };
+    }, []);
 
     /**
      * Load form data from a plain object (e.g., imported JSON)
+     * ⚡ Bolt Optimization: Wrapped in useCallback
      */
-    const loadFromJSON = (dataObject) => {
+    const loadFromJSON = useCallback((dataObject) => {
         if (!dataObject || typeof dataObject !== "object") return;
         const allowedKeys = Object.keys(initialState);
         const sanitized = Object.fromEntries(
             Object.entries(dataObject).filter(([key]) => allowedKeys.includes(key))
         );
         setFormData((prev) => ({ ...prev, ...sanitized }));
-    };
+    }, []);
 
     /**
      * Reset form data to initial state and clear saved storage
+     * ⚡ Bolt Optimization: Wrapped in useCallback
      */
-    const resetFormData = async () => {
+    const resetFormData = useCallback(async () => {
         setFormData(initialState);
         setLoadedFromStorage(false);
         const { success } = await executeAsync(async () => {
@@ -135,12 +178,19 @@ export const useFormData = () => {
         if (success) {
             toast.success("Form data reset successfully");
         }
-    };
+    }, [executeAsync]); // STORAGE_KEY is constant, no need to depend on it if it's inside hook but effectively constant. Or better move it out if used in multiple places, but here it is local const.
+    // However, STORAGE_KEY is defined inside the hook. It should be consistent.
+    // Actually, `STORAGE_KEY` is a const inside the hook body. It is re-declared on every render.
+    // Ideally it should be outside or useRef, but since it's a primitive string, it doesn't affect dependency check if we don't include it.
+    // It is used in closure. If we include it in deps, it breaks stability.
+    // So we should assume it's constant or move it out.
+    // I'll leave it as is, but `executeAsync` is the only dep.
 
     /**
      * Get form data for a specific step
+     * Note: Depends on formData, so it updates when data changes.
      */
-    const getStepData = (step) => {
+    const getStepData = useCallback((step) => {
         switch (step) {
             case 1:
                 return {
@@ -209,12 +259,13 @@ export const useFormData = () => {
             default:
                 return {};
         }
-    };
+    }, [formData]);
 
     /**
      * Check if a step has required data filled
+     * Note: Depends on formData.
      */
-    const isStepComplete = (step, subStep = 0) => {
+    const isStepComplete = useCallback((step, subStep = 0) => {
         const fields = getRequiredFieldsForSubStep(step, subStep);
         if (fields.length === 0) return true;
 
@@ -228,12 +279,13 @@ export const useFormData = () => {
             }
             return value && value.toString().trim() !== "";
         });
-    };
+    }, [formData]);
 
     /**
      * Get list of missing required fields for a step
+     * Note: Depends on formData.
      */
-    const getMissingFieldsForStep = (step, subStep = 0) => {
+    const getMissingFieldsForStep = useCallback((step, subStep = 0) => {
         const requiredFields = getRequiredFieldsForSubStep(step, subStep);
         return requiredFields.filter(field => {
             const value = formData[field];
@@ -242,45 +294,7 @@ export const useFormData = () => {
             }
             return !value || value.toString().trim() === "";
         });
-    };
-
-    const getRequiredFieldsForSubStep = (step, subStep) => {
-        if (step === 2) { // Party A Individual Reflection
-            if (subStep === 0) return ["partyAThoughts"];
-            if (subStep === 1) return [];
-            if (subStep === 2) return ["partyAAssertiveApproach"];
-        }
-        if (step === 3) { // Party B Individual Reflection
-            if (subStep === 0) return ["partyBThoughts"];
-            if (subStep === 1) return [];
-            if (subStep === 2) return ["partyBAssertiveApproach"];
-        }
-        return getRequiredFieldsForStep(step);
-    }
-
-    /**
-     * Get required fields for a specific step
-     */
-    const getRequiredFieldsForStep = (step) => {
-        switch (step) {
-            case 1:
-                return ["partyAName", "partyBName", "conflictDescription"];
-            case 2:
-                return ["partyAThoughts", "partyAAssertiveApproach"];
-            case 3:
-                return ["partyBThoughts", "partyBAssertiveApproach"];
-            case 4:
-                return ["activatingEvent", "partyABeliefs", "partyBBeliefs"];
-            case 5:
-                return ["partyAMiracle", "partyBMiracle", "compromiseSolutions", "partyATop3Solutions", "partyBTop3Solutions"];
-            case 6:
-                return ["actionSteps", "followUpDate"];
-            case 7:
-                return [];
-            default:
-                return [];
-        }
-    };
+    }, [formData]);
 
     return {
         formData,
@@ -291,8 +305,8 @@ export const useFormData = () => {
         getStepData,
         isStepComplete,
         getMissingFieldsForStep,
-        getRequiredFieldsForStep,
-        getRequiredFieldsForSubStep,
+        getRequiredFieldsForStep, // Now stable
+        getRequiredFieldsForSubStep, // Now stable
         loadedFromStorage,
     };
 };

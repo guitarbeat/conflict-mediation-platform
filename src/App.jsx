@@ -86,7 +86,7 @@ function App() {
 
       return true;
     },
-    [getMissingFieldsForStep, isStepComplete],
+    [getMissingFieldsForStep, isStepComplete, currentSubStep],
   );
 
   // Navigation management
@@ -110,7 +110,7 @@ function App() {
 
   const canGoNext = useMemo(
     () => isStepComplete(currentStep, currentSubStep),
-    [currentStep, currentSubStep, isStepComplete, formData],
+    [currentStep, currentSubStep, isStepComplete],
   );
 
   useEffect(() => {
@@ -161,7 +161,8 @@ function App() {
   };
 
   // Export functions
-  const exportToJSON = () => {
+  // ⚡ Bolt Optimization: Memoize exportToJSON to ensure referential stability
+  const exportToJSON = useCallback(() => {
     const dataStr = JSON.stringify(formData, null, 2);
     const dataUri =
       "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
@@ -172,9 +173,13 @@ function App() {
     linkElement.setAttribute("href", dataUri);
     linkElement.setAttribute("download", exportFileDefaultName);
     linkElement.click();
-  };
+  }, [formData]);
 
-  const renderStepContent = (step) => {
+  // ⚡ Bolt Optimization: Memoize renderStepContent to prevent unnecessary re-renders of StepContent.
+  // Note: While this depends on formData (which changes on input), it remains stable during
+  // high-frequency drag animations (where formData is constant but dragOffset changes),
+  // preventing heavy StepContent re-renders during the animation loop.
+  const renderStepContent = useCallback((step) => {
     return (
       <StepContent
         step={step}
@@ -188,7 +193,15 @@ function App() {
         setCurrentSubStep={setCurrentSubStep}
       />
     );
-  };
+  }, [
+    formData,
+    updateFormData,
+    updateMultipleFields,
+    exportToJSON,
+    errorStep,
+    getRequiredFieldsForStep,
+    currentSubStep
+  ]);
 
   return (
     <div className="min-h-screen bg-background">
