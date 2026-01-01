@@ -14,3 +14,13 @@ if (!window.matchMedia) {
     dispatchEvent: vi.fn(),
   }));
 }
+
+// Mock ResizeObserver for Radix UI primitives
+global.ResizeObserver = class ResizeObserver {
+  constructor(cb) {
+    this.cb = cb;
+  }
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
