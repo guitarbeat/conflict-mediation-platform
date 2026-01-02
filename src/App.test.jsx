@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
 vi.mock("./assets/logo.png", () => ({ default: "/logo.png" }));
 
@@ -39,7 +39,7 @@ describe("App", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows the resume banner when saved data exists", () => {
+  it("shows the resume banner when saved data exists", async () => {
     const savedFormData = {
       partyAName: "Alice",
       partyBName: "Bob",
@@ -64,8 +64,10 @@ describe("App", () => {
     render(<App />);
 
     expect(
-      screen.getByText(
-        /Resumed a previously saved session from this device\./i
+      await screen.findByText(
+        (content, element) => {
+          return content.includes("Resumed a previously saved session from this device.");
+        }
       )
     ).toBeInTheDocument();
 
@@ -76,7 +78,7 @@ describe("App", () => {
     expect(resetButton).toBeEnabled();
   });
 
-  it("resets the saved session when clicking the resume banner reset button", () => {
+  it("resets the saved session when clicking the resume banner reset button", async () => {
     const savedFormData = {
       partyAName: "Alice",
       partyBName: "Bob",
@@ -110,9 +112,11 @@ describe("App", () => {
     fireEvent.click(resetButton);
 
     expect(removeItemSpy).toHaveBeenCalledWith("mediation_form_v1");
-    expect(mockToast.success).toHaveBeenCalledWith(
-      "Form data reset successfully"
-    );
+    await waitFor(() => {
+      expect(mockToast.success).toHaveBeenCalledWith(
+        "Form data reset successfully"
+      );
+    });
   });
 
   it("blocks navigation when required fields are missing", () => {

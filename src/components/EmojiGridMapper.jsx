@@ -879,4 +879,4 @@ const EmojiGridMapper = ({
   );
 };
 
-export default EmojiGridMapper;
+export default React.memo(EmojiGridMapper);

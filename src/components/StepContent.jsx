@@ -399,6 +399,16 @@ const IndividualReflection = ({
 }) => {
   const fieldProps = getPartyFieldProps ? getPartyFieldProps(party) : {};
 
+  const handleEmotionWordsChange = React.useCallback(
+    (words) => updateFormData(`${prefix}SelectedEmotionWords`, words),
+    [updateFormData, prefix],
+  );
+
+  const handleChartPositionChange = React.useCallback(
+    (position) => updateFormData(`${prefix}EmotionChartPosition`, position),
+    [updateFormData, prefix],
+  );
+
   return (
     <div className="space-y-4 sm:space-y-6">
       {currentSubStep === 0 && (
@@ -434,12 +444,8 @@ const IndividualReflection = ({
             </label>
             <Suspense fallback={<div className="text-sm text-muted-foreground">Loading emotion mapper…</div>}>
               <EmojiGridMapper
-                onEmotionWordsChange={(words) =>
-                  updateFormData(`${prefix}SelectedEmotionWords`, words)
-                }
-                onChartPositionChange={(position) =>
-                  updateFormData(`${prefix}EmotionChartPosition`, position)
-                }
+                onEmotionWordsChange={handleEmotionWordsChange}
+                onChartPositionChange={handleChartPositionChange}
                 selectedEmotionWords={formData[`${prefix}SelectedEmotionWords`]}
                 chartPosition={formData[`${prefix}EmotionChartPosition`]}
               />

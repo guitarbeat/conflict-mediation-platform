@@ -81,7 +81,16 @@ export const useFormData = () => {
     }, [executeAsync, initialState]);
 
     useEffect(() => {
-        loadFromStorage();
+        let mounted = true;
+        const load = async () => {
+            if (mounted) {
+                await loadFromStorage();
+            }
+        };
+        load();
+        return () => {
+            mounted = false;
+        };
     }, [loadFromStorage]);
 
     const saveToStorage = useCallback(async (data) => {
@@ -99,16 +108,16 @@ export const useFormData = () => {
     /**
      * Update a single form field
      */
-    const updateFormData = (field, value) => {
+    const updateFormData = useCallback((field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
-    };
+    }, []);
 
     /**
      * Update multiple form fields at once
      */
-    const updateMultipleFields = (updates) => {
+    const updateMultipleFields = useCallback((updates) => {
         setFormData((prev) => ({ ...prev, ...updates }));
-    };
+    }, []);
 
     /**
      * Load form data from a plain object (e.g., imported JSON)
@@ -125,7 +134,7 @@ export const useFormData = () => {
     /**
      * Reset form data to initial state and clear saved storage
      */
-    const resetFormData = async () => {
+    const resetFormData = useCallback(async () => {
         setFormData(initialState);
         setLoadedFromStorage(false);
         const { success } = await executeAsync(async () => {
@@ -135,7 +144,7 @@ export const useFormData = () => {
         if (success) {
             toast.success("Form data reset successfully");
         }
-    };
+    }, [executeAsync]);
 
     /**
      * Get form data for a specific step
