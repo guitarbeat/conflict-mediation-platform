@@ -56,7 +56,6 @@ function App() {
     getRequiredFieldsForStep,
     isStepComplete,
     getMissingFieldsForStep,
-    getRequiredFieldsForSubStep,
   } = useFormData();
 
   const [currentSubStep, setCurrentSubStep] = useState(0);
