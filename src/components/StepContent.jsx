@@ -1547,4 +1547,4 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   }
 };
 
-export default StepContent;
+export default React.memo(StepContent);
