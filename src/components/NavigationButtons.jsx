@@ -2,6 +2,7 @@ import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const NavigationButton = ({
   onClick,
@@ -68,27 +69,34 @@ const NavigationButtons = ({
         {Object.entries(buttonConfig).map(([key, config]) => (
           config.condition && (
             <div key={key} className={config.className}>
-              <NavigationButton
-                onClick={config.onClick}
-                disabled={config.disabled}
-                ariaDisabled={config.ariaDisabled}
-                className=""
-                ariaLabel={config.ariaLabel}
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d={config.svgPath}
-                  />
-                </svg>
-              </NavigationButton>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <NavigationButton
+                    onClick={config.onClick}
+                    disabled={config.disabled}
+                    ariaDisabled={config.ariaDisabled}
+                    className=""
+                    ariaLabel={config.ariaLabel}
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d={config.svgPath}
+                      />
+                    </svg>
+                  </NavigationButton>
+                </TooltipTrigger>
+                <TooltipContent side={config.direction === "left" ? "right" : "left"}>
+                  <p>{config.ariaLabel}</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
           )
         ))}
