@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import DarkModeToggle from "./components/DarkModeToggle";
 import CategoryNavigation from "./components/CategoryNavigation";
 import NavigationButtons from "./components/NavigationButtons";
@@ -136,6 +136,16 @@ function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isAnimating, navigateToStep]);
 
+  // Stable navigation handler for CategoryNavigation to prevent unnecessary re-renders
+  const navigateToStepRef = useRef(navigateToStep);
+  useEffect(() => {
+    navigateToStepRef.current = navigateToStep;
+  });
+
+  const handleCategoryNavigation = useCallback((step) => {
+    navigateToStepRef.current?.(step);
+  }, []);
+
   const handleNavigate = (direction) => {
     const subStepCount = getSubStepCountForStep(currentStep);
 
@@ -230,9 +240,7 @@ function App() {
         <CategoryNavigation
           formData={formData}
           currentStep={currentStep}
-          onNavigateToStep={(step) => {
-            navigateToStep(step);
-          }}
+          onNavigateToStep={handleCategoryNavigation}
         />
 
 

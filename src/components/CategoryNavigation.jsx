@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import {
   ChevronDown,
   ChevronRight,
@@ -186,4 +186,26 @@ const CategoryNavigation = ({
   );
 };
 
-export default CategoryNavigation;
+const arePropsEqual = (prevProps, nextProps) => {
+  if (prevProps.currentStep !== nextProps.currentStep) return false;
+  if (prevProps.onNavigateToStep !== nextProps.onNavigateToStep) return false;
+
+  const categories = Object.values(SURVEY_CATEGORIES);
+  for (const category of categories) {
+    const prevProgress = getCategoryProgress(prevProps.formData, category);
+    const nextProgress = getCategoryProgress(nextProps.formData, category);
+
+    if (
+      prevProgress.completed !== nextProgress.completed ||
+      prevProgress.total !== nextProgress.total ||
+      prevProgress.percentage !== nextProgress.percentage ||
+      prevProgress.optional !== nextProgress.optional
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export default memo(CategoryNavigation, arePropsEqual);
