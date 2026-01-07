@@ -1,0 +1,13 @@
+
+> conflict-mediation-platform@0.0.0 dev /app
+> vite
+
+
+  VITE v6.3.5  ready in 1455 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: http://192.168.0.2:5173/
+3:30:47 AM [vite] (client) page reload verify_ux.py
+3:30:47 AM [vite] (client) page reload verify_ux.py
+3:34:46 AM [vite] (client) page reload verify_ux.py
+ ELIFECYCLE  Command failed.
