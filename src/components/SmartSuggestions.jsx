@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Lightbulb, Check, X, RefreshCw } from "lucide-react";
 import { cn } from "../lib/utils";
+import useDebounce from "../hooks/useDebounce";
 
 // Smart suggestions based on field type and content
 export const SmartSuggestions = ({
@@ -13,6 +14,9 @@ export const SmartSuggestions = ({
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Debounce the value to prevent excessive "API calls"
+  const debouncedValue = useDebounce(currentValue, 500);
 
   // Generate suggestions based on field type and context
   const generateSuggestions = async (type, value, ctx) => {
@@ -139,12 +143,13 @@ export const SmartSuggestions = ({
   };
 
   useEffect(() => {
-    if (fieldType && currentValue.length > 2) {
-      generateSuggestions(fieldType, currentValue, context);
+    // Use debouncedValue instead of currentValue
+    if (fieldType && debouncedValue.length > 2) {
+      generateSuggestions(fieldType, debouncedValue, context);
     } else {
       setSuggestions([]);
     }
-  }, [fieldType, currentValue, context]);
+  }, [fieldType, debouncedValue, context]);
 
   const handleSuggestionClick = (suggestion) => {
     onSuggestionSelect(suggestion);
