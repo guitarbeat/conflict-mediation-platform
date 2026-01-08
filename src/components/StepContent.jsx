@@ -1476,30 +1476,36 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
             <div className="space-y-4">
               <h4 className="text-base font-semibold">Import Session</h4>
               <div className="flex items-center gap-3">
-                <label className="inline-flex">
+                <label className="inline-flex cursor-pointer">
                   <input
                     type="file"
                     accept="application/json"
-                    className="hidden"
+                    className="sr-only"
                     onChange={(e) => handleImportJSON(e.target.files?.[0])}
                     disabled={isImportingFile}
                   />
                   <Button 
                     variant="outline" 
-                    className="flex items-center gap-2"
-                    disabled={isImportingFile}
-                  >
-                    {isImportingFile ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Importing...
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="h-4 w-4" />
-                        Import from JSON
-                      </>
+                    className={cn(
+                      "flex items-center gap-2 pointer-events-none",
+                      isImportingFile && "opacity-50"
                     )}
+                    disabled={isImportingFile}
+                    asChild
+                  >
+                    <span>
+                      {isImportingFile ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Importing...
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="h-4 w-4" />
+                          Import from JSON
+                        </>
+                      )}
+                    </span>
                   </Button>
                 </label>
                 <p className="text-xs text-muted-foreground">
