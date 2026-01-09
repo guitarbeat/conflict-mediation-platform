@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useMemo } from "react";
 import { Download, FileText, Upload, Loader2, RefreshCcw, ArrowLeftRight, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import FormField from "./FormField";
@@ -495,11 +495,11 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   const [importError, setImportError] = React.useState(null);
 
   // Create context for smart suggestions
-  const context = {
+  const context = useMemo(() => ({
     partyAName: formData.partyAName,
     partyBName: formData.partyBName,
     currentStep: step,
-  };
+  }), [formData.partyAName, formData.partyBName, step]);
 
   const partyAccents = {
     A: createAccentConfig(formData.partyAColor, DEFAULT_PARTY_COLORS.A),

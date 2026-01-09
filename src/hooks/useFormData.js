@@ -99,16 +99,16 @@ export const useFormData = () => {
     /**
      * Update a single form field
      */
-    const updateFormData = (field, value) => {
+    const updateFormData = useCallback((field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
-    };
+    }, []);
 
     /**
      * Update multiple form fields at once
      */
-    const updateMultipleFields = (updates) => {
+    const updateMultipleFields = useCallback((updates) => {
         setFormData((prev) => ({ ...prev, ...updates }));
-    };
+    }, []);
 
     /**
      * Load form data from a plain object (e.g., imported JSON)
