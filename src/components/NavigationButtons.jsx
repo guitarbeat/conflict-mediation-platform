@@ -1,18 +1,23 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { cn } from "../lib/utils";
 
-const NavigationButton = ({
+// Separate component for forwarding ref which is needed for TooltipTrigger
+const NavigationButton = React.forwardRef(({
   onClick,
   disabled,
   ariaDisabled = false,
   className,
   ariaLabel,
   children,
-}) => (
+  ...props
+}, ref) => (
   <button
+    ref={ref}
     type="button"
+    {...props}
     onClick={onClick}
     disabled={disabled}
     aria-disabled={ariaDisabled}
@@ -27,7 +32,9 @@ const NavigationButton = ({
   >
     {children}
   </button>
-);
+));
+
+NavigationButton.displayName = "NavigationButton";
 
 const NavigationButtons = ({
   currentStep,
@@ -46,7 +53,7 @@ const NavigationButtons = ({
       direction: "left",
       className: "hidden sm:block fixed top-1/2 transform -translate-y-1/2 left-4 z-50",
       ariaLabel: "Previous step",
-      svgPath: "M15 19l-7-7 7-7",
+      icon: <ChevronLeft className="w-6 h-6" />,
       condition: canGoPrev,
       disabled: isAnimating,
       onClick: () => onNavigate("prev"),
@@ -55,11 +62,12 @@ const NavigationButtons = ({
       direction: "right",
       className: "hidden sm:block fixed top-1/2 transform -translate-y-1/2 right-4 z-50",
       ariaLabel: "Next step",
-      svgPath: "M9 5l7 7-7 7",
+      icon: <ChevronRight className="w-6 h-6" />,
       condition: hasNextStep,
       disabled: isAnimating || !hasNextStep,
       ariaDisabled: !canGoNext,
       onClick: () => onNavigate("next"),
+      tooltip: !canGoNext ? "Complete all required fields to proceed" : null,
     },
   };
 
@@ -68,27 +76,34 @@ const NavigationButtons = ({
         {Object.entries(buttonConfig).map(([key, config]) => (
           config.condition && (
             <div key={key} className={config.className}>
-              <NavigationButton
-                onClick={config.onClick}
-                disabled={config.disabled}
-                ariaDisabled={config.ariaDisabled}
-                className=""
-                ariaLabel={config.ariaLabel}
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              {config.tooltip ? (
+                <Tooltip>
+                  <TooltipTrigger asChild aria-disabled={config.ariaDisabled}>
+                    <NavigationButton
+                      onClick={config.onClick}
+                      disabled={config.disabled}
+                      ariaDisabled={config.ariaDisabled}
+                      className=""
+                      ariaLabel={config.ariaLabel}
+                    >
+                      {config.icon}
+                    </NavigationButton>
+                  </TooltipTrigger>
+                  <TooltipContent side={key === 'prev' ? 'right' : 'left'}>
+                    <p>{config.tooltip}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ) : (
+                <NavigationButton
+                  onClick={config.onClick}
+                  disabled={config.disabled}
+                  ariaDisabled={config.ariaDisabled}
+                  className=""
+                  ariaLabel={config.ariaLabel}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d={config.svgPath}
-                  />
-                </svg>
-              </NavigationButton>
+                  {config.icon}
+                </NavigationButton>
+              )}
             </div>
           )
         ))}
