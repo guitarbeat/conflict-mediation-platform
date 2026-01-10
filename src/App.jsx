@@ -56,7 +56,6 @@ function App() {
     getRequiredFieldsForStep,
     isStepComplete,
     getMissingFieldsForStep,
-    getRequiredFieldsForSubStep,
   } = useFormData();
 
   const [currentSubStep, setCurrentSubStep] = useState(0);
@@ -86,7 +85,7 @@ function App() {
 
       return true;
     },
-    [getMissingFieldsForStep, isStepComplete],
+    [getMissingFieldsForStep, isStepComplete, currentSubStep],
   );
 
   // Navigation management
@@ -110,7 +109,7 @@ function App() {
 
   const canGoNext = useMemo(
     () => isStepComplete(currentStep, currentSubStep),
-    [currentStep, currentSubStep, isStepComplete, formData],
+    [currentStep, currentSubStep, isStepComplete],
   );
 
   useEffect(() => {
