@@ -11,6 +11,17 @@ import { Analytics } from "@vercel/analytics/react";
 import { toast } from "sonner";
 import logo from "./assets/logo.png";
 import { SURVEY_CATEGORIES } from "./config/surveyCategories";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./components/ui/alert-dialog";
 import "./App.css";
 
 const TOTAL_SURVEY_STEPS =
@@ -217,12 +228,27 @@ function App() {
         {loadedFromStorage && (
           <div className="mb-6 px-4 py-3 rounded-lg bg-muted/50 border border-border text-body-sm flex items-center justify-between shadow-sm">
             <span className="text-muted-foreground">Resumed a previously saved session from this device.</span>
-            <button 
-              onClick={resetFormData} 
-              className="text-ui-sm text-primary hover:text-primary-hover transition-colors underline-offset-2 hover:underline"
-            >
-              Reset
-            </button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  className="text-ui-sm text-primary hover:text-primary-hover transition-colors underline-offset-2 hover:underline"
+                >
+                  Reset
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset Form Data?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete all your progress and cannot be undone. Are you sure you want to start over?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={resetFormData}>Continue</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         )}
 
