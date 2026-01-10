@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useErrorHandler } from "./useErrorHandler";
 
@@ -78,7 +78,7 @@ export const useFormData = () => {
             setFormData({ ...initialState, ...data });
             setLoadedFromStorage(true);
         }
-    }, [executeAsync, initialState]);
+    }, [executeAsync]);
 
     useEffect(() => {
         loadFromStorage();
