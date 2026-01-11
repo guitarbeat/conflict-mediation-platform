@@ -279,6 +279,7 @@ const EnhancedFormField = ({
             type="button"
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             onClick={() => setShowPassword(!showPassword)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
           </button>
@@ -340,9 +341,9 @@ const EnhancedFormField = ({
             <span
               id={`${id}-count`}
               className={cn(
-                "text-muted-foreground",
+                "text-muted-foreground transition-all",
                 value && value.length > maxLength * 0.9 && "text-orange-500",
-                value && value.length >= maxLength && "text-red-500"
+                value && value.length >= maxLength && "text-red-500 animate-shake font-medium"
               )}
             >
               {value?.length || 0}/{maxLength}
@@ -365,9 +366,9 @@ const EnhancedFormField = ({
             <span
               id={`${id}-count`}
               className={cn(
-                "block text-right text-muted-foreground text-xs",
+                "block text-right text-muted-foreground text-xs transition-all",
                 value && value.length > maxLength * 0.9 && "text-orange-500",
-                value && value.length >= maxLength && "text-red-500"
+                value && value.length >= maxLength && "text-red-500 animate-shake font-medium"
               )}
             >
               {value?.length || 0}/{maxLength}
