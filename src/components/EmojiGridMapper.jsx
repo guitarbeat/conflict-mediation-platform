@@ -204,6 +204,25 @@ const getClientPositionFromEvent = (e) =>
     ? { x: e.touches[0].clientX, y: e.touches[0].clientY }
     : { x: e.clientX, y: e.clientY };
 
+const constrainToCircle = (x, y, containerSize) => {
+  const centerX = containerSize / 2;
+  const centerY = containerSize / 2;
+  const maxRadius = containerSize / 2 - EMOJI_RADIUS;
+
+  const dx = x - centerX;
+  const dy = y - centerY;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance > maxRadius) {
+    const scale = maxRadius / distance;
+    return {
+      x: centerX + dx * scale,
+      y: centerY + dy * scale
+    };
+  }
+  return { x, y };
+};
+
 const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({
@@ -262,6 +281,33 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
     [containerSize]
   );
 
+  const handleKeyDown = useCallback(
+    (e) => {
+      // Check for arrow keys
+      if (!['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+
+      e.preventDefault();
+
+      const step = 20; // larger step for keyboard than mouse
+      let { x, y } = position;
+
+      if (e.key === 'ArrowUp') y -= step;
+      if (e.key === 'ArrowDown') y += step;
+      if (e.key === 'ArrowLeft') x -= step;
+      if (e.key === 'ArrowRight') x += step;
+
+      const constrained = constrainToCircle(x, y, containerSize);
+
+      setPosition(constrained);
+
+      if (onChartPositionChange) {
+        const emotionData = calculateEmotionData(constrained.x, constrained.y, containerSize);
+        onChartPositionChange(emotionData);
+      }
+    },
+    [position, containerSize, calculateEmotionData, onChartPositionChange]
+  );
+
   const handleMove = useCallback(
     (e) => {
       if (!isDragging || !containerRef.current) return;
@@ -279,25 +325,11 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
         let x = clientPos.x - rect.left;
         let y = clientPos.y - rect.top;
 
-        // * Constrain to circular boundary
-        const centerX = containerSize / 2;
-        const centerY = containerSize / 2;
-        const maxRadius = containerSize / 2 - EMOJI_RADIUS;
+        const constrained = constrainToCircle(x, y, containerSize);
 
-        const dx = x - centerX;
-        const dy = y - centerY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        setPosition(constrained);
 
-        if (distance > maxRadius) {
-          // * Scale back to the circle edge
-          const scale = maxRadius / distance;
-          x = centerX + dx * scale;
-          y = centerY + dy * scale;
-        }
-
-        setPosition({ x, y });
-
-        const emotionData = calculateEmotionData(x, y, containerSize);
+        const emotionData = calculateEmotionData(constrained.x, constrained.y, containerSize);
         onChartPositionChange(emotionData);
       });
     },
@@ -323,24 +355,12 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
       let x = clientPos.x - rect.left;
       let y = clientPos.y - rect.top;
 
-      const centerX = containerSize / 2;
-      const centerY = containerSize / 2;
-      const maxRadius = containerSize / 2 - EMOJI_RADIUS;
+      const constrained = constrainToCircle(x, y, containerSize);
 
-      const dx = x - centerX;
-      const dy = y - centerY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance > maxRadius) {
-        const scale = maxRadius / distance;
-        x = centerX + dx * scale;
-        y = centerY + dy * scale;
-      }
-
-      setPosition({ x, y });
+      setPosition(constrained);
 
       if (onChartPositionChange) {
-        const emotionData = calculateEmotionData(x, y, containerSize);
+        const emotionData = calculateEmotionData(constrained.x, constrained.y, containerSize);
         onChartPositionChange(emotionData);
       }
     },
@@ -374,6 +394,7 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
     setPosition,
     handleStart,
     handleMove,
+    handleKeyDown,
     calculateEmotionData,
   };
 };
@@ -393,9 +414,10 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
  * @param {string} props.emotionData.label - Current emotion label
  * @param {number} props.emotionData.scaleFactor - Scale factor for the emoji
  * @param {function} props.onStart - Callback when drag starts
+ * @param {function} props.onKeyDown - Callback for keyboard navigation
  */
 const DraggableEmoji = React.memo(
-  ({ position, containerSize, isDragging, emotionData, onStart }) => {
+  ({ position, containerSize, isDragging, emotionData, onStart, onKeyDown }) => {
     const emojiRef = useRef(null);
     const { colors } = useEmotionRecommendation(emotionData.valence, emotionData.arousal);
 
@@ -443,8 +465,9 @@ const DraggableEmoji = React.memo(
           cursor: isDragging ? "grabbing" : "grab",
         }}
         role="button"
-        aria-label={`Drag to express emotion: ${emotionData.label}`}
+        aria-label={`Drag to express emotion: ${emotionData.label}. Use arrow keys to move.`}
         tabIndex={0}
+        onKeyDown={onKeyDown}
       >
         {emotionData.emoji}
       </div>
@@ -642,6 +665,7 @@ const EmojiGridMapper = ({
     setPosition,
     handleStart,
     handleMove,
+    handleKeyDown,
     calculateEmotionData,
   } = useDragHandler(containerRef, containerSize, onChartPositionChange);
 
@@ -689,10 +713,10 @@ const EmojiGridMapper = ({
       let x = clientX - rect.left;
       let y = clientY - rect.top;
 
+      // If outside circle, we still check maxRadius here to see if we should place it
       const centerX = containerSize / 2;
       const centerY = containerSize / 2;
       const maxRadius = containerSize / 2 - EMOJI_RADIUS;
-
       const dx = x - centerX;
       const dy = y - centerY;
       const distance = Math.sqrt(dx * dx + dy * dy);
@@ -763,6 +787,15 @@ const EmojiGridMapper = ({
     []
   );
 
+  const handleStartClick = useCallback(() => {
+    setHasPlacedEmoji(true);
+    const center = containerSize / 2;
+    setPosition({ x: center, y: center });
+    if (onChartPositionChange) {
+         onChartPositionChange(calculateEmotionData(center, center, containerSize));
+    }
+  }, [containerSize, setPosition, onChartPositionChange, calculateEmotionData]);
+
   return (
     <div
       className="space-y-4 sm:space-y-6"
@@ -813,6 +846,7 @@ const EmojiGridMapper = ({
                   handleStart(event);
                   handleMove(event);
                 }}
+                onKeyDown={handleKeyDown}
               />
             )}
           </div>
@@ -828,6 +862,8 @@ const EmojiGridMapper = ({
                 className="relative w-14 h-14 flex items-center justify-center text-3xl rounded-full bg-white border-2 border-orange-200 shadow-lg hover:shadow-xl transition-all duration-200"
                 onMouseDown={startInitialDrag}
                 onTouchStart={startInitialDrag}
+                onClick={handleStartClick}
+                aria-label="Start by placing emoji in the center"
               >
                 {EMOTION_QUADRANTS.neutral.emoji}
               </button>
