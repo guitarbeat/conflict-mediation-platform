@@ -6,53 +6,89 @@ const initialState = {
     partyAName: "",
     partyBName: "",
     partyAColor: "#6B8E47",
-        partyBColor: "#0D9488",
-        dateOfIncident: "",
-        dateOfMediation: "",
-        locationOfConflict: "",
-        conflictDescription: "",
-        // Individual Reflection A
-        partyAThoughts: "",
-        partyASelectedEmotionWords: [],
-        partyAEmotionChartPosition: null,
-        partyAAggressiveApproach: "",
-        partyAPassiveApproach: "",
-        partyAAssertiveApproach: "",
-        partyAWhyBecause: "",
-        // Individual Reflection B
-        partyBThoughts: "",
-        partyBSelectedEmotionWords: [],
-        partyBEmotionChartPosition: null,
-        partyBAggressiveApproach: "",
-        partyBPassiveApproach: "",
-        partyBAssertiveApproach: "",
-        partyBWhyBecause: "",
-        // ABCDE Model
-        activatingEvent: "",
-        partyABeliefs: "",
-        partyBBeliefs: "",
-        partyAConsequences: "",
-        partyBConsequences: "",
-        partyADisputations: "",
-        partyBDisputations: "",
-        effectsReflections: "",
-        // Solution Development
-        partyAMiracle: "",
-        partyBMiracle: "",
-        partyATop3Solutions: [],
-        partyBTop3Solutions: [],
-        partyAPerspective: "",
-        partyBPerspective: "",
-        compromiseSolutions: "",
-        // Agreement & Action Steps
-        partyAUnmetNeeds: "",
-        partyBUnmetNeeds: "",
-        partyANeedsInPractice: "",
-        partyBNeedsInPractice: "",
-        actionSteps: [],
-        followUpDate: "",
-        additionalSupport: "",
-    };
+    partyBColor: "#0D9488",
+    dateOfIncident: "",
+    dateOfMediation: "",
+    locationOfConflict: "",
+    conflictDescription: "",
+    // Individual Reflection A
+    partyAThoughts: "",
+    partyASelectedEmotionWords: [],
+    partyAEmotionChartPosition: null,
+    partyAAggressiveApproach: "",
+    partyAPassiveApproach: "",
+    partyAAssertiveApproach: "",
+    partyAWhyBecause: "",
+    // Individual Reflection B
+    partyBThoughts: "",
+    partyBSelectedEmotionWords: [],
+    partyBEmotionChartPosition: null,
+    partyBAggressiveApproach: "",
+    partyBPassiveApproach: "",
+    partyBAssertiveApproach: "",
+    partyBWhyBecause: "",
+    // ABCDE Model
+    activatingEvent: "",
+    partyABeliefs: "",
+    partyBBeliefs: "",
+    partyAConsequences: "",
+    partyBConsequences: "",
+    partyADisputations: "",
+    partyBDisputations: "",
+    effectsReflections: "",
+    // Solution Development
+    partyAMiracle: "",
+    partyBMiracle: "",
+    partyATop3Solutions: [],
+    partyBTop3Solutions: [],
+    partyAPerspective: "",
+    partyBPerspective: "",
+    compromiseSolutions: "",
+    // Agreement & Action Steps
+    partyAUnmetNeeds: "",
+    partyBUnmetNeeds: "",
+    partyANeedsInPractice: "",
+    partyBNeedsInPractice: "",
+    actionSteps: [],
+    followUpDate: "",
+    additionalSupport: "",
+};
+
+// Static helper functions moved outside the hook
+const getRequiredFieldsForStep = (step) => {
+    switch (step) {
+        case 1:
+            return ["partyAName", "partyBName", "conflictDescription"];
+        case 2:
+            return ["partyAThoughts", "partyAAssertiveApproach"];
+        case 3:
+            return ["partyBThoughts", "partyBAssertiveApproach"];
+        case 4:
+            return ["activatingEvent", "partyABeliefs", "partyBBeliefs"];
+        case 5:
+            return ["partyAMiracle", "partyBMiracle", "compromiseSolutions", "partyATop3Solutions", "partyBTop3Solutions"];
+        case 6:
+            return ["actionSteps", "followUpDate"];
+        case 7:
+            return [];
+        default:
+            return [];
+    }
+};
+
+const getRequiredFieldsForSubStep = (step, subStep) => {
+    if (step === 2) { // Party A Individual Reflection
+        if (subStep === 0) return ["partyAThoughts"];
+        if (subStep === 1) return [];
+        if (subStep === 2) return ["partyAAssertiveApproach"];
+    }
+    if (step === 3) { // Party B Individual Reflection
+        if (subStep === 0) return ["partyBThoughts"];
+        if (subStep === 1) return [];
+        if (subStep === 2) return ["partyBAssertiveApproach"];
+    }
+    return getRequiredFieldsForStep(step);
+};
 
 /**
  * Custom hook for managing conflict mediation form data
@@ -99,33 +135,33 @@ export const useFormData = () => {
     /**
      * Update a single form field
      */
-    const updateFormData = (field, value) => {
+    const updateFormData = useCallback((field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
-    };
+    }, []);
 
     /**
      * Update multiple form fields at once
      */
-    const updateMultipleFields = (updates) => {
+    const updateMultipleFields = useCallback((updates) => {
         setFormData((prev) => ({ ...prev, ...updates }));
-    };
+    }, []);
 
     /**
      * Load form data from a plain object (e.g., imported JSON)
      */
-    const loadFromJSON = (dataObject) => {
+    const loadFromJSON = useCallback((dataObject) => {
         if (!dataObject || typeof dataObject !== "object") return;
         const allowedKeys = Object.keys(initialState);
         const sanitized = Object.fromEntries(
             Object.entries(dataObject).filter(([key]) => allowedKeys.includes(key))
         );
         setFormData((prev) => ({ ...prev, ...sanitized }));
-    };
+    }, []);
 
     /**
      * Reset form data to initial state and clear saved storage
      */
-    const resetFormData = async () => {
+    const resetFormData = useCallback(async () => {
         setFormData(initialState);
         setLoadedFromStorage(false);
         const { success } = await executeAsync(async () => {
@@ -135,12 +171,12 @@ export const useFormData = () => {
         if (success) {
             toast.success("Form data reset successfully");
         }
-    };
+    }, [executeAsync]);
 
     /**
      * Get form data for a specific step
      */
-    const getStepData = (step) => {
+    const getStepData = useCallback((step) => {
         switch (step) {
             case 1:
                 return {
@@ -209,12 +245,12 @@ export const useFormData = () => {
             default:
                 return {};
         }
-    };
+    }, [formData]);
 
     /**
      * Check if a step has required data filled
      */
-    const isStepComplete = (step, subStep = 0) => {
+    const isStepComplete = useCallback((step, subStep = 0) => {
         const fields = getRequiredFieldsForSubStep(step, subStep);
         if (fields.length === 0) return true;
 
@@ -228,12 +264,12 @@ export const useFormData = () => {
             }
             return value && value.toString().trim() !== "";
         });
-    };
+    }, [formData]);
 
     /**
      * Get list of missing required fields for a step
      */
-    const getMissingFieldsForStep = (step, subStep = 0) => {
+    const getMissingFieldsForStep = useCallback((step, subStep = 0) => {
         const requiredFields = getRequiredFieldsForSubStep(step, subStep);
         return requiredFields.filter(field => {
             const value = formData[field];
@@ -242,45 +278,7 @@ export const useFormData = () => {
             }
             return !value || value.toString().trim() === "";
         });
-    };
-
-    const getRequiredFieldsForSubStep = (step, subStep) => {
-        if (step === 2) { // Party A Individual Reflection
-            if (subStep === 0) return ["partyAThoughts"];
-            if (subStep === 1) return [];
-            if (subStep === 2) return ["partyAAssertiveApproach"];
-        }
-        if (step === 3) { // Party B Individual Reflection
-            if (subStep === 0) return ["partyBThoughts"];
-            if (subStep === 1) return [];
-            if (subStep === 2) return ["partyBAssertiveApproach"];
-        }
-        return getRequiredFieldsForStep(step);
-    }
-
-    /**
-     * Get required fields for a specific step
-     */
-    const getRequiredFieldsForStep = (step) => {
-        switch (step) {
-            case 1:
-                return ["partyAName", "partyBName", "conflictDescription"];
-            case 2:
-                return ["partyAThoughts", "partyAAssertiveApproach"];
-            case 3:
-                return ["partyBThoughts", "partyBAssertiveApproach"];
-            case 4:
-                return ["activatingEvent", "partyABeliefs", "partyBBeliefs"];
-            case 5:
-                return ["partyAMiracle", "partyBMiracle", "compromiseSolutions", "partyATop3Solutions", "partyBTop3Solutions"];
-            case 6:
-                return ["actionSteps", "followUpDate"];
-            case 7:
-                return [];
-            default:
-                return [];
-        }
-    };
+    }, [formData]);
 
     return {
         formData,
