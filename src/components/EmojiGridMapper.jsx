@@ -210,6 +210,16 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
     x: DEFAULT_CONTAINER_SIZE / 2,
     y: DEFAULT_CONTAINER_SIZE / 2,
   });
+  const frameRef = useRef(null);
+
+  // * Cleanup animation frame on unmount
+  useEffect(() => {
+    return () => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+      }
+    };
+  }, []);
 
   const calculateEmotionData = useCallback(
     (x, y, size = containerSize) => {
@@ -256,7 +266,12 @@ const useDragHandler = (containerRef, containerSize, onChartPositionChange) => {
     (e) => {
       if (!isDragging || !containerRef.current) return;
 
-      requestAnimationFrame(() => {
+      if (frameRef.current) {
+        cancelAnimationFrame(frameRef.current);
+      }
+
+      frameRef.current = requestAnimationFrame(() => {
+        frameRef.current = null;
         const rect = containerRef.current.getBoundingClientRect();
         const clientPos = getClientPositionFromEvent(e);
 
