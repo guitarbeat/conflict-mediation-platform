@@ -1,8 +1,21 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 // Constants
 const MIN_SWIPE_DISTANCE = 50;
 const MAX_DRAG_OFFSET = 200;
+
+/**
+ * Get client X coordinate from touch or mouse event
+ * @param {Event} e - Touch or mouse event
+ * @returns {number} Client X coordinate
+ */
+const getClientX = (e) => {
+    return e.touches ? e.touches[0].clientX : e.clientX;
+};
+
+const getClientY = (e) => {
+    return e.touches ? e.touches[0].clientY : e.clientY;
+};
 
 /**
  * Custom hook for managing step navigation and card animations
@@ -50,7 +63,7 @@ export const useNavigation = (options = {}) => {
     // Computed values
     const isAnimating = animatingCard !== null;
 
-    const shouldNavigate = (targetStep, meta = {}) => {
+    const shouldNavigate = useCallback((targetStep, meta = {}) => {
         if (typeof canNavigateToStep === "function") {
             return canNavigateToStep({
                 currentStep,
@@ -59,9 +72,9 @@ export const useNavigation = (options = {}) => {
             });
         }
         return true;
-    };
+    }, [canNavigateToStep, currentStep]);
 
-    const resetAnimationState = () => {
+    const resetAnimationState = useCallback(() => {
         if (animationTimeoutRef.current) {
             clearTimeout(animationTimeoutRef.current);
             animationTimeoutRef.current = null;
@@ -69,13 +82,13 @@ export const useNavigation = (options = {}) => {
         setAnimatingCard(null);
         setAnimationType("");
         setDragOffset(0);
-    };
+    }, []);
 
     /**
      * Navigate to the next or previous step
      * @param {string|number} target - 'next', 'prev', or a direct step number
      */
-    const navigateToStep = (target) => {
+    const navigateToStep = useCallback((target) => {
         if (isAnimating) return;
 
         if (typeof target === "number") {
@@ -145,26 +158,13 @@ export const useNavigation = (options = {}) => {
                 resetAnimationState();
             }, animationDuration);
         }
-    };
-
-    /**
-     * Get client X coordinate from touch or mouse event
-     * @param {Event} e - Touch or mouse event
-     * @returns {number} Client X coordinate
-     */
-    const getClientX = (e) => {
-        return e.touches ? e.touches[0].clientX : e.clientX;
-    };
-
-    const getClientY = (e) => {
-        return e.touches ? e.touches[0].clientY : e.clientY;
-    };
+    }, [isAnimating, totalSteps, currentStep, shouldNavigate, resetAnimationState, animationDuration]);
 
     /**
      * Handle input start (touch/mouse down)
      * @param {Event} e - Touch or mouse event
      */
-    const handleInputStart = (e) => {
+    const handleInputStart = useCallback((e) => {
         if (isAnimating) return;
 
         // Check if the drag started on an interactive element
@@ -200,13 +200,13 @@ export const useNavigation = (options = {}) => {
         setTouchStart(getClientX(e));
         setTouchStartY(getClientY(e));
         setDragOffset(0);
-    };
+    }, [isAnimating]);
 
     /**
      * Handle input move (touch/mouse move)
      * @param {Event} e - Touch or mouse event
      */
-    const handleInputMove = (e) => {
+    const handleInputMove = useCallback((e) => {
         if (!touchStart || isAnimating || !isDragging) return;
 
         // Don't prevent default on move to allow text selection
@@ -229,12 +229,12 @@ export const useNavigation = (options = {}) => {
         }
         const clampedOffset = Math.max(-MAX_DRAG_OFFSET, Math.min(50, offset));
         setDragOffset(clampedOffset);
-    };
+    }, [touchStart, isAnimating, isDragging, touchStartY]);
 
     /**
      * Handle input end (touch/mouse up)
      */
-    const handleInputEnd = () => {
+    const handleInputEnd = useCallback(() => {
         if (!isDragging) return;
 
         // Don't prevent default to allow normal form interactions
@@ -263,12 +263,12 @@ export const useNavigation = (options = {}) => {
         setTouchStart(null);
         setTouchStartY(null);
         setTouchEnd(null);
-    };
+    }, [isDragging, touchStart, touchEnd, isAnimating, navigateToStep]);
 
     /**
      * Handle mouse leave to stop dragging
      */
-    const handleMouseLeave = () => {
+    const handleMouseLeave = useCallback(() => {
         if (isDragging) {
             setIsDragging(false);
             setDragOffset(0);
@@ -276,7 +276,7 @@ export const useNavigation = (options = {}) => {
             setTouchStartY(null);
             setTouchEnd(null);
         }
-    };
+    }, [isDragging]);
 
     return {
         // State
