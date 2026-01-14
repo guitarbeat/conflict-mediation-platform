@@ -186,4 +186,4 @@ const CategoryNavigation = ({
   );
 };
 
-export default CategoryNavigation;
+export default React.memo(CategoryNavigation);

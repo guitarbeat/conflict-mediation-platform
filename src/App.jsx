@@ -173,21 +173,33 @@ function App() {
     linkElement.click();
   }, [formData]);
 
-  const renderStepContent = (step) => {
-    return (
-      <StepContent
-        step={step}
-        formData={formData}
-        updateFormData={updateFormData}
-        updateMultipleFields={updateMultipleFields}
-        onExportJSON={exportToJSON}
-        showErrors={errorStep === step}
-        getRequiredFieldsForStep={getRequiredFieldsForStep}
-        currentSubStep={currentSubStep}
-        setCurrentSubStep={setCurrentSubStep}
-      />
-    );
-  };
+  const renderStepContent = useCallback(
+    (step) => {
+      return (
+        <StepContent
+          step={step}
+          formData={formData}
+          updateFormData={updateFormData}
+          updateMultipleFields={updateMultipleFields}
+          onExportJSON={exportToJSON}
+          showErrors={errorStep === step}
+          getRequiredFieldsForStep={getRequiredFieldsForStep}
+          currentSubStep={currentSubStep}
+          setCurrentSubStep={setCurrentSubStep}
+        />
+      );
+    },
+    [
+      formData,
+      updateFormData,
+      updateMultipleFields,
+      exportToJSON,
+      errorStep,
+      getRequiredFieldsForStep,
+      currentSubStep,
+      setCurrentSubStep,
+    ],
+  );
 
   return (
     <div className="min-h-screen bg-background">
@@ -229,11 +241,8 @@ function App() {
         <CategoryNavigation
           formData={formData}
           currentStep={currentStep}
-          onNavigateToStep={(step) => {
-            navigateToStep(step);
-          }}
+          onNavigateToStep={navigateToStep}
         />
-
 
         {/* Card Stack */}
         <CardStack
