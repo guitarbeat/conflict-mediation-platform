@@ -495,18 +495,19 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   const [importError, setImportError] = React.useState(null);
 
   // Create context for smart suggestions
-  const context = {
+  // Memoized to prevent SmartSuggestions from re-rendering and firing effects on unrelated form updates
+  const context = React.useMemo(() => ({
     partyAName: formData.partyAName,
     partyBName: formData.partyBName,
     currentStep: step,
-  };
+  }), [formData.partyAName, formData.partyBName, step]);
 
-  const partyAccents = {
+  const partyAccents = React.useMemo(() => ({
     A: createAccentConfig(formData.partyAColor, DEFAULT_PARTY_COLORS.A),
     B: createAccentConfig(formData.partyBColor, DEFAULT_PARTY_COLORS.B),
-  };
+  }), [formData.partyAColor, formData.partyBColor]);
 
-  const partyDetails = {
+  const partyDetails = React.useMemo(() => ({
     A: {
       name: formData.partyAName?.trim() || "Party A",
       accent: partyAccents.A,
@@ -515,7 +516,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
       name: formData.partyBName?.trim() || "Party B",
       accent: partyAccents.B,
     },
-  };
+  }), [formData.partyAName, formData.partyBName, partyAccents]);
 
   const themeSurfaces = useThemeContrastSurfaces();
 
