@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import DarkModeToggle from "./components/DarkModeToggle";
 import CategoryNavigation from "./components/CategoryNavigation";
 import NavigationButtons from "./components/NavigationButtons";
@@ -159,9 +159,15 @@ function App() {
     }
   };
 
+  // Keep latest formData in ref for stable callbacks
+  const formDataRef = useRef(formData);
+  useEffect(() => {
+    formDataRef.current = formData;
+  }, [formData]);
+
   // Export functions
   const exportToJSON = useCallback(() => {
-    const dataStr = JSON.stringify(formData, null, 2);
+    const dataStr = JSON.stringify(formDataRef.current, null, 2);
     const dataUri =
       "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
     const exportFileDefaultName = `conflict-mediation-${
@@ -171,7 +177,7 @@ function App() {
     linkElement.setAttribute("href", dataUri);
     linkElement.setAttribute("download", exportFileDefaultName);
     linkElement.click();
-  }, [formData]);
+  }, []);
 
   const renderStepContent = (step) => {
     return (
