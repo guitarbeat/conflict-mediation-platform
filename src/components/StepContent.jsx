@@ -332,7 +332,7 @@ const CommunicationApproaches = ({
         label="Aggressive Approach (Not Recommended)"
         placeholder="What would you want to say if you were being aggressive?"
         value={formData[`${prefix}AggressiveApproach`]}
-        onChange={(value) => updateFormData(`${prefix}AggressiveApproach`, value)}
+        onFieldChange={updateFormData}
         type="textarea"
         className="text-red-600"
         description="This approach is not recommended as it can escalate conflict"
@@ -345,7 +345,7 @@ const CommunicationApproaches = ({
         label="Passive Approach"
         placeholder="What would you want if you were being passive?"
         value={formData[`${prefix}PassiveApproach`]}
-        onChange={(value) => updateFormData(`${prefix}PassiveApproach`, value)}
+        onFieldChange={updateFormData}
         type="textarea"
         className="text-blue-600"
         description="This approach avoids conflict but may not address underlying issues"
@@ -358,7 +358,7 @@ const CommunicationApproaches = ({
         label="Assertive Approach (Recommended)"
         placeholder="What would you want to say if you were being assertive and respectful?"
         value={formData[`${prefix}AssertiveApproach`]}
-        onChange={(value) => updateFormData(`${prefix}AssertiveApproach`, value)}
+        onFieldChange={updateFormData}
         type="textarea"
         className="text-green-600"
         error={isFieldMissing(`${prefix}AssertiveApproach`) ? "Required" : ""}
@@ -376,7 +376,7 @@ const CommunicationApproaches = ({
         label="Why/Because..."
         placeholder="Explain your reasoning..."
         value={formData[`${prefix}WhyBecause`]}
-        onChange={(value) => updateFormData(`${prefix}WhyBecause`, value)}
+        onFieldChange={updateFormData}
         type="textarea"
         description="Explain the reasoning behind your assertive approach"
         showCharacterCount={true}
@@ -410,7 +410,7 @@ const IndividualReflection = ({
             label="I think..."
             placeholder="Explain what you think or believe to be true about the conflict..."
             value={formData[`${prefix}Thoughts`]}
-            onChange={(value) => updateFormData(`${prefix}Thoughts`, value)}
+            onFieldChange={updateFormData}
             type="textarea"
             rows={4}
             error={isFieldMissing(`${prefix}Thoughts`) ? "Required" : ""}
@@ -993,7 +993,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               description="What actually happened? Stick to observable facts."
               placeholder="Describe the factual events that triggered this conflict..."
               value={formData.activatingEvent}
-              onChange={(value) => updateFormData("activatingEvent", value)}
+              onFieldChange={updateFormData}
               type="textarea"
               rows={3}
               required={true}
@@ -1013,7 +1013,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="What thoughts or beliefs do you have about this event?"
                 placeholder="Your thoughts and beliefs about what happened..."
                 value={formData.partyABeliefs}
-                onChange={(value) => updateFormData("partyABeliefs", value)}
+                onFieldChange={updateFormData}
                 type="textarea"
                 rows={3}
                 required={true}
@@ -1030,7 +1030,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="What thoughts or beliefs do you have about this event?"
                 placeholder="Your thoughts and beliefs about what happened..."
                 value={formData.partyBBeliefs}
-                onChange={(value) => updateFormData("partyBBeliefs", value)}
+                onFieldChange={updateFormData}
                 type="textarea"
                 rows={3}
                 required={true}
@@ -1050,9 +1050,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="How did your beliefs make you feel and behave?"
                 placeholder="Your emotional and behavioral responses..."
                 value={formData.partyAConsequences}
-                onChange={(value) =>
-                  updateFormData("partyAConsequences", value)
-                }
+                onFieldChange={updateFormData}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1065,9 +1063,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="How did your beliefs make you feel and behave?"
                 placeholder="Your emotional and behavioral responses..."
                 value={formData.partyBConsequences}
-                onChange={(value) =>
-                  updateFormData("partyBConsequences", value)
-                }
+                onFieldChange={updateFormData}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1083,9 +1079,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="Challenge your beliefs. Are they helpful? Accurate? Realistic?"
                 placeholder="Question and challenge your initial beliefs..."
                 value={formData.partyADisputations}
-                onChange={(value) =>
-                  updateFormData("partyADisputations", value)
-                }
+                onFieldChange={updateFormData}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1098,9 +1092,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="Challenge your beliefs. Are they helpful? Accurate? Realistic?"
                 placeholder="Question and challenge your initial beliefs..."
                 value={formData.partyBDisputations}
-                onChange={(value) =>
-                  updateFormData("partyBDisputations", value)
-                }
+                onFieldChange={updateFormData}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1114,7 +1106,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               description="What new insights have emerged? How do you both feel now?"
               placeholder="Reflect on new perspectives and feelings that have emerged..."
               value={formData.effectsReflections}
-              onChange={(value) => updateFormData("effectsReflections", value)}
+              onFieldChange={updateFormData}
               type="textarea"
               rows={4}
               showCharacterCount={true}
@@ -1142,7 +1134,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="If you woke up tomorrow and this conflict was completely resolved, what would be different?"
                 placeholder="Describe your ideal resolution..."
                 value={formData.partyAMiracle}
-                onChange={(value) => updateFormData("partyAMiracle", value)}
+                onFieldChange={updateFormData}
                 type="textarea"
                 rows={4}
                 required={true}
@@ -1160,7 +1152,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="If you woke up tomorrow and this conflict was completely resolved, what would be different?"
                 placeholder="Describe your ideal resolution..."
                 value={formData.partyBMiracle}
-                onChange={(value) => updateFormData("partyBMiracle", value)}
+                onFieldChange={updateFormData}
                 type="textarea"
                 rows={4}
                 required={true}
@@ -1212,7 +1204,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="Try to understand the other person's point of view."
                 placeholder="What might the other person be thinking or feeling?"
                 value={formData.partyAPerspective}
-                onChange={(value) => updateFormData("partyAPerspective", value)}
+                onFieldChange={updateFormData}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1227,7 +1219,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="Try to understand the other person's point of view."
                 placeholder="What might the other person be thinking or feeling?"
                 value={formData.partyBPerspective}
-                onChange={(value) => updateFormData("partyBPerspective", value)}
+                onFieldChange={updateFormData}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}
@@ -1241,7 +1233,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
               description="What solutions can you both agree on? What compromises are you willing to make?"
               placeholder="Describe the solutions you both can accept..."
               value={formData.compromiseSolutions}
-              onChange={(value) => updateFormData("compromiseSolutions", value)}
+              onFieldChange={updateFormData}
               type="textarea"
               rows={4}
               required={true}
@@ -1343,7 +1335,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="When should you check in on progress?"
                 type="date"
                 value={formData.followUpDate}
-                onChange={(value) => updateFormData("followUpDate", value)}
+                onFieldChange={updateFormData}
                 required={true}
               />
               <EnhancedFormField
@@ -1352,7 +1344,7 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
                 description="What additional resources or support might be helpful?"
                 placeholder="Describe any additional support needed..."
                 value={formData.additionalSupport}
-                onChange={(value) => updateFormData("additionalSupport", value)}
+                onFieldChange={updateFormData}
                 type="textarea"
                 rows={3}
                 showCharacterCount={true}

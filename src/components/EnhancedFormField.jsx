@@ -1,14 +1,15 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo, memo } from "react";
 import { Check, X, AlertCircle, HelpCircle, Eye, EyeOff, Lightbulb } from "lucide-react";
 import { cn } from "../lib/utils";
 import { SmartSuggestions, ContextualHelp } from "./SmartSuggestions";
 
-const EnhancedFormField = ({
+const EnhancedFormField = memo(({
   id,
   label,
   placeholder,
   value,
   onChange,
+  onFieldChange,
   type = "input",
   rows = 3,
   className = "",
@@ -83,7 +84,11 @@ const EnhancedFormField = ({
   };
 
   const handleChange = (newValue) => {
-    onChange(newValue);
+    if (onFieldChange && id) {
+      onFieldChange(id, newValue);
+    } else if (onChange) {
+      onChange(newValue);
+    }
     
     if (validationMessage) {
       setIsValidating(true);
@@ -124,7 +129,7 @@ const EnhancedFormField = ({
     return type;
   };
 
-  const inputProps = {
+  const inputProps = useMemo(() => ({
     id,
     ref: inputRef,
     className: cn(
@@ -154,7 +159,11 @@ const EnhancedFormField = ({
     minLength,
     pattern,
     ...props
-  };
+  }), [
+    id, className, error, validationState, isFocused, disabled, readOnly,
+    placeholder, value, description, helpText, showCharacterCount,
+    maxLength, minLength, pattern, props
+  ]);
 
   const renderInput = () => {
     if (type === "textarea") {
@@ -383,6 +392,6 @@ const EnhancedFormField = ({
       )}
     </div>
   );
-};
+});
 
 export default EnhancedFormField;
