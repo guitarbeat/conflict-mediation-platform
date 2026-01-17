@@ -99,7 +99,12 @@ const NavigationButtons = ({
                   </NavigationButton>
                 </TooltipTrigger>
                 <TooltipContent side={config.direction === "left" ? "right" : "left"}>
-                  <p>{config.ariaLabel}</p>
+                  <p className="flex items-center gap-2">
+                    {config.ariaLabel}
+                    <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-primary-foreground/20 bg-primary-foreground/10 px-1.5 font-mono text-[10px] font-medium text-primary-foreground opacity-100">
+                      <span className="text-xs">{config.direction === "left" ? "←" : "→"}</span>
+                    </kbd>
+                  </p>
                 </TooltipContent>
               </Tooltip>
             </div>
