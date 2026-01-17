@@ -132,9 +132,11 @@ const NavigationButtons = ({
             <Button
               type="button"
               size="lg"
-              className="flex-1"
+              className={cn("flex-1", !canGoNext && "opacity-60")}
+              // Allow click when aria-disabled to trigger validation feedback in navigation guard
               onClick={() => onNavigate("next")}
-              disabled={!hasNextStep || isAnimating || !canGoNext}
+              disabled={!hasNextStep || isAnimating}
+              aria-disabled={!canGoNext}
               aria-label={
                 currentStep === 1
                   ? "Start Mediation"
