@@ -543,9 +543,11 @@ const EmotionWordsSelector = React.memo(
                   <Badge
                     key={word}
                     className={`cursor-pointer transition-all duration-300 hover:scale-105 ${getWordStyling(word)}`}
-                    onClick={() => toggleEmotionWord(word)}
+                    asChild
                   >
-                    {word}
+                    <button type="button" onClick={() => toggleEmotionWord(word)}>
+                      {word}
+                    </button>
                   </Badge>
                 ))}
               </div>
@@ -563,9 +565,11 @@ const EmotionWordsSelector = React.memo(
                     <Badge
                       key={word}
                       className={`cursor-pointer transition-all duration-200 hover:scale-105 ${getWordStyling(word)}`}
-                      onClick={() => toggleEmotionWord(word)}
+                      asChild
                     >
-                      {word}
+                      <button type="button" onClick={() => toggleEmotionWord(word)}>
+                        {word}
+                      </button>
                     </Badge>
                   ))}
               </div>
@@ -813,6 +817,13 @@ const EmojiGridMapper = ({
                 className="relative w-14 h-14 flex items-center justify-center text-3xl rounded-full bg-white border-2 border-orange-200 shadow-lg hover:shadow-xl transition-all duration-200"
                 onMouseDown={startInitialDrag}
                 onTouchStart={startInitialDrag}
+                onClick={() => {
+                  // For keyboard users or simple clicks, place emoji in center
+                  const center = containerSize / 2;
+                  setPosition({ x: center, y: center });
+                  setHasPlacedEmoji(true);
+                }}
+                aria-label="Start by placing emoji in the center"
               >
                 {EMOTION_QUADRANTS.neutral.emoji}
               </button>
