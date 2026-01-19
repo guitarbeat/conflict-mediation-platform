@@ -173,21 +173,34 @@ function App() {
     linkElement.click();
   }, [formData]);
 
-  const renderStepContent = (step) => {
-    return (
-      <StepContent
-        step={step}
-        formData={formData}
-        updateFormData={updateFormData}
-        updateMultipleFields={updateMultipleFields}
-        onExportJSON={exportToJSON}
-        showErrors={errorStep === step}
-        getRequiredFieldsForStep={getRequiredFieldsForStep}
-        currentSubStep={currentSubStep}
-        setCurrentSubStep={setCurrentSubStep}
-      />
-    );
-  };
+  const stepElements = useMemo(() => {
+    return Array.from({ length: TOTAL_SURVEY_STEPS }, (_, index) => {
+      const step = index + 1;
+      return (
+        <StepContent
+          key={step}
+          step={step}
+          formData={formData}
+          updateFormData={updateFormData}
+          updateMultipleFields={updateMultipleFields}
+          onExportJSON={exportToJSON}
+          showErrors={errorStep === step}
+          getRequiredFieldsForStep={getRequiredFieldsForStep}
+          currentSubStep={currentSubStep}
+          setCurrentSubStep={setCurrentSubStep}
+        />
+      );
+    });
+  }, [
+    formData,
+    updateFormData,
+    updateMultipleFields,
+    exportToJSON,
+    errorStep,
+    getRequiredFieldsForStep,
+    currentSubStep,
+    setCurrentSubStep,
+  ]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -247,7 +260,7 @@ function App() {
           onInputMove={handleInputMove}
           onInputEnd={handleInputEnd}
           onMouseLeave={handleMouseLeave}
-          renderStepContent={renderStepContent}
+          stepElements={stepElements}
         />
 
         {/* Navigation Buttons */}
