@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Lightbulb, Check, X, RefreshCw } from "lucide-react";
+import { Lightbulb, RefreshCw, ChevronDown } from "lucide-react";
 import { cn } from "../lib/utils";
 import useDebounce from "../hooks/useDebounce";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 // Smart suggestions based on field type and content
 export const SmartSuggestions = ({
@@ -172,23 +173,44 @@ export const SmartSuggestions = ({
           <span>Smart Suggestions</span>
         </div>
         <div className="flex items-center gap-1">
-          <button
-            type="button"
-            onClick={handleRefresh}
-            disabled={isLoading}
-            className="p-1 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
-            title="Refresh suggestions"
-          >
-            <RefreshCw className={cn("h-3 w-3", isLoading && "animate-spin")} />
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowSuggestions(!showSuggestions)}
-            className="p-1 text-muted-foreground hover:text-foreground transition-colors"
-            title={showSuggestions ? "Hide suggestions" : "Show suggestions"}
-          >
-            {showSuggestions ? <X className="h-3 w-3" /> : <Check className="h-3 w-3" />}
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                onClick={handleRefresh}
+                disabled={isLoading}
+                className="p-1 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                aria-label="Refresh suggestions"
+              >
+                <RefreshCw className={cn("h-3 w-3", isLoading && "animate-spin")} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Refresh suggestions</p>
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                onClick={() => setShowSuggestions(!showSuggestions)}
+                className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label={showSuggestions ? "Hide suggestions" : "Show suggestions"}
+                aria-expanded={showSuggestions}
+              >
+                <ChevronDown
+                  className={cn(
+                    "h-3 w-3 transition-transform duration-200",
+                    showSuggestions ? "rotate-180" : ""
+                  )}
+                />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{showSuggestions ? "Hide suggestions" : "Show suggestions"}</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
 
