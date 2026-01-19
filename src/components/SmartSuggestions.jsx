@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Lightbulb, Check, X, RefreshCw } from "lucide-react";
+import { Lightbulb, RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "../lib/utils";
 import useDebounce from "../hooks/useDebounce";
 
@@ -22,8 +22,7 @@ export const SmartSuggestions = ({
   const generateSuggestions = async (type, value, ctx) => {
     setIsLoading(true);
     
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Artificial delay removed for better UX
     
     let generatedSuggestions = [];
     
@@ -176,7 +175,8 @@ export const SmartSuggestions = ({
             type="button"
             onClick={handleRefresh}
             disabled={isLoading}
-            className="p-1 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+            className="p-1 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label="Refresh suggestions"
             title="Refresh suggestions"
           >
             <RefreshCw className={cn("h-3 w-3", isLoading && "animate-spin")} />
@@ -184,18 +184,20 @@ export const SmartSuggestions = ({
           <button
             type="button"
             onClick={() => setShowSuggestions(!showSuggestions)}
-            className="p-1 text-muted-foreground hover:text-foreground transition-colors"
+            className="p-1 text-muted-foreground hover:text-foreground transition-colors rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label={showSuggestions ? "Hide suggestions" : "Show suggestions"}
+            aria-expanded={showSuggestions}
             title={showSuggestions ? "Hide suggestions" : "Show suggestions"}
           >
-            {showSuggestions ? <X className="h-3 w-3" /> : <Check className="h-3 w-3" />}
+            {showSuggestions ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
           </button>
         </div>
       </div>
 
       {showSuggestions && (
-        <div className="space-y-1">
+        <div className="space-y-1 animate-in slide-in-from-top-1 fade-in-20 duration-200">
           {isLoading ? (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground p-2">
               <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full" />
               <span>Generating suggestions...</span>
             </div>
@@ -205,7 +207,7 @@ export const SmartSuggestions = ({
                 key={index}
                 type="button"
                 onClick={() => handleSuggestionClick(suggestion)}
-                className="w-full text-left p-2 text-sm bg-muted/50 hover:bg-muted rounded-md transition-colors"
+                className="w-full text-left p-2 text-sm bg-muted/50 hover:bg-muted rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {suggestion}
               </button>
