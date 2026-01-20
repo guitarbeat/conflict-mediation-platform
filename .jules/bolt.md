@@ -12,3 +12,7 @@
 **Learning:** `StepContent.jsx` creates `context` object inline: `const context = { partyAName: ... }`. This object is passed to `SmartSuggestions`. `SmartSuggestions` uses `useDebounce(currentValue)`.
 If `StepContent` re-renders (e.g. while typing), `context` is recreated. `SmartSuggestions` props change. `SmartSuggestions` re-renders.
 **Action:** Memoize `context` object in `StepContent`.
+
+## 2024-05-24 - React.memo with Custom Comparison
+**Learning:** When a large state object (`formData`) is passed to a memoized component (`StepContent`), shallow comparison fails on every update. Splitting the object is hard if the component needs random access.
+**Action:** Use a custom `arePropsEqual` function in `React.memo` to check only the *relevant* fields of the large object for the specific instance (e.g., based on `step` prop). This avoids splitting the state up stream or drilling many props.

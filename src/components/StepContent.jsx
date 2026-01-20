@@ -16,6 +16,10 @@ import { toast } from "sonner";
 import { getCategoryByStep } from "../config/surveyCategories";
 import { useErrorHandler } from "../hooks/useErrorHandler";
 import { PDFLoadingState, FileLoadingState } from "./LoadingState";
+import {
+  GLOBAL_DEPENDENCIES,
+  STEP_DEPENDENCIES,
+} from "../utils/stepDependencies";
 
 const DEFAULT_PARTY_COLORS = {
   A: "#6B8E47",
@@ -1553,4 +1557,27 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   }
 };
 
-export default React.memo(StepContent);
+const arePropsEqual = (prevProps, nextProps) => {
+  // Check simple props first
+  if (prevProps.step !== nextProps.step) return false;
+  if (prevProps.showErrors !== nextProps.showErrors) return false;
+  if (prevProps.currentSubStep !== nextProps.currentSubStep) return false;
+
+  // onExportJSON only matters for Step 7, and likely changes with formData
+  // For Step 7, we want to re-render if anything changes (basically)
+  if (nextProps.step === 7) return false;
+
+  // Check formData dependencies
+  const stepDeps = STEP_DEPENDENCIES[nextProps.step] || [];
+  const allDeps = [...GLOBAL_DEPENDENCIES, ...stepDeps];
+
+  for (const key of allDeps) {
+    if (prevProps.formData[key] !== nextProps.formData[key]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export default React.memo(StepContent, arePropsEqual);
