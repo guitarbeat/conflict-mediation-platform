@@ -135,7 +135,7 @@ function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isAnimating, navigateToStep]);
 
-  const handleNavigate = (direction) => {
+  const handleNavigate = useCallback((direction) => {
     const subStepCount = getSubStepCountForStep(currentStep);
 
     if (direction === 'next') {
@@ -157,7 +157,7 @@ function App() {
     } else {
       navigateToStep(direction);
     }
-  };
+  }, [currentStep, currentSubStep, navigateToStep]);
 
   // Export functions
   const exportToJSON = useCallback(() => {
@@ -173,7 +173,7 @@ function App() {
     linkElement.click();
   }, [formData]);
 
-  const renderStepContent = (step) => {
+  const renderStepContent = useCallback((step) => {
     return (
       <StepContent
         step={step}
@@ -187,7 +187,15 @@ function App() {
         setCurrentSubStep={setCurrentSubStep}
       />
     );
-  };
+  }, [
+    formData,
+    updateFormData,
+    updateMultipleFields,
+    exportToJSON,
+    errorStep,
+    getRequiredFieldsForStep,
+    currentSubStep
+  ]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -229,9 +237,7 @@ function App() {
         <CategoryNavigation
           formData={formData}
           currentStep={currentStep}
-          onNavigateToStep={(step) => {
-            navigateToStep(step);
-          }}
+          onNavigateToStep={navigateToStep}
         />
 
 
