@@ -7,6 +7,7 @@ import DatePickerField from "./DatePickerField";
 import SectionSeparator from "./SectionSeparator";
 import { MultiSelectInput, RatingInput, StructuredListInput, PriorityInput } from "./AdvancedInputs";
 import { cn } from "../lib/utils";
+import { GLOBAL_DEPENDENCIES, STEP_DEPENDENCIES } from "../utils/stepDependencies";
 // Lazy-load heavy component
 const EmojiGridMapper = React.lazy(() => import("./EmojiGridMapper"));
 import { z } from "zod";
@@ -1553,4 +1554,27 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   }
 };
 
-export default React.memo(StepContent);
+const arePropsEqual = (prevProps, nextProps) => {
+  if (prevProps.step !== nextProps.step) return false;
+  if (prevProps.showErrors !== nextProps.showErrors) return false;
+  if (prevProps.currentSubStep !== nextProps.currentSubStep) return false;
+
+  // Step 7: Export step depends on all data for PDF generation
+  if (nextProps.step === 7) {
+    return prevProps.formData === nextProps.formData;
+  }
+
+  // Check dependencies for other steps
+  const stepDeps = STEP_DEPENDENCIES[nextProps.step] || [];
+  const allDeps = [...GLOBAL_DEPENDENCIES, ...stepDeps];
+
+  for (const field of allDeps) {
+    if (prevProps.formData[field] !== nextProps.formData[field]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export default React.memo(StepContent, arePropsEqual);
