@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useId } from "react";
 import { Lightbulb, RefreshCw, ChevronDown } from "lucide-react";
 import { cn } from "../lib/utils";
 import useDebounce from "../hooks/useDebounce";
@@ -15,6 +15,7 @@ export const SmartSuggestions = ({
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestionsId = useId();
 
   // Debounce the value to prevent excessive "API calls"
   const debouncedValue = useDebounce(currentValue, 500);
@@ -195,6 +196,7 @@ export const SmartSuggestions = ({
                 className="p-1 text-muted-foreground hover:text-foreground transition-colors"
                 aria-label={showSuggestions ? "Hide suggestions" : "Show suggestions"}
                 aria-expanded={showSuggestions}
+                aria-controls={suggestionsId}
               >
                 <ChevronDown
                   className={cn(
@@ -212,25 +214,26 @@ export const SmartSuggestions = ({
       </div>
 
       {showSuggestions && (
-        <div className="space-y-1">
+        <ul id={suggestionsId} className="space-y-1">
           {isLoading ? (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <li className="flex items-center gap-2 text-sm text-muted-foreground">
               <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full" />
               <span>Generating suggestions...</span>
-            </div>
+            </li>
           ) : (
             suggestions.map((suggestion, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => handleSuggestionClick(suggestion)}
-                className="w-full text-left p-2 text-sm bg-muted/50 hover:bg-muted rounded-md transition-colors"
-              >
-                {suggestion}
-              </button>
+              <li key={index}>
+                <button
+                  type="button"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  className="w-full text-left p-2 text-sm bg-muted/50 hover:bg-muted rounded-md transition-colors"
+                >
+                  {suggestion}
+                </button>
+              </li>
             ))
           )}
-        </div>
+        </ul>
       )}
     </div>
   );
