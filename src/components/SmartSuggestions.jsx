@@ -23,9 +23,6 @@ export const SmartSuggestions = ({
   const generateSuggestions = async (type, value, ctx) => {
     setIsLoading(true);
     
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
     let generatedSuggestions = [];
     
     switch (type) {
