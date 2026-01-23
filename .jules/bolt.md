@@ -1,0 +1,3 @@
+## 2024-05-23 - Synchronous localStorage writes in React Hooks
+**Learning:** `localStorage` operations are synchronous and can block the main thread. In a React hook like `useFormData` that updates on every keystroke, writing to `localStorage` inside a `useEffect` without debouncing causes significant performance degradation as the form grows.
+**Action:** Always debounce persistence logic when binding it to frequent state updates. Use `useRef` to store the timeout ID and clear it on cleanup to prevent memory leaks and race conditions. When testing this, ensure to use `vi.useFakeTimers()` and advance timers properly, but be aware of async operations triggered by the timeout callback - they might require additional `await` or `act` calls to flush promises.

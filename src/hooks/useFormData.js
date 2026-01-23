@@ -90,10 +90,24 @@ export const useFormData = () => {
         }, { operation: "save" });
     }, [executeAsync]);
 
+    const saveTimeoutRef = useRef(null);
+
     useEffect(() => {
         if (loadedFromStorage) { // Only save after initial load
-            saveToStorage(formData);
+            if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current);
+            }
+
+            saveTimeoutRef.current = setTimeout(() => {
+                saveToStorage(formData);
+            }, 500);
         }
+
+        return () => {
+            if (saveTimeoutRef.current) {
+                clearTimeout(saveTimeoutRef.current);
+            }
+        };
     }, [formData, loadedFromStorage, saveToStorage]);
 
     /**
