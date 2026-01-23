@@ -12,7 +12,7 @@ const CardStack = ({
   onInputMove,
   onInputEnd,
   onMouseLeave,
-  renderStepContent,
+  stepElements,
 }) => {
   const cardRefs = useRef({});
 
@@ -170,7 +170,7 @@ const CardStack = ({
           style={cardStyle}
           data-testid={isActive ? "current-card" : ""}
         >
-          <StepCard>{renderStepContent(stepNumber)}</StepCard>
+          <StepCard>{stepElements[index]}</StepCard>
         </div>
       );
     });
