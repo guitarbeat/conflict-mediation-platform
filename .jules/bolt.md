@@ -12,3 +12,7 @@
 **Learning:** `StepContent.jsx` creates `context` object inline: `const context = { partyAName: ... }`. This object is passed to `SmartSuggestions`. `SmartSuggestions` uses `useDebounce(currentValue)`.
 If `StepContent` re-renders (e.g. while typing), `context` is recreated. `SmartSuggestions` props change. `SmartSuggestions` re-renders.
 **Action:** Memoize `context` object in `StepContent`.
+
+## 2024-05-24 - Centralized Dependency Management for Memoization
+**Learning:** When memoizing components that rely on subsets of a large state object (like `formData`), manually maintaining a dependency list in `arePropsEqual` is fragile.
+**Action:** Consolidate the dependency logic into a single source of truth (`stepDependencies.js`) and use it in both the component's memoization logic AND the data accessor hooks (`getStepData` in `useFormData`). This ensures the logic stays in sync and is verifiable via unit tests.

@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { getCategoryByStep } from "../config/surveyCategories";
 import { useErrorHandler } from "../hooks/useErrorHandler";
 import { PDFLoadingState, FileLoadingState } from "./LoadingState";
+import { STEP_DEPENDENCIES } from "../utils/stepDependencies";
 
 const DEFAULT_PARTY_COLORS = {
   A: "#6B8E47",
@@ -1553,4 +1554,35 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   }
 };
 
-export default React.memo(StepContent);
+const arePropsEqual = (prevProps, nextProps) => {
+  if (prevProps.step !== nextProps.step) return false;
+  if (prevProps.showErrors !== nextProps.showErrors) return false;
+  if (prevProps.currentSubStep !== nextProps.currentSubStep) return false;
+
+  // Check function props stability
+  if (prevProps.updateFormData !== nextProps.updateFormData) return false;
+  if (prevProps.updateMultipleFields !== nextProps.updateMultipleFields) return false;
+
+  // For step 7 (Export), update if formData reference changes (standard behavior)
+  // ensuring the export/PDF generation functions have the latest data.
+  if (nextProps.step === 7) {
+    return prevProps.formData === nextProps.formData;
+  }
+
+  const dependencies = STEP_DEPENDENCIES[nextProps.step];
+  if (!dependencies) {
+    // Fallback if dependencies not defined
+    return prevProps.formData === nextProps.formData;
+  }
+
+  // Check if any dependent field has changed
+  for (const field of dependencies) {
+    if (prevProps.formData[field] !== nextProps.formData[field]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export default React.memo(StepContent, arePropsEqual);
