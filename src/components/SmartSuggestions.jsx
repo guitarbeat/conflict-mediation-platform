@@ -15,6 +15,7 @@ export const SmartSuggestions = ({
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const suggestionsId = React.useId();
 
   // Debounce the value to prevent excessive "API calls"
   const debouncedValue = useDebounce(currentValue, 500);
@@ -195,6 +196,7 @@ export const SmartSuggestions = ({
                 className="p-1 text-muted-foreground hover:text-foreground transition-colors"
                 aria-label={showSuggestions ? "Hide suggestions" : "Show suggestions"}
                 aria-expanded={showSuggestions}
+                aria-controls={suggestionsId}
               >
                 <ChevronDown
                   className={cn(
@@ -212,9 +214,13 @@ export const SmartSuggestions = ({
       </div>
 
       {showSuggestions && (
-        <div className="space-y-1">
+        <div className="space-y-1" id={suggestionsId}>
           {isLoading ? (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <div
+              className="flex items-center gap-2 text-sm text-muted-foreground"
+              role="status"
+              aria-live="polite"
+            >
               <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full" />
               <span>Generating suggestions...</span>
             </div>
