@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { useErrorHandler } from "./useErrorHandler";
+import { STEP_DEPENDENCIES } from "../utils/stepDependencies";
 
 const initialState = {
     partyAName: "",
@@ -177,74 +178,14 @@ export const useFormData = () => {
      * Get form data for a specific step
      */
     const getStepData = useCallback((step) => {
-        switch (step) {
-            case 1:
-                return {
-                    partyAName: formData.partyAName,
-                    partyBName: formData.partyBName,
-                    partyAColor: formData.partyAColor,
-                    partyBColor: formData.partyBColor,
-                    dateOfIncident: formData.dateOfIncident,
-                    dateOfMediation: formData.dateOfMediation,
-                    locationOfConflict: formData.locationOfConflict,
-                    conflictDescription: formData.conflictDescription,
-                };
-            case 2:
-                return {
-                    partyAThoughts: formData.partyAThoughts,
-                    partyASelectedEmotionWords: formData.partyASelectedEmotionWords,
-                    partyAEmotionChartPosition: formData.partyAEmotionChartPosition,
-                    partyAAggressiveApproach: formData.partyAAggressiveApproach,
-                    partyAPassiveApproach: formData.partyAPassiveApproach,
-                    partyAAssertiveApproach: formData.partyAAssertiveApproach,
-                    partyAWhyBecause: formData.partyAWhyBecause,
-                };
-            case 3:
-                return {
-                    partyBThoughts: formData.partyBThoughts,
-                    partyBSelectedEmotionWords: formData.partyBSelectedEmotionWords,
-                    partyBEmotionChartPosition: formData.partyBEmotionChartPosition,
-                    partyBAggressiveApproach: formData.partyBAggressiveApproach,
-                    partyBPassiveApproach: formData.partyBPassiveApproach,
-                    partyBAssertiveApproach: formData.partyBAssertiveApproach,
-                    partyBWhyBecause: formData.partyBWhyBecause,
-                };
-            case 4:
-                return {
-                    activatingEvent: formData.activatingEvent,
-                    partyABeliefs: formData.partyABeliefs,
-                    partyBBeliefs: formData.partyBBeliefs,
-                    partyAConsequences: formData.partyAConsequences,
-                    partyBConsequences: formData.partyBConsequences,
-                    partyADisputations: formData.partyADisputations,
-                    partyBDisputations: formData.partyBDisputations,
-                    effectsReflections: formData.effectsReflections,
-                };
-            case 5:
-                return {
-                    partyAMiracle: formData.partyAMiracle,
-                    partyBMiracle: formData.partyBMiracle,
-                    partyATop3Solutions: formData.partyATop3Solutions,
-                    partyBTop3Solutions: formData.partyBTop3Solutions,
-                    partyAPerspective: formData.partyAPerspective,
-                    partyBPerspective: formData.partyBPerspective,
-                    compromiseSolutions: formData.compromiseSolutions,
-                };
-            case 6:
-                return {
-                    partyAUnmetNeeds: formData.partyAUnmetNeeds,
-                    partyBUnmetNeeds: formData.partyBUnmetNeeds,
-                    partyANeedsInPractice: formData.partyANeedsInPractice,
-                    partyBNeedsInPractice: formData.partyBNeedsInPractice,
-                    actionSteps: formData.actionSteps,
-                    followUpDate: formData.followUpDate,
-                    additionalSupport: formData.additionalSupport,
-                };
-            case 7:
-                return {};
-            default:
-                return {};
+        const fields = STEP_DEPENDENCIES[step];
+        if (!fields) return {};
+
+        const data = {};
+        for (const field of fields) {
+            data[field] = formData[field];
         }
+        return data;
     }, [formData]);
 
     /**
