@@ -97,6 +97,7 @@ export const MultiSelectInput = ({
                     handleRemove(item);
                   }}
                   className="hover:text-primary/70"
+                  aria-label={`Remove ${item}`}
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -248,6 +249,8 @@ export const RatingInput = ({
               onMouseEnter={() => handleMouseEnter(rating)}
               onMouseLeave={handleMouseLeave}
               className="p-1 hover:scale-110 transition-transform"
+              aria-label={`Rate ${rating} out of ${max}`}
+              aria-pressed={isFilled}
             >
               {getIcon(type, isFilled)}
             </button>
@@ -425,6 +428,7 @@ export const StructuredListInput = ({
                 type="button"
                 onClick={() => handleToggleComplete(index)}
                 className="mt-1 text-muted-foreground hover:text-primary transition-colors"
+                aria-label={item.completed ? "Mark as incomplete" : "Mark as complete"}
               >
                 <Check className={cn("h-4 w-4", item.completed && "text-green-500")} />
               </button>
@@ -454,6 +458,7 @@ export const StructuredListInput = ({
                     type="button"
                     onClick={handleSaveEdit}
                     className="px-2 py-1 bg-green-500 text-white rounded text-sm"
+                    aria-label="Save edit"
                   >
                     <Check className="h-3 w-3" />
                   </button>
@@ -461,6 +466,7 @@ export const StructuredListInput = ({
                     type="button"
                     onClick={handleCancelEdit}
                     className="px-2 py-1 bg-red-500 text-white rounded text-sm"
+                    aria-label="Cancel edit"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -477,6 +483,7 @@ export const StructuredListInput = ({
                       type="button"
                       onClick={() => handleEdit(index)}
                       className="p-1 text-muted-foreground hover:text-primary transition-colors"
+                      aria-label="Edit item"
                     >
                       Edit
                     </button>
@@ -484,6 +491,7 @@ export const StructuredListInput = ({
                       type="button"
                       onClick={() => handleDelete(index)}
                       className="p-1 text-muted-foreground hover:text-red-500 transition-colors"
+                      aria-label="Delete item"
                     >
                       <X className="h-3 w-3" />
                     </button>
