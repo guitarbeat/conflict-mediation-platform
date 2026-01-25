@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { getCategoryByStep } from "../config/surveyCategories";
 import { useErrorHandler } from "../hooks/useErrorHandler";
 import { PDFLoadingState, FileLoadingState } from "./LoadingState";
+import { GLOBAL_DEPENDENCIES, STEP_DEPENDENCIES } from "../utils/stepDependencies";
 
 const DEFAULT_PARTY_COLORS = {
   A: "#6B8E47",
@@ -1553,4 +1554,44 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   }
 };
 
-export default React.memo(StepContent);
+const arePropsEqual = (prevProps, nextProps) => {
+  // 1. Compare simple primitive props
+  if (
+    prevProps.step !== nextProps.step ||
+    prevProps.currentSubStep !== nextProps.currentSubStep ||
+    prevProps.showErrors !== nextProps.showErrors
+  ) {
+    return false;
+  }
+
+  // 2. Compare function props (should be stable via useCallback/refs from App.jsx)
+  if (
+    prevProps.updateFormData !== nextProps.updateFormData ||
+    prevProps.updateMultipleFields !== nextProps.updateMultipleFields ||
+    prevProps.onExportJSON !== nextProps.onExportJSON ||
+    prevProps.setCurrentSubStep !== nextProps.setCurrentSubStep
+  ) {
+    return false;
+  }
+
+  // 3. Compare formData based on step dependencies
+  // Always check global dependencies (names, colors) as they affect most steps
+  for (const field of GLOBAL_DEPENDENCIES) {
+    if (prevProps.formData[field] !== nextProps.formData[field]) {
+      return false;
+    }
+  }
+
+  // Check step-specific dependencies
+  const stepDeps = STEP_DEPENDENCIES[prevProps.step] || [];
+  for (const field of stepDeps) {
+    if (prevProps.formData[field] !== nextProps.formData[field]) {
+      return false;
+    }
+  }
+
+  // If we got here, all relevant props are equal
+  return true;
+};
+
+export default React.memo(StepContent, arePropsEqual);
