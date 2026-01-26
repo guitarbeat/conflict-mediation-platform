@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { getCategoryByStep } from "../config/surveyCategories";
 import { useErrorHandler } from "../hooks/useErrorHandler";
 import { PDFLoadingState, FileLoadingState } from "./LoadingState";
+import { GLOBAL_DEPENDENCIES, STEP_DEPENDENCIES } from "../utils/stepDependencies";
 
 const DEFAULT_PARTY_COLORS = {
   A: "#6B8E47",
@@ -1553,4 +1554,48 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   }
 };
 
-export default React.memo(StepContent);
+const arePropsEqual = (prevProps, nextProps) => {
+  // 1. Check simple props
+  if (prevProps.step !== nextProps.step) return false;
+  if (prevProps.showErrors !== nextProps.showErrors) return false;
+  if (prevProps.currentSubStep !== nextProps.currentSubStep) return false;
+
+  // 2. Check function references
+  if (prevProps.updateFormData !== nextProps.updateFormData) return false;
+  if (prevProps.updateMultipleFields !== nextProps.updateMultipleFields) return false;
+
+  // 3. Check formData dependencies
+  const step = prevProps.step;
+
+  // Step 7 (Export) depends on everything because it generates the PDF/JSON from the full formData
+  if (step === 7) {
+    // We can't easily deep compare formData, so if the reference changed, we assume it changed.
+    // However, since formData changes on every input, this means Step 7 re-renders on every input.
+    // This is expected behavior for the export step to ensure it has latest data.
+    return prevProps.formData === nextProps.formData;
+  }
+
+  // WARNING: Maintenance Risk
+  // This component uses manual dependency tracking for performance.
+  // If you add new fields to a step, you MUST update src/utils/stepDependencies.js
+  // or the UI will not update when typing in those fields.
+
+  // Check global dependencies
+  for (const field of GLOBAL_DEPENDENCIES) {
+    if (prevProps.formData[field] !== nextProps.formData[field]) {
+      return false;
+    }
+  }
+
+  // Check step-specific dependencies
+  const stepFields = STEP_DEPENDENCIES[step] || [];
+  for (const field of stepFields) {
+     if (prevProps.formData[field] !== nextProps.formData[field]) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+export default React.memo(StepContent, arePropsEqual);
