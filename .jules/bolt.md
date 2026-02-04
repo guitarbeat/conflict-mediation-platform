@@ -12,3 +12,7 @@
 **Learning:** `StepContent.jsx` creates `context` object inline: `const context = { partyAName: ... }`. This object is passed to `SmartSuggestions`. `SmartSuggestions` uses `useDebounce(currentValue)`.
 If `StepContent` re-renders (e.g. while typing), `context` is recreated. `SmartSuggestions` props change. `SmartSuggestions` re-renders.
 **Action:** Memoize `context` object in `StepContent`.
+
+## 2024-05-23 - Testing Radix UI Tooltip in Vitest
+**Learning:** `SmartSuggestions` uses `Tooltip` from `radix-ui`. When testing in JSDOM, simply rendering `<SmartSuggestions />` caused an infinite loop / OOM error ("Maximum update depth exceeded" inside `@radix-ui/react-compose-refs`). This is likely due to circular ref updates or missing DOM capabilities in JSDOM for Radix's layout calculations.
+**Action:** When unit testing components using Radix primitives, carefully mock them. However, even with mocking, issues can persist if the component structure (e.g. `asChild`) is not mocked correctly to match Radix's expectations.
