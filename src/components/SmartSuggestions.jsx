@@ -22,9 +22,9 @@ export const SmartSuggestions = ({
   // Generate suggestions based on field type and context
   const generateSuggestions = async (type, value, ctx) => {
     setIsLoading(true);
-    
+
     let generatedSuggestions = [];
-    
+
     switch (type) {
       case "conflictDescription":
         generatedSuggestions = [
@@ -38,7 +38,7 @@ export const SmartSuggestions = ({
           "Conflict arising from unclear expectations",
         ];
         break;
-        
+
       case "thoughts":
         generatedSuggestions = [
           "I feel like my concerns aren't being heard",
@@ -51,7 +51,7 @@ export const SmartSuggestions = ({
           "I believe we need to clarify our roles and responsibilities",
         ];
         break;
-        
+
       case "assertiveApproach":
         generatedSuggestions = [
           "I would like to discuss this issue openly and find a solution together",
@@ -64,7 +64,7 @@ export const SmartSuggestions = ({
           "I'd like to work together to prevent this issue from happening again",
         ];
         break;
-        
+
       case "activatingEvent":
         generatedSuggestions = [
           "During the team meeting on [date], there was a disagreement about...",
@@ -77,7 +77,7 @@ export const SmartSuggestions = ({
           "The disagreement began when we had different interpretations of...",
         ];
         break;
-        
+
       case "miracleQuestion":
         generatedSuggestions = [
           "We would be communicating openly and honestly with each other",
@@ -90,7 +90,7 @@ export const SmartSuggestions = ({
           "We would have a positive and collaborative working relationship",
         ];
         break;
-        
+
       case "solutions":
         generatedSuggestions = [
           "Establish weekly check-in meetings to discuss progress and concerns",
@@ -103,7 +103,7 @@ export const SmartSuggestions = ({
           "Develop a shared understanding of project goals and priorities",
         ];
         break;
-        
+
       case "actionSteps":
         generatedSuggestions = [
           "Schedule a follow-up meeting in 2 weeks to review progress",
@@ -116,11 +116,11 @@ export const SmartSuggestions = ({
           "Establish accountability measures and success metrics",
         ];
         break;
-        
+
       default:
         generatedSuggestions = [];
     }
-    
+
     // Filter suggestions based on current value
     if (value && value.trim()) {
       generatedSuggestions = generatedSuggestions.filter(suggestion =>
@@ -128,14 +128,14 @@ export const SmartSuggestions = ({
         value.toLowerCase().includes(suggestion.toLowerCase())
       );
     }
-    
+
     // Add context-specific suggestions
     if (ctx.partyAName && ctx.partyBName) {
       generatedSuggestions = generatedSuggestions.map(suggestion =>
         suggestion.replace("[person]", ctx.partyAName || "the other person")
       );
     }
-    
+
     setSuggestions(generatedSuggestions.slice(0, 5)); // Limit to 5 suggestions
     setIsLoading(false);
   };
