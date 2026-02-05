@@ -51,6 +51,15 @@ export const MultiSelectInput = ({
     }
     if (e.key === "Escape") {
       setIsOpen(false);
+      // Return focus to trigger when closing
+      dropdownRef.current?.querySelector('[role="combobox"]')?.focus();
+    }
+  };
+
+  const handleTriggerKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setIsOpen((prev) => !prev);
     }
   };
 
@@ -74,8 +83,14 @@ export const MultiSelectInput = ({
       
       <div className="relative" ref={dropdownRef}>
         <div
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-controls={id ? `${id}-listbox` : undefined}
+          tabIndex={0}
+          onKeyDown={handleTriggerKeyDown}
           className={cn(
-            "form-input w-full min-h-[2.5rem] flex flex-wrap items-center gap-1 p-2 cursor-pointer",
+            "form-input w-full min-h-[2.5rem] flex flex-wrap items-center gap-1 p-2 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary",
             error && "border-red-500 focus:border-red-500 focus:ring-red-500/20",
             isOpen && "ring-2 ring-primary/20"
           )}
@@ -111,7 +126,11 @@ export const MultiSelectInput = ({
         </div>
 
         {isOpen && (
-          <div className="absolute z-10 w-full mt-1 bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto">
+          <div
+            id={id ? `${id}-listbox` : undefined}
+            role="listbox"
+            className="absolute z-10 w-full mt-1 bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto"
+          >
             <div className="p-2">
               <input
                 ref={inputRef}
