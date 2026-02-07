@@ -12,7 +12,7 @@ const CardStack = ({
 }) => {
   const cardRefs = useRef({});
 
-  const { dragOffset, isDragging, handlers } = useCardSwipe({
+  const { dragOffset, handlers } = useCardSwipe({
     onSwipeLeft: () => onNavigate && onNavigate("next"),
     onSwipeRight: () => onNavigate && onNavigate("prev"),
     disabled: animatingCard !== null,

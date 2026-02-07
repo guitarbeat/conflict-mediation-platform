@@ -103,7 +103,7 @@ export const useCardSwipe = ({
   /**
    * Handle input end (touch/mouse up)
    */
-  const handleInputEnd = (e) => {
+  const handleInputEnd = () => {
     if (!isDragging) return;
 
     setIsDragging(false);
