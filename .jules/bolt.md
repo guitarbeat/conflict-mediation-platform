@@ -12,3 +12,7 @@
 **Learning:** `StepContent.jsx` creates `context` object inline: `const context = { partyAName: ... }`. This object is passed to `SmartSuggestions`. `SmartSuggestions` uses `useDebounce(currentValue)`.
 If `StepContent` re-renders (e.g. while typing), `context` is recreated. `SmartSuggestions` props change. `SmartSuggestions` re-renders.
 **Action:** Memoize `context` object in `StepContent`.
+
+## 2024-05-23 - State Colocation for High-Frequency Updates
+**Learning:** `App.jsx` was re-rendering on every drag frame because `dragOffset` state was lifted up to `App` via `useNavigation` hook, even though `dragOffset` was only used by `CardStack` (a leaf component). This caused unnecessary re-renders of the entire app tree (Header, NavButtons, etc.) on every pixel of movement.
+**Action:** Extracted drag logic into `useCardSwipe` and colocated it within `CardStack`. `App` now only manages `currentStep` (low frequency), while `CardStack` manages `dragOffset` (high frequency). This isolates the re-render loop to the specific component that needs to animate.

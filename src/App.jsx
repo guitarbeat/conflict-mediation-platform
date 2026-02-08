@@ -104,17 +104,11 @@ function App() {
   // Navigation management
   const {
     currentStep,
-    dragOffset,
     animatingCard,
     animationType,
-    isDragging,
     isAnimating,
     totalSteps,
     navigateToStep,
-    handleInputStart,
-    handleInputMove,
-    handleInputEnd,
-    handleMouseLeave,
   } = useNavigation({
     canNavigateToStep: stableNavigationGuard,
     totalSteps: TOTAL_SURVEY_STEPS,
@@ -259,9 +253,10 @@ function App() {
         <CardStack
           totalSteps={totalSteps}
           currentStep={currentStep}
-          dragOffset={dragOffset}
           animatingCard={animatingCard}
           animationType={animationType}
+          stepElements={stepElements}
+          onNavigate={handleNavigate}
           isDragging={isDragging}
           onInputStart={handleInputStart}
           onInputMove={handleInputMove}

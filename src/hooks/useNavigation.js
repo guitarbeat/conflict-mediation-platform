@@ -29,13 +29,8 @@ export const useNavigation = (options = {}) => {
         animationDuration = 400,
     } = options;
     const [currentStep, setCurrentStep] = useState(1);
-    const [touchStart, setTouchStart] = useState(null);
-    const [touchStartY, setTouchStartY] = useState(null);
-    const [touchEnd, setTouchEnd] = useState(null);
-    const [dragOffset, setDragOffset] = useState(0);
     const [animatingCard, setAnimatingCard] = useState(null);
     const [animationType, setAnimationType] = useState("");
-    const [isDragging, setIsDragging] = useState(false);
     const animationTimeoutRef = useRef(null);
 
     useEffect(() => {
@@ -77,6 +72,7 @@ export const useNavigation = (options = {}) => {
         }
         setAnimatingCard(null);
         setAnimationType("");
+    };
         setDragOffset(0);
     }, []);
 
@@ -102,7 +98,6 @@ export const useNavigation = (options = {}) => {
                     : "none";
 
             if (!shouldNavigate(clampedTarget, { type: "direct", direction })) {
-                setDragOffset(0);
                 return;
             }
 
@@ -119,7 +114,6 @@ export const useNavigation = (options = {}) => {
                     direction: "forward",
                 })
             ) {
-                setDragOffset(0);
                 return;
             }
 
@@ -140,7 +134,6 @@ export const useNavigation = (options = {}) => {
                     direction: "backward",
                 })
             ) {
-                setDragOffset(0);
                 return;
             }
 
@@ -154,6 +147,7 @@ export const useNavigation = (options = {}) => {
                 resetAnimationState();
             }, animationDuration);
         }
+    };
     }, [isAnimating, totalSteps, currentStep, shouldNavigate, animationDuration, resetAnimationState]);
 
     /**
@@ -277,12 +271,8 @@ export const useNavigation = (options = {}) => {
     return {
         // State
         currentStep,
-        touchStart,
-        touchEnd,
-        dragOffset,
         animatingCard,
         animationType,
-        isDragging,
         isAnimating,
 
         // Configuration
@@ -291,9 +281,5 @@ export const useNavigation = (options = {}) => {
 
         // Functions
         navigateToStep,
-        handleInputStart,
-        handleInputMove,
-        handleInputEnd,
-        handleMouseLeave,
     };
 };
