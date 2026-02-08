@@ -1,7 +1,10 @@
 import React, { useState, useMemo } from "react";
 import { Lightbulb, RefreshCw, ChevronDown } from "lucide-react";
+import React, { useState, useEffect, useId } from "react";
+import { Lightbulb, ChevronDown, RefreshCw } from "lucide-react";
 import { cn } from "../lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { SUGGESTION_TEMPLATES, HELP_TEXTS } from "../config/smartSuggestionsData";
 
 // Static data moved outside to prevent recreation on every render
 const SUGGESTION_TEMPLATES = {
@@ -166,12 +169,149 @@ export const SmartSuggestions = ({
   className = "",
 }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const listId = useId();
 
   // Memoize suggestions to update instantly when input changes, without debounce latency
   const suggestions = useMemo(
     () => getSuggestions(fieldType, currentValue, context),
     [fieldType, currentValue, context]
   );
+  // Debounce the value to prevent excessive "API calls"
+  const debouncedValue = useDebounce(currentValue, 500);
+
+  // Generate suggestions based on field type and context
+  const generateSuggestions = async (type, value, ctx) => {
+    setIsLoading(true);
+
+    let generatedSuggestions = SUGGESTION_TEMPLATES[type] || [];
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    let generatedSuggestions = [];
+
+    switch (type) {
+      case "conflictDescription":
+        generatedSuggestions = [
+          "Communication breakdown between team members",
+          "Disagreement over project priorities and deadlines",
+          "Personality clash affecting work collaboration",
+          "Misunderstanding about roles and responsibilities",
+          "Conflict over resource allocation and budget",
+          "Different working styles causing friction",
+          "Disagreement about decision-making process",
+          "Conflict arising from unclear expectations",
+        ];
+        break;
+
+      case "thoughts":
+        generatedSuggestions = [
+          "I feel like my concerns aren't being heard",
+          "I believe we have different priorities and goals",
+          "I think there's a misunderstanding about expectations",
+          "I feel frustrated because I'm not getting the support I need",
+          "I believe we need better communication protocols",
+          "I think we should focus on finding common ground",
+          "I feel like we're not working as a team",
+          "I believe we need to clarify our roles and responsibilities",
+        ];
+        break;
+
+      case "assertiveApproach":
+        generatedSuggestions = [
+          "I would like to discuss this issue openly and find a solution together",
+          "I understand your perspective, and I'd like to share mine as well",
+          "I believe we can work through this by focusing on our common goals",
+          "I'd appreciate it if we could find a compromise that works for both of us",
+          "I think we should take some time to understand each other's needs better",
+          "I would like to establish clear communication guidelines going forward",
+          "I believe we can resolve this by being honest about our concerns",
+          "I'd like to work together to prevent this issue from happening again",
+        ];
+        break;
+
+      case "activatingEvent":
+        generatedSuggestions = [
+          "During the team meeting on [date], there was a disagreement about...",
+          "The incident occurred when [person] said/did [specific action]",
+          "The conflict started when we received conflicting instructions about...",
+          "The issue arose during a project review when [specific event] happened",
+          "The disagreement began when [person] made a decision without consulting...",
+          "The conflict started during a discussion about [topic] when [specific action]",
+          "The incident occurred in [location] when [specific event] took place",
+          "The disagreement began when we had different interpretations of...",
+        ];
+        break;
+
+      case "miracleQuestion":
+        generatedSuggestions = [
+          "We would be communicating openly and honestly with each other",
+          "We would have clear expectations and roles defined",
+          "We would be working together as a cohesive team",
+          "We would have regular check-ins to prevent future conflicts",
+          "We would respect each other's perspectives and working styles",
+          "We would have established protocols for handling disagreements",
+          "We would be focused on our shared goals and objectives",
+          "We would have a positive and collaborative working relationship",
+        ];
+        break;
+
+      case "solutions":
+        generatedSuggestions = [
+          "Establish weekly check-in meetings to discuss progress and concerns",
+          "Create a shared document outlining roles and responsibilities",
+          "Implement a conflict resolution protocol for future disagreements",
+          "Schedule regular team-building activities to improve relationships",
+          "Set up a communication channel for immediate issue resolution",
+          "Create a feedback system for ongoing improvement",
+          "Establish clear decision-making processes and criteria",
+          "Develop a shared understanding of project goals and priorities",
+        ];
+        break;
+
+      case "actionSteps":
+        generatedSuggestions = [
+          "Schedule a follow-up meeting in 2 weeks to review progress",
+          "Create a shared action plan document with specific deadlines",
+          "Assign specific responsibilities to each party with clear timelines",
+          "Establish a communication protocol for ongoing updates",
+          "Set up regular check-ins to monitor progress and address issues",
+          "Create a feedback mechanism for continuous improvement",
+          "Document lessons learned to prevent future conflicts",
+          "Establish accountability measures and success metrics",
+        ];
+        break;
+
+      default:
+        generatedSuggestions = [];
+    }
+
+    // Filter suggestions based on current value
+    if (value && value.trim()) {
+      generatedSuggestions = generatedSuggestions.filter(suggestion =>
+        suggestion.toLowerCase().includes(value.toLowerCase()) ||
+        value.toLowerCase().includes(suggestion.toLowerCase())
+      );
+    }
+
+    // Add context-specific suggestions
+    if (ctx.partyAName && ctx.partyBName) {
+      generatedSuggestions = generatedSuggestions.map(suggestion =>
+        suggestion.replace("[person]", ctx.partyAName || "the other person")
+      );
+    }
+
+    setSuggestions(generatedSuggestions.slice(0, 5)); // Limit to 5 suggestions
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    // Use debouncedValue instead of currentValue
+    if (fieldType && debouncedValue.length > 2) {
+      generateSuggestions(fieldType, debouncedValue, context);
+    } else {
+      setSuggestions([]);
+    }
+  }, [fieldType, debouncedValue, context]);
 
   const handleSuggestionClick = (suggestion) => {
     onSuggestionSelect(suggestion);
@@ -222,13 +362,9 @@ export const SmartSuggestions = ({
                 className="p-1 text-muted-foreground hover:text-foreground transition-colors"
                 aria-label={showSuggestions ? "Hide suggestions" : "Show suggestions"}
                 aria-expanded={showSuggestions}
+                aria-controls={listId}
               >
-                <ChevronDown
-                  className={cn(
-                    "h-3 w-3 transition-transform duration-200",
-                    showSuggestions ? "rotate-180" : ""
-                  )}
-                />
+                <ChevronDown className={cn("h-3 w-3 transition-transform duration-200", showSuggestions && "rotate-180")} />
               </button>
             </TooltipTrigger>
             <TooltipContent>
@@ -250,6 +386,24 @@ export const SmartSuggestions = ({
               {suggestion}
             </button>
           ))}
+        <div className="space-y-1" id={listId}>
+          {isLoading ? (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full" />
+              <span>Generating suggestions...</span>
+            </div>
+          ) : (
+            suggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => handleSuggestionClick(suggestion)}
+                className="w-full text-left p-2 text-sm bg-muted/50 hover:bg-muted rounded-md transition-colors"
+              >
+                {suggestion}
+              </button>
+            ))
+          )}
         </div>
       )}
     </div>
