@@ -3,6 +3,7 @@ import { Lightbulb, ChevronDown, RefreshCw } from "lucide-react";
 import { cn } from "../lib/utils";
 import useDebounce from "../hooks/useDebounce";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { SUGGESTION_TEMPLATES, HELP_TEXTS } from "../config/smartSuggestionsData";
 
 // Smart suggestions based on field type and content
 export const SmartSuggestions = ({
@@ -24,6 +25,7 @@ export const SmartSuggestions = ({
   const generateSuggestions = async (type, value, ctx) => {
     setIsLoading(true);
 
+    let generatedSuggestions = SUGGESTION_TEMPLATES[type] || [];
     // Simulate API call delay
     await new Promise(resolve => setTimeout(resolve, 500));
 
@@ -241,64 +243,7 @@ export const ContextualHelp = ({
   fieldType,
   className = "",
 }) => {
-  const getHelpText = (type) => {
-    const helpTexts = {
-      conflictDescription: {
-        title: "Describing the Conflict",
-        tips: [
-          "Focus on observable facts, not interpretations",
-          "Include when and where the conflict occurred",
-          "Describe specific actions or events that happened",
-          "Avoid blame or judgmental language",
-          "Ensure both parties agree on this description"
-        ]
-      },
-      thoughts: {
-        title: "Expressing Your Thoughts",
-        tips: [
-          "Be honest about your beliefs and assumptions",
-          "Use 'I think' or 'I believe' statements",
-          "Avoid making assumptions about the other person's intentions",
-          "Focus on your own perspective and feelings",
-          "Be specific about what you think happened"
-        ]
-      },
-      assertiveApproach: {
-        title: "Assertive Communication",
-        tips: [
-          "Use 'I' statements to express your needs",
-          "Be respectful and considerate of the other person",
-          "Focus on finding solutions, not assigning blame",
-          "Be clear about what you want to achieve",
-          "Listen actively to the other person's response"
-        ]
-      },
-      miracleQuestion: {
-        title: "The Miracle Question",
-        tips: [
-          "Imagine waking up tomorrow with the conflict completely resolved",
-          "Describe what would be different in your relationship",
-          "Focus on positive changes and improvements",
-          "Be specific about what you would see, hear, or experience",
-          "Think about how both parties would feel and behave"
-        ]
-      },
-      solutions: {
-        title: "Finding Solutions",
-        tips: [
-          "Focus on solutions that work for both parties",
-          "Be creative and open to new ideas",
-          "Consider both short-term and long-term solutions",
-          "Think about what each person can do differently",
-          "Aim for win-win outcomes whenever possible"
-        ]
-      }
-    };
-
-    return helpTexts[type] || null;
-  };
-
-  const helpInfo = getHelpText(fieldType);
+  const helpInfo = HELP_TEXTS[fieldType] || null;
 
   if (!helpInfo) return null;
 
