@@ -186,24 +186,20 @@ function App() {
     linkElement.click();
   }, [formData]);
 
-  const stepElements = useMemo(() => {
-    return Array.from({ length: TOTAL_SURVEY_STEPS }, (_, index) => {
-      const step = index + 1;
-      return (
-        <StepContent
-          key={step}
-          step={step}
-          formData={formData}
-          updateFormData={updateFormData}
-          updateMultipleFields={updateMultipleFields}
-          onExportJSON={exportToJSON}
-          showErrors={errorStep === step}
-          getRequiredFieldsForStep={getRequiredFieldsForStep}
-          currentSubStep={currentSubStep}
-          setCurrentSubStep={setCurrentSubStep}
-        />
-      );
-    });
+  const renderStepContent = useCallback((step) => {
+    return (
+      <StepContent
+        step={step}
+        formData={formData}
+        updateFormData={updateFormData}
+        updateMultipleFields={updateMultipleFields}
+        onExportJSON={exportToJSON}
+        showErrors={errorStep === step}
+        getRequiredFieldsForStep={getRequiredFieldsForStep}
+        currentSubStep={currentSubStep}
+        setCurrentSubStep={setCurrentSubStep}
+      />
+    );
   }, [
     formData,
     updateFormData,
@@ -211,9 +207,9 @@ function App() {
     exportToJSON,
     errorStep,
     getRequiredFieldsForStep,
-    currentSubStep,
-    setCurrentSubStep,
+    currentSubStep
   ]);
+  }, [formData, updateFormData, updateMultipleFields, exportToJSON, errorStep, getRequiredFieldsForStep, currentSubStep]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -255,9 +251,7 @@ function App() {
         <CategoryNavigation
           formData={formData}
           currentStep={currentStep}
-          onNavigateToStep={(step) => {
-            navigateToStep(step);
-          }}
+          onNavigateToStep={navigateToStep}
         />
 
 
@@ -273,7 +267,7 @@ function App() {
           onInputMove={handleInputMove}
           onInputEnd={handleInputEnd}
           onMouseLeave={handleMouseLeave}
-          stepElements={stepElements}
+          renderStepContent={renderStepContent}
         />
 
         {/* Navigation Buttons */}
