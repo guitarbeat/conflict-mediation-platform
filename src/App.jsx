@@ -187,6 +187,15 @@ function App() {
         setCurrentSubStep={setCurrentSubStep}
       />
     );
+  }, [
+    formData,
+    updateFormData,
+    updateMultipleFields,
+    exportToJSON,
+    errorStep,
+    getRequiredFieldsForStep,
+    currentSubStep
+  ]);
   }, [formData, updateFormData, updateMultipleFields, exportToJSON, errorStep, getRequiredFieldsForStep, currentSubStep]);
 
   return (
@@ -229,9 +238,7 @@ function App() {
         <CategoryNavigation
           formData={formData}
           currentStep={currentStep}
-          onNavigateToStep={(step) => {
-            navigateToStep(step);
-          }}
+          onNavigateToStep={navigateToStep}
         />
 
 
