@@ -196,6 +196,7 @@ function App() {
     getRequiredFieldsForStep,
     currentSubStep
   ]);
+  }, [formData, updateFormData, updateMultipleFields, exportToJSON, errorStep, getRequiredFieldsForStep, currentSubStep]);
 
   return (
     <div className="min-h-screen bg-background">
