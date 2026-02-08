@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useId } from "react";
 import { Plus, X, Check, ChevronDown, Star, Heart, ThumbsUp, ThumbsDown } from "lucide-react";
 import { cn } from "../lib/utils";
 
@@ -21,6 +21,8 @@ export const MultiSelectInput = ({
   const [customValue, setCustomValue] = useState("");
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
+  const triggerRef = useRef(null);
+  const listboxId = useId();
 
   const filteredOptions = options.filter(option =>
     option.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -44,13 +46,23 @@ export const MultiSelectInput = ({
     }
   };
 
+  const handleTriggerKeyDown = (e) => {
+    if (e.target !== e.currentTarget) return;
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setIsOpen(true);
+    }
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && allowCustom && customValue.trim()) {
       e.preventDefault();
       handleAddCustom();
     }
     if (e.key === "Escape") {
+      e.stopPropagation();
       setIsOpen(false);
+      triggerRef.current?.focus();
     }
   };
 
@@ -67,19 +79,31 @@ export const MultiSelectInput = ({
 
   return (
     <div className="form-field space-y-2">
-      <label htmlFor={id} className={cn("form-label", required && "after:content-['*'] after:text-red-500 after:ml-1")}>
+      <label
+        htmlFor={id}
+        className={cn("form-label", required && "after:content-['*'] after:text-red-500 after:ml-1")}
+        onClick={() => triggerRef.current?.focus()}
+      >
         {label}
       </label>
       {description && <p className="form-description text-sm text-muted-foreground">{description}</p>}
       
       <div className="relative" ref={dropdownRef}>
         <div
+          ref={triggerRef}
+          id={id}
+          tabIndex={0}
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          aria-controls={listboxId}
           className={cn(
-            "form-input w-full min-h-[2.5rem] flex flex-wrap items-center gap-1 p-2 cursor-pointer",
+            "form-input w-full min-h-[2.5rem] flex flex-wrap items-center gap-1 p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/20",
             error && "border-red-500 focus:border-red-500 focus:ring-red-500/20",
             isOpen && "ring-2 ring-primary/20"
           )}
           onClick={() => setIsOpen(!isOpen)}
+          onKeyDown={handleTriggerKeyDown}
         >
           {value.length === 0 ? (
             <span className="text-muted-foreground">{placeholder}</span>
@@ -111,7 +135,11 @@ export const MultiSelectInput = ({
         </div>
 
         {isOpen && (
-          <div className="absolute z-10 w-full mt-1 bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto">
+          <div
+            id={listboxId}
+            className="absolute z-10 w-full mt-1 bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto"
+            role="listbox"
+          >
             <div className="p-2">
               <input
                 ref={inputRef}

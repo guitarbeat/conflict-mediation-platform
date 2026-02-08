@@ -5,3 +5,7 @@
 ## 2024-05-24 - Non-interactive Elements as Triggers
 **Learning:** `MultiSelectInput` uses a `div` with `onClick` as a dropdown trigger, making it inaccessible to keyboard users. This pattern might exist in other custom inputs.
 **Action:** When creating custom dropdowns, use `<button type="button">` or a proper combobox pattern with `role="combobox"` and tabindex management.
+
+## 2024-05-25 - Label Focus for Custom Inputs
+**Learning:** Native `<label htmlFor="...">` only focuses standard form elements. For custom `div`-based inputs (even with `tabIndex`), you must manually handle the label's `onClick` to focus the trigger ref.
+**Action:** When building custom inputs, add `onClick={() => triggerRef.current?.focus()}` to the label.
