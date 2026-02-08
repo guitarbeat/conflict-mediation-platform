@@ -9,6 +9,12 @@ const CardStack = ({
   animationType,
   stepElements,
   onNavigate,
+  isDragging,
+  onInputStart,
+  onInputMove,
+  onInputEnd,
+  onMouseLeave,
+  renderStepContent,
 }) => {
   const cardRefs = useRef({});
 
@@ -150,7 +156,7 @@ const CardStack = ({
           style={cardStyle}
           data-testid={isActive ? "current-card" : ""}
         >
-          <StepCard>{stepElements[index]}</StepCard>
+          <StepCard>{renderStepContent(stepNumber)}</StepCard>
         </div>
       );
     });
