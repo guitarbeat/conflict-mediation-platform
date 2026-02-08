@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Lightbulb, RefreshCw, ChevronDown } from "lucide-react";
+import React, { useState, useEffect, useId } from "react";
+import { Lightbulb, ChevronDown, RefreshCw } from "lucide-react";
 import { cn } from "../lib/utils";
 import useDebounce from "../hooks/useDebounce";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { SUGGESTION_TEMPLATES, HELP_TEXTS } from "../config/smartSuggestionsData";
 
 // Smart suggestions based on field type and content
 export const SmartSuggestions = ({
@@ -15,6 +16,7 @@ export const SmartSuggestions = ({
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const listId = useId();
 
   // Debounce the value to prevent excessive "API calls"
   const debouncedValue = useDebounce(currentValue, 500);
@@ -22,6 +24,10 @@ export const SmartSuggestions = ({
   // Generate suggestions based on field type and context
   const generateSuggestions = async (type, value, ctx) => {
     setIsLoading(true);
+
+    let generatedSuggestions = SUGGESTION_TEMPLATES[type] || [];
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     let generatedSuggestions = [];
 
@@ -195,13 +201,9 @@ export const SmartSuggestions = ({
                 className="p-1 text-muted-foreground hover:text-foreground transition-colors"
                 aria-label={showSuggestions ? "Hide suggestions" : "Show suggestions"}
                 aria-expanded={showSuggestions}
+                aria-controls={listId}
               >
-                <ChevronDown
-                  className={cn(
-                    "h-3 w-3 transition-transform duration-200",
-                    showSuggestions ? "rotate-180" : ""
-                  )}
-                />
+                <ChevronDown className={cn("h-3 w-3 transition-transform duration-200", showSuggestions && "rotate-180")} />
               </button>
             </TooltipTrigger>
             <TooltipContent>
@@ -212,7 +214,7 @@ export const SmartSuggestions = ({
       </div>
 
       {showSuggestions && (
-        <div className="space-y-1">
+        <div className="space-y-1" id={listId}>
           {isLoading ? (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full" />
@@ -241,64 +243,7 @@ export const ContextualHelp = ({
   fieldType,
   className = "",
 }) => {
-  const getHelpText = (type) => {
-    const helpTexts = {
-      conflictDescription: {
-        title: "Describing the Conflict",
-        tips: [
-          "Focus on observable facts, not interpretations",
-          "Include when and where the conflict occurred",
-          "Describe specific actions or events that happened",
-          "Avoid blame or judgmental language",
-          "Ensure both parties agree on this description"
-        ]
-      },
-      thoughts: {
-        title: "Expressing Your Thoughts",
-        tips: [
-          "Be honest about your beliefs and assumptions",
-          "Use 'I think' or 'I believe' statements",
-          "Avoid making assumptions about the other person's intentions",
-          "Focus on your own perspective and feelings",
-          "Be specific about what you think happened"
-        ]
-      },
-      assertiveApproach: {
-        title: "Assertive Communication",
-        tips: [
-          "Use 'I' statements to express your needs",
-          "Be respectful and considerate of the other person",
-          "Focus on finding solutions, not assigning blame",
-          "Be clear about what you want to achieve",
-          "Listen actively to the other person's response"
-        ]
-      },
-      miracleQuestion: {
-        title: "The Miracle Question",
-        tips: [
-          "Imagine waking up tomorrow with the conflict completely resolved",
-          "Describe what would be different in your relationship",
-          "Focus on positive changes and improvements",
-          "Be specific about what you would see, hear, or experience",
-          "Think about how both parties would feel and behave"
-        ]
-      },
-      solutions: {
-        title: "Finding Solutions",
-        tips: [
-          "Focus on solutions that work for both parties",
-          "Be creative and open to new ideas",
-          "Consider both short-term and long-term solutions",
-          "Think about what each person can do differently",
-          "Aim for win-win outcomes whenever possible"
-        ]
-      }
-    };
-
-    return helpTexts[type] || null;
-  };
-
-  const helpInfo = getHelpText(fieldType);
+  const helpInfo = HELP_TEXTS[fieldType] || null;
 
   if (!helpInfo) return null;
 
