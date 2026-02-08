@@ -135,7 +135,7 @@ function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isAnimating, navigateToStep]);
 
-  const handleNavigate = (direction) => {
+  const handleNavigate = useCallback((direction) => {
     const subStepCount = getSubStepCountForStep(currentStep);
 
     if (direction === 'next') {
@@ -157,7 +157,7 @@ function App() {
     } else {
       navigateToStep(direction);
     }
-  };
+  }, [currentStep, currentSubStep, navigateToStep]);
 
   // Export functions
   const exportToJSON = useCallback(() => {
@@ -173,34 +173,21 @@ function App() {
     linkElement.click();
   }, [formData]);
 
-  const stepElements = useMemo(() => {
-    return Array.from({ length: TOTAL_SURVEY_STEPS }, (_, index) => {
-      const step = index + 1;
-      return (
-        <StepContent
-          key={step}
-          step={step}
-          formData={formData}
-          updateFormData={updateFormData}
-          updateMultipleFields={updateMultipleFields}
-          onExportJSON={exportToJSON}
-          showErrors={errorStep === step}
-          getRequiredFieldsForStep={getRequiredFieldsForStep}
-          currentSubStep={currentSubStep}
-          setCurrentSubStep={setCurrentSubStep}
-        />
-      );
-    });
-  }, [
-    formData,
-    updateFormData,
-    updateMultipleFields,
-    exportToJSON,
-    errorStep,
-    getRequiredFieldsForStep,
-    currentSubStep,
-    setCurrentSubStep,
-  ]);
+  const renderStepContent = useCallback((step) => {
+    return (
+      <StepContent
+        step={step}
+        formData={formData}
+        updateFormData={updateFormData}
+        updateMultipleFields={updateMultipleFields}
+        onExportJSON={exportToJSON}
+        showErrors={errorStep === step}
+        getRequiredFieldsForStep={getRequiredFieldsForStep}
+        currentSubStep={currentSubStep}
+        setCurrentSubStep={setCurrentSubStep}
+      />
+    );
+  }, [formData, updateFormData, updateMultipleFields, exportToJSON, errorStep, getRequiredFieldsForStep, currentSubStep]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -260,7 +247,7 @@ function App() {
           onInputMove={handleInputMove}
           onInputEnd={handleInputEnd}
           onMouseLeave={handleMouseLeave}
-          stepElements={stepElements}
+          renderStepContent={renderStepContent}
         />
 
         {/* Navigation Buttons */}
