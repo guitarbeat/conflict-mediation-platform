@@ -16,7 +16,6 @@ import { toast } from "sonner";
 import { getCategoryByStep } from "../config/surveyCategories";
 import { useErrorHandler } from "../hooks/useErrorHandler";
 import { PDFLoadingState, FileLoadingState } from "./LoadingState";
-import { GLOBAL_DEPENDENCIES, STEP_DEPENDENCIES } from "../utils/stepDependencies";
 
 const DEFAULT_PARTY_COLORS = {
   A: "#6B8E47",
@@ -1561,38 +1560,4 @@ const StepContent = ({ step, formData, updateFormData, updateMultipleFields, onE
   }
 };
 
-const arePropsEqual = (prevProps, nextProps) => {
-  if (prevProps.step !== nextProps.step) return false;
-  if (prevProps.showErrors !== nextProps.showErrors) return false;
-  if (prevProps.currentSubStep !== nextProps.currentSubStep) return false;
-  // If update functions change, we must re-render (though they should be stable)
-  if (prevProps.updateFormData !== nextProps.updateFormData) return false;
-  if (prevProps.updateMultipleFields !== nextProps.updateMultipleFields) return false;
-
-  // Step 7 (Export) depends on everything for PDF generation/export
-  if (prevProps.step === 7) {
-    // If formData reference changed, we must update Step 7 so it has the latest data for export.
-    // Since App.jsx passes a new formData object on every change, this effectively means
-    // Step 7 re-renders on every change, which is correct/safe behavior for the export step.
-    return prevProps.formData === nextProps.formData;
-  }
-
-  // Check global dependencies (e.g. party names, colors)
-  for (const field of GLOBAL_DEPENDENCIES) {
-    if (prevProps.formData[field] !== nextProps.formData[field]) {
-      return false;
-    }
-  }
-
-  // Check step-specific dependencies
-  const stepFields = STEP_DEPENDENCIES[prevProps.step] || [];
-  for (const field of stepFields) {
-    if (prevProps.formData[field] !== nextProps.formData[field]) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
-export default React.memo(StepContent, arePropsEqual);
+export default React.memo(StepContent);
