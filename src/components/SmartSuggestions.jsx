@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Lightbulb, RefreshCw, ChevronDown } from "lucide-react";
+import React, { useState, useEffect, useId } from "react";
+import { Lightbulb, ChevronDown, RefreshCw } from "lucide-react";
 import { cn } from "../lib/utils";
 import useDebounce from "../hooks/useDebounce";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
@@ -15,6 +15,7 @@ export const SmartSuggestions = ({
   const [suggestions, setSuggestions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const listId = useId();
 
   // Debounce the value to prevent excessive "API calls"
   const debouncedValue = useDebounce(currentValue, 500);
@@ -22,6 +23,9 @@ export const SmartSuggestions = ({
   // Generate suggestions based on field type and context
   const generateSuggestions = async (type, value, ctx) => {
     setIsLoading(true);
+
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     let generatedSuggestions = [];
 
@@ -195,13 +199,9 @@ export const SmartSuggestions = ({
                 className="p-1 text-muted-foreground hover:text-foreground transition-colors"
                 aria-label={showSuggestions ? "Hide suggestions" : "Show suggestions"}
                 aria-expanded={showSuggestions}
+                aria-controls={listId}
               >
-                <ChevronDown
-                  className={cn(
-                    "h-3 w-3 transition-transform duration-200",
-                    showSuggestions ? "rotate-180" : ""
-                  )}
-                />
+                <ChevronDown className={cn("h-3 w-3 transition-transform duration-200", showSuggestions && "rotate-180")} />
               </button>
             </TooltipTrigger>
             <TooltipContent>
@@ -212,7 +212,7 @@ export const SmartSuggestions = ({
       </div>
 
       {showSuggestions && (
-        <div className="space-y-1">
+        <div className="space-y-1" id={listId}>
           {isLoading ? (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <div className="animate-spin h-3 w-3 border border-primary border-t-transparent rounded-full" />
