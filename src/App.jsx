@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import DarkModeToggle from "./components/DarkModeToggle";
 import CategoryNavigation from "./components/CategoryNavigation";
 import NavigationButtons from "./components/NavigationButtons";
@@ -88,6 +88,19 @@ function App() {
     [getMissingFieldsForStep, isStepComplete, currentSubStep],
   );
 
+  // Create a ref to store the latest navigation guard function
+  // This allows us to pass a stable function reference to useNavigation
+  const navigationGuardRef = useRef(navigationGuard);
+
+  useEffect(() => {
+    navigationGuardRef.current = navigationGuard;
+  }, [navigationGuard]);
+
+  // Stable callback that delegates to the current guard implementation
+  const stableNavigationGuard = useCallback((...args) => {
+    return navigationGuardRef.current(...args);
+  }, []);
+
   // Navigation management
   const {
     currentStep,
@@ -103,7 +116,7 @@ function App() {
     handleInputEnd,
     handleMouseLeave,
   } = useNavigation({
-    canNavigateToStep: navigationGuard,
+    canNavigateToStep: stableNavigationGuard,
     totalSteps: TOTAL_SURVEY_STEPS,
   });
 
@@ -135,7 +148,7 @@ function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [isAnimating, navigateToStep]);
 
-  const handleNavigate = (direction) => {
+  const handleNavigate = useCallback((direction) => {
     const subStepCount = getSubStepCountForStep(currentStep);
 
     if (direction === 'next') {
@@ -157,7 +170,7 @@ function App() {
     } else {
       navigateToStep(direction);
     }
-  };
+  }, [currentStep, currentSubStep, navigateToStep]);
 
   // Export functions
   const exportToJSON = useCallback(() => {
